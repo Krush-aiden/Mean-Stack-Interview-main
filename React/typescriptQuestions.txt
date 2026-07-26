@@ -1,0 +1,63 @@
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+TypeScript Interview Questions (2025-26)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+𝗕𝗮𝘀𝗶𝗰 𝗟𝗲𝘃𝗲𝗹:
+
+1. What is TypeScript, and why use it over JavaScript?
+2. What is the difference between interface and type in TypeScript?
+3. What are the basic types in TypeScript? (string, number, boolean, any, unknown, void, never, null, undefined)
+4. What is the difference between any and unknown?
+5. What is type inference in TypeScript?
+6. What are enums in TypeScript? When should you use them?
+7. What is the difference between == and === in TypeScript?
+8. What is a tuple in TypeScript?
+9. How do you define optional and readonly properties?
+10. What is type assertion (as keyword)? When is it appropriate?
+
+𝗠𝗼𝗱𝗲𝗿𝗮𝘁𝗲 𝗟𝗲𝘃𝗲𝗹:
+
+11. What are generics in TypeScript? Give a practical example.
+12. What are utility types? Explain Partial, Required, Pick, Omit, Record.
+13. What is the difference between interface extends and type intersection (&)?
+14. What are union types and intersection types?
+15. What are discriminated unions? How do you use them?
+16. What is a type guard, and what are the different ways to create one?
+17. What is the never type, and when is it used?
+18. What is the difference between type narrowing and type assertion?
+19. How do you type function overloads in TypeScript?
+20. What are mapped types? Give an example.
+
+𝗔𝗱𝘃𝗮𝗻𝗰𝗲𝗱 𝗟𝗲𝘃𝗲𝗹:
+
+21. What are conditional types? Explain with an example.
+22. What is the infer keyword in conditional types?
+23. What is declaration merging in TypeScript?
+24. What is the difference between namespace and module?
+25. What are template literal types?
+26. What is as const, and how does it differ from regular const?
+27. What is the satisfies operator in TypeScript?
+28. What are index signatures and index access types?
+29. How do you make a type deeply readonly (DeepReadonly)?
+30. What is variance (covariance, contravariance) in TypeScript?
+
+𝗧𝘆𝗽𝗲𝗦𝗰𝗿𝗶𝗽𝘁 + 𝗥𝗲𝗮𝗰𝘁 (𝗙𝗿𝗼𝗻𝘁𝗲𝗻𝗱 𝗦𝗽𝗲𝗰𝗶𝗳𝗶𝗰):
+
+31. How do you type React functional component props?
+32. How do you type useState, useRef, and useReducer?
+33. How do you type event handlers (onClick, onChange, onSubmit)?
+34. What is React.FC / React.FunctionComponent? Should you use it?
+35. How do you type children in React components?
+36. How do you type custom hooks that return tuples?
+37. How do you type Context API with TypeScript?
+38. How do you type an API response with generics?
+39. What is the difference between React.ReactNode, React.ReactElement, and JSX.Element?
+40. How do you type forwardRef (or refs as props in React 19)?
+
+𝗣𝗿𝗮𝗰𝘁𝗶𝗰𝗮𝗹 / 𝗖𝗼𝗱𝗶𝗻𝗴:
+
+41. Convert this JS function to TypeScript (typical interview task).
+42. Write a generic function that works for both arrays and single values.
+43. Create a type-safe event emitter using generics.
+44. Write a utility type that makes all properties of a nested object optional.
+45. Given a union type, extract only the string members (using Extract/Exclude).

@@ -1,0 +1,927 @@
+1 How to do localization in react ?
+Localization in React refers to the process of adapting a React application to support multiple languages and regional formats, such as date, time, currency, and number formats. It ensures that the application can cater to users from different regions or languages.
+lib ex : i18next
+
+2 what is the drawback of React Js
+Steep Learning Curve: React requires understanding JSX, state management, and tools like Redux or Context API.
+Frequent Updates: React evolves quickly, requiring developers to stay updated.
+Boilerplate Code: Managing state and props can lead to verbose code.
+SEO Challenges: React apps need server-side rendering (SSR) for better SEO.
+
+
+3 which version react ??
+-   "react": "^17.0.2"
+
+5 how do you handle async calls in react 
+Async calls in React are handled using useEffect and async/await
+
+import React, { useState, useEffect } from 'react';
+
+function App() {
+  const [data, setData] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const response = await fetch('/api/data');
+      const result = await response.json();
+      setData(result);
+    };
+    fetchData();
+  }, []);
+
+  return <div>{data.map(item => <p key={item.id}>{item.name}</p>)}</div>;
+}
+
+
+6 concurrent rendering in React
+Concurrent Rendering in React: A feature that allows React to interrupt rendering work to handle more urgent updates, improving responsiveness.
+
+ex:
+Automatic Batching: Groups multiple state updates into a single render.
+Transitions: Allows marking updates as non-urgent using useTransition.
+
+import { useTransition } from 'react';
+const [isPending, startTransition] = useTransition();
+
+startTransition(() => {
+  setState(newState); // Non-urgent update
+});
+
+
+7 What happens with a component when it receives new props?
+When a component receives new props, it may re-render to reflect the updated data, depending on how the component is implemented.
+ex::
+const Child = ({ value }) => <div>{value}</div>;
+
+PureComponent/React.memo: If the component is a PureComponent or wrapped in React.memo, it will only re-render if the props have changed.
+
+
+8 What are some common pitfalls when doing data fetching?
+Not Handling Errors: Forgetting to handle API errors.
+Infinite Loops: Calling the fetch function inside useEffect without proper dependency management.
+Blocking UI: Not showing loading states while fetching data.
+Memory Leaks: Not cleaning up subscriptions or async calls.
+ex ::
+useEffect(() => {
+  let isMounted = true;
+  fetch('/api/data')
+    .then(response => response.json())
+    .then(data => {
+      if (isMounted) setData(data);
+    });
+  return () => (isMounted = false); // Cleanup
+}, []);
+
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+REACT 19 — NEW FEATURES (Explained)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+R19-1. Form Actions & useActionState()
+React 19 lets you pass an async function directly to a <form action={...}> attribute.
+useActionState(action, initialState) wraps that action and returns [state, formAction, isPending].
+- state     : the last returned value from your action function.
+- formAction: the function you pass to <form action={}>.
+- isPending : true while the action is running — replaces a separate loading useState.
+
+Before React 19 (multiple state hooks):
+  const [loading, setLoading] = useState(false);
+  const [error,   setError]   = useState(null);
+  const [data,    setData]    = useState(null);
+
+With React 19:
+  async function submitAction(prevState, formData) {
+    const name = formData.get('name');
+    const res  = await saveToAPI(name);
+    if (!res.ok) return { error: 'Failed to save' };
+    return { success: true };
+  }
+
+  const [state, formAction, isPending] = useActionState(submitAction, null);
+
+  return (
+    <form action={formAction}>
+      <input name="name" />
+      <button disabled={isPending}>{isPending ? 'Saving...' : 'Save'}</button>
+      {state?.error && <p>{state.error}</p>}
+    </form>
+  );
+
+Key point: cleaner form handling — no manual loading/error state juggling.
+
+---
+
+R19-2. useFormStatus Hook
+useFormStatus() gives any child component inside a <form> access to the parent form's
+submission state (pending, data, method, action) — without prop drilling or Context.
+
+import { useFormStatus } from 'react-dom';
+
+function SubmitButton() {
+  const { pending } = useFormStatus();
+  return <button disabled={pending}>{pending ? 'Submitting...' : 'Submit'}</button>;
+}
+
+// Works regardless of nesting depth inside the form:
+<form action={formAction}>
+  <input name="email" />
+  <SubmitButton />
+</form>
+
+Key point: ideal for reusable submit buttons and deeply nested form children.
+
+---
+
+R19-3. useOptimistic Hook
+useOptimistic(state, updateFn) shows an immediate UI update while an async operation
+runs in the background. React automatically rolls back if the operation fails.
+
+import { useOptimistic } from 'react';
+
+function ChatApp({ messages, sendMessage }) {
+  const [optimisticMsgs, addOptimistic] = useOptimistic(
+    messages,
+    (current, newMsg) => [...current, { text: newMsg, pending: true }]
+  );
+
+  async function handleSend(formData) {
+    const text = formData.get('message');
+    addOptimistic(text);       // instant UI update (greyed out)
+    await sendMessage(text);   // actual async API call
+  }
+
+  return (
+    <>
+      {optimisticMsgs.map((m, i) => (
+        <p key={i} style={{ opacity: m.pending ? 0.5 : 1 }}>{m.text}</p>
+      ))}
+      <form action={handleSend}>
+        <input name="message" /><button>Send</button>
+      </form>
+    </>
+  );
+}
+
+Key point: best for chat messages, todo items, likes/reactions — instant perceived performance.
+
+---
+
+R19-4. The use() API
+use(promise | context) reads a Promise or Context value directly in the component body.
+Unlike hooks, it CAN be used inside conditionals and loops.
+
+// Reading context:
+import { use } from 'react';
+const theme = use(ThemeContext);
+
+// Reading a promise (suspends until resolved — needs Suspense boundary):
+function UserProfile({ userPromise }) {
+  const user = use(userPromise);
+  return <p>{user.name}</p>;
+}
+
+Limitations:
+- Must be wrapped in a <Suspense> boundary.
+- Without a caching layer (React cache(), Next.js, TanStack Query), the promise
+  is re-created on every render — causing infinite refetching.
+- Cannot be called in event handlers or plain functions.
+
+Key point: simplifies async data reading but requires a proper caching strategy.
+
+---
+
+R19-5. Passing Refs as Props (forwardRef no longer needed)
+Before React 19, passing a ref to a child component required forwardRef():
+
+  // Old:
+  const Input = forwardRef((props, ref) => <input ref={ref} {...props} />);
+
+React 19: ref is now a regular prop — no wrapping required:
+
+  function Input({ ref, ...props }) {
+    return <input ref={ref} {...props} />;
+  }
+
+  // Usage:
+  const inputRef = useRef();
+  <Input ref={inputRef} placeholder="Search" />;
+
+Key point: cleaner component code, forwardRef is deprecated and no longer needed.
+
+---
+
+R19-6. Native Document Metadata Support
+React 19 allows rendering <title>, <meta>, and <link> tags directly inside
+components. React automatically hoists them into <head>.
+
+function ProductPage({ product }) {
+  return (
+    <>
+      <title>{product.name} — MyShop</title>
+      <meta name="description" content={product.description} />
+      <link rel="canonical" href={`/products/${product.id}`} />
+      <h1>{product.name}</h1>
+    </>
+  );
+}
+
+Key point: replaces react-helmet / react-helmet-async for most use cases.
+No extra library needed for per-page metadata.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+9 When is it a good idea to use a class (open discussion).
+While functional components with hooks are preferred in modern React, class components are still useful when:
+
+You need to use Error Boundaries (only available in class components).
+Working on legacy codebases that heavily use class components.
+You are more comfortable with the lifecycle methods (componentDidMount, componentDidUpdate, etc.).
+
+ex ::
+class MyComponent extends React.Component {
+  render() {
+    return <h1>Hello, world!</h1>;
+  }
+}
+
+10 What Is the Purpose of React Fragments?
+React Fragments (<React.Fragment> or <>) allow you to group multiple elements without adding extra nodes to the DOM.
+
+11 What Are React Portals, and How Can They Be Useful?
+React Portals provide a way to render children into a DOM node that exists outside the parent component's DOM hierarchy.
+
+Use Cases:
+- Rendering modals, tooltips, or popups that need to break out of the parent DOM structure.
+- Avoiding CSS overflow issues caused by parent containers.
+
+12. Explain the concept of code splitting in React.
+Code splitting is a technique used to split the application code into smaller chunks, which are loaded on demand. This improves performance by reducing the initial bundle size and loading only the necessary code when required.
+
+How it works in React:
+React supports code splitting using dynamic imports and libraries like React.lazy and React.Suspense
+
+
+13 How Do You Optimize the Performance of a React Application?
+Answer: To optimize React application performance, you can:
+- Use shouldComponentUpdate, PureComponent, or memoization to prevent unnecessary renders.
+- Profile your app with tools like React DevTools and Chrome DevTools to identify performance bottlenecks.
+- Implement lazy loading and code splitting to reduce initial bundle size.
+- Use server-side rendering (SSR) for faster initial rendering.
+- Employ caching mechanisms for data fetching.
+- Minimize the use of expensive operations in render methods.
+- Use Virtualization: Use libraries like react-window or react-virtualized for rendering large lists efficiently.
+- Profile and Debug: Use React DevTools and Chrome DevTools to identify performance bottlenecks.
+- Debounce Expensive Operations: Use debounce or throttle for input handling or API calls.
+
+
+14 what are source map
+Source maps are files that map the minified or transpiled code back to the original source code. They help developers debug their applications by allowing them to view the original code in the browser's developer tools.
+Benefits:
+Easier debugging of production code.
+Helps trace errors back to the original source files.
+
+15 what is derived state
+Derived state is state that is calculated or derived from props or other state variables, rather than being stored directly in the component.
+ex ::
+  // GOOD: Calculating values directly from props
+  const filteredProducts = products.filter(p => p.inStock);
+  const totalProducts = filteredProducts.length;
+
+
+16 what is pure component & impure component in react 
+ Pure Component:
+ A component that renders the same output for the same props and state.
+ It implements shouldComponentUpdate to prevent unnecessary re-renders.
+
+import React, { PureComponent } from 'react';
+
+class MyComponent extends PureComponent {
+  render() {
+    return <div>{this.props.value}</div>;
+  }
+}
+
+Impure Component:
+A component that may render different outputs for the same props and state.
+
+class ImpureComponent extends React.Component {
+  render() {
+    console.log('Rendering');
+    return <div>{Math.random()}</div>;
+  }
+}
+
+
+17 Why does mutating state directly not work in React?
+- Direct mutation of state is discouraged as it can lead to unexpected behavior; instead, create new state objects.
+
+ex ::
+// Incorrect: state.value = newValue;
+// Correct: setState({ ...state, value: newValue });
+
+18 What's the difference between mutation and creating new references?
+Mutation:
+Directly modifies the existing object or array.
+ex:
+const arr = [1, 2, 3];
+arr.push(4); // Mutates the array
+
+Creating New References:
+Creates a new object or array instead of modifying the original.
+ex:
+const arr = [1, 2, 3];
+const newArr = [...arr, 4]; // Creates a new array
+
+
+19 How do you update nested arrays in state?
+- Use techniques like spreading or mapping to create new arrays when updating nested state.
+ex ::
+setState(prevState => ({
+  ...prevState,
+  nestedArray: [...prevState.nestedArray, newItem]
+}));
+
+
+20 What are the performance implications of creating new arrays?
+Pros:
+Maintains immutability, which is essential for React's state updates.
+Ensures React can detect changes and re-render efficiently.
+
+Cons:
+Creating new arrays can be costly for large datasets.
+May lead to performance issues if done frequently in performance-critical applications.
+
+When should you use previous state pattern?
+- Useful for updating state based on the previous state, ensuring updates are applied correctly.
+ex ::
+setState(prevState => ({ count: prevState.count + 1 }));
+
+12. How Hydration Works
+**Hydration** in React refers to the process of attaching event listeners and making a server-rendered HTML page interactive. When a React application is server-side rendered (SSR), the HTML is generated on the server and sent to the client. The client then "hydrates" this HTML by attaching the necessary event listeners and making it interactive using the React JavaScript code.
+
+
+1. **Server-Side Rendering (SSR)**:
+   - The server generates the HTML for the initial page load.
+   - This HTML is sent to the client and displayed in the browser.
+
+2. **Hydration**:
+   - The React JavaScript code is loaded on the client.
+   - React attaches event listeners to the existing HTML elements.
+   - The application becomes interactive without re-rendering the entire HTML.
+
+### Example
+
+**Server-Side Rendered HTML**:
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>React App</title>
+</head>
+<body>
+  <div id="root">
+    <h1>Hello, World!</h1>
+    <button>Click me</button>
+  </div>
+  <script src="/static/js/bundle.js"></script>
+</body>
+</html>
+```
+
+**Client-Side Hydration**:
+```javascript
+import React from 'react';
+import ReactDOM from 'react-dom';
+import App from './App';
+
+// Hydrate the existing HTML with React
+ReactDOM.hydrate(<App />, document.getElementById('root'));
+```
+
+**App Component**:
+```javascript
+import React from 'react';
+
+function App() {
+  const handleClick = () => {
+    alert('Button clicked!');
+  };
+
+  return (
+    <div>
+      <h1>Hello, World!</h1>
+      <button onClick={handleClick}>Click me</button>
+    </div>
+  );
+}
+
+export default App;
+```
+
+### Benefits of Hydration
+
+- **Improved Performance**: Hydration allows the initial HTML to be displayed quickly, improving the perceived performance of the application.
+- **SEO Benefits**: Server-side rendering provides fully rendered HTML to search engines, improving SEO.
+- **Faster Time-to-Interactive**: Hydration makes the application interactive faster by attaching event listeners to the existing HTML.
+
+### Conclusion
+
+Hydration is a crucial process in React applications that use server-side rendering. It allows the server-rendered HTML to become interactive on the client side without re-rendering the entire page, providing a seamless user experience and improving performance.
+
+13. Different JSX events?
+Mouse Events:
+onClick
+onDoubleClick
+onMouseEnter
+onMouseLeave
+
+Keyboard Events:
+onKeyDown
+onKeyPress (deprecated)
+onKeyUp
+
+Form Events:
+onChange
+onSubmit
+onFocus
+onBlur
+
+Clipboard Events:
+onCopy
+onCut
+onPaste
+
+Touch Events:
+onTouchStart
+onTouchMove
+onTouchEnd
+
+1. What is React and how does it work?
+React is a JavaScript library for building user interfaces, developed by Facebook. It allows developers to create reusable UI components and manage the state of an application efficiently.
+
+How it works:
+
+React uses a Virtual DOM to improve performance. When the state or props of a component change, React updates the Virtual DOM first, compares it with the previous version (diffing), and then updates only the changed parts in the real DOM.
+React follows a component-based architecture, where the UI is broken into small, reusable components.
+
+
+2. What are the differences between functional and class components?
+Feature	Functional Components:
+- JavaScript functions that return JSX.
+- Use React Hooks (e.g., useState).
+- Use Hooks like useEffect.
+- Generally faster due to no overhead of this.
+
+Class Components:
+- Use this.state and setState.
+- Use lifecycle methods like componentDidMount
+- More verbose.
+- Slightly slower due to this binding.
+
+3. What are props and state? How are they different?
+Props:
+- Immutable (cannot be modified).	
+- Used to pass data and configuration.
+- Passed as arguments to components.
+
+State:
+- State is a local data storage specific to a component.
+- Mutable (can be updated using setState or useState).
+- Used to manage dynamic data within a component.
+- Managed internally by the component.
+
+4. What is JSX, and why is it used in React?
+JSX (JavaScript XML) is a syntax extension for JavaScript that allows you to write HTML-like code inside JavaScript. It is used in React to describe the UI structure.
+
+Why use JSX?:
+Makes the code more readable and expressive.
+Allows embedding JavaScript expressions directly in the UI code.
+Transpiles to React.createElement() calls, which create React elements.
+
+6. What is the Virtual DOM, and why is it important?
+The Virtual DOM is a lightweight JavaScript representation of the real DOM. React uses it to optimize updates to the UI.
+
+How it works:
+When the state or props change, React updates the Virtual DOM.
+React compares the updated Virtual DOM with the previous one (diffing).
+Only the changed parts are updated in the real DOM.
+
+Importance:
+Improves performance by minimizing direct DOM manipulations.
+Provides a declarative way to update the UI.
+
+7. What is the purpose of the key prop in React lists?
+The key prop is used to uniquely identify elements in a list. It helps React efficiently update and re-render lists by tracking changes (e.g., additions, deletions, or reordering).
+
+Why use keys?
+Improves performance by avoiding unnecessary re-renders.
+Helps React maintain the correct order of elements.
+
+8. How do you handle events in React?
+React handles events using camelCase syntax (e.g., onClick, onChange) and passes the event handler as a function reference.
+React events are synthetic events, which are cross-browser wrappers around native events.
+Use preventDefault() to stop default behavior (e.g., form submission).
+
+9. What are default props in React?
+Default props are used to define default values for props in case they are not passed by the parent component.
+```
+function Greeting({ name }) {
+  return <h1>Hello, {name}!</h1>;
+}
+
+Greeting.defaultProps = {
+  name: 'Guest',
+};
+```
+
+10. What is conditional rendering in React?
+Conditional rendering is a technique to render different UI elements based on a condition
+
+11. What are React Hooks? Can you explain useState and useEffect with examples?
+React Hooks are functions introduced in React 16.8 that allow you to use state and lifecycle features in functional components.
+
+useState: A hook that allows you to add state to functional components.
+useEffect: A hook that allows you to perform side effects (e.g., data fetching, subscriptions) in functional components.
+
+12. What is the difference between controlled and uncontrolled components?
+Controlled Components:
+- Form data is controlled by React state.
+- Use value and onChange props.
+- 
+
+13. What is React Router, and how does client-side routing work?
+React Router is a library for handling routing in React applications. It enables navigation between different components without reloading the page (client-side routing).
+
+How it works:
+React Router uses the browser's History API to update the URL without refreshing the page.
+It renders components based on the current URL.
+```
+import { BrowserRouter as Router, Route, Link, Switch } from 'react-router-dom';
+function App() {
+  return (
+    <Router>
+      <nav>
+        <Link to="/">Home</Link>
+        <Link to="/about">About</Link>
+      </nav>
+      <Switch>
+        <Route exact path="/" component={() => <h1>Home</h1>} />
+        <Route path="/about" component={() => <h1>About</h1>} />
+      </Switch>
+    </Router>
+  );
+}
+```
+
+14. What is the Context API, and when should you use it instead of Redux?
+The Context API is a React feature that allows you to share state across components without passing props manually at every level.
+
+When to use Context API instead of Redux:
+Use Context API for simple state sharing (e.g., theme, authentication).
+Use Redux for complex state management with multiple reducers, middleware, and asynchronous actions.
+
+15. What is prop drilling, and how can it be avoided?
+Prop Drilling occurs when you pass props through multiple levels of components to reach a deeply nested component.
+
+How to avoid it:
+Use Context API to share state directly with deeply nested components.
+Use state management libraries like Redux or Zustand.
+
+
+19. How does React handle forms, and what are controlled inputs?
+React handles forms using controlled components, where the form data is managed by React state.
+
+20. What is Web Workers?
+Web Workers are JavaScript scripts that run in the background, separate from the main thread, allowing you to perform heavy computations without blocking the UI.
+```
+// worker.js
+self.onmessage = function (e) {
+  const result = e.data * 2;
+  self.postMessage(result);
+};
+
+// main.js
+const worker = new Worker('worker.js');
+worker.onmessage = (e) => console.log(e.data);
+worker.postMessage(5); // Sends data to the worker
+```
+
+21. What is useTransition?
+useTransition is a React Hook introduced in React 18 for managing non-urgent updates. It allows you to mark updates as "transitions" to keep the UI responsive.
+
+
+21. What is reconciliation in React?
+Reconciliation is the process React uses to update the DOM efficiently. When the state or props of a component change, React compares the new Virtual DOM with the previous one (using a diffing algorithm) and updates only the parts of the real DOM that have changed.
+
+Key Points:
+React uses the Virtual DOM to track changes.
+The diffing algorithm identifies the minimal set of changes required to update the real DOM.
+This process ensures better performance by avoiding unnecessary DOM manipulations.
+
+
+22. How does React’s diffing algorithm work?
+React’s diffing algorithm is used to efficiently compare the new Virtual DOM with the previous one and determine the minimal changes required to update the real DOM.
+
+How it works:
+Element Type Comparison:
+If the element types are different, React destroys the old element and creates a new one.
+Key Prop:
+React uses the key prop to identify elements in a list and track their positions.
+Tree Comparison:
+React compares elements at the same level in the tree.
+It does not compare elements across different levels.
+
+26. What are render props, and how are they different from HOCs?
+Render Props:
+A technique where a component takes a function as a prop and uses it to render dynamic content.
+It allows you to share logic between components.
+
+Higher-Order Components (HOCs):
+A pattern where a function takes a component and returns a new component with enhanced functionality.
+
+Difference:
+Render Props pass a function to control rendering, while HOCs wrap a component to enhance it.
+Render Props are more flexible for dynamic rendering, while HOCs are better for reusing logic.
+
+27. How does server-side rendering (SSR) differ from client-side rendering (CSR) in React?
+Server-Side Rendering (SSR):
+- HTML is generated on the server and sent to the client.
+- Faster initial load, as HTML is pre-rendered.
+- Better SEO, as search engines can crawl pre-rendered HTML.
+
+Client-Side Rendering (CSR)
+- HTML is generated on the client using JavaScript.
+- Slower initial load, as JavaScript must execute first.
+- Poorer SEO, as content is rendered dynamically.
+
+28. What are React Fiber and Concurrent Mode?
+React Fiber:
+React Fiber is the re-implementation of React’s core algorithm, introduced in React 16.
+It enables React to break rendering work into smaller units and prioritize updates, improving performance.
+
+Concurrent Mode:
+Concurrent Mode is a feature built on React Fiber that allows React to interrupt rendering to handle more urgent updates.
+It improves responsiveness by prioritizing user interactions over non-urgent updates.
+
+Key Features of Concurrent Mode:
+Automatic Batching: Groups multiple state updates into a single render.
+Transitions: Allows marking updates as non-urgent using useTransition.
+
+10. What are synthetic events in React?
+Synthetic events in React are cross-browser wrappers around the browser's native events. They provide a consistent API for handling events, regardless of the browser being used.
+
+Key Points:
+Synthetic events are lightweight and optimized for React's Virtual DOM.
+They normalize event properties across different browsers.
+Examples include onClick, onChange, onSubmit, etc.
+
+11. What are the differences between package.json and package-lock.json?
+package.json:
+- Lists the project's dependencies and metadata.
+- Specifies version ranges (e.g., ^1.0.0).	
+- Always committed to version control.
+- Used to declare dependencies.
+
+package-lock.json:
+- Locks the exact versions of dependencies and sub-dependencies.
+- Should also be committed to ensure consistent builds.
+- Records the exact versions installed.
+- Used to ensure reproducible installations.
+
+34. What is the purpose of the callback function as an argument of setState()?
+The callback function in setState() is executed after the state has been updated and the component has re-rendered. It ensures that you perform actions only after the state update is complete.
+
+Why use it?:
+React batches state updates for performance, so the callback ensures you act after the update is applied.
+
+38. What are the different ways to pass data from a child component to a parent component in React?
+Using Callback Functions:
+Pass a function from the parent to the child, and call it in the child with the data.
+```
+function Parent() {
+  const handleData = (data) => {
+    console.log('Data from child:', data);
+  };
+
+  return <Child sendData={handleData} />;
+}
+
+function Child({ sendData }) {
+  return (
+    <button onClick={() => sendData('Hello from Child!')}>
+      Send Data to Parent
+    </button>
+  );
+}
+```
+Using useRef:
+Use a ref to access data from the child component.
+```
+function Parent() {
+  const childRef = useRef();
+
+  const handleClick = () => {
+    console.log(childRef.current.value);
+  };
+
+  return (
+    <>
+      <Child ref={childRef} />
+      <button onClick={handleClick}>Get Data</button>
+    </>
+  );
+}
+
+const Child = React.forwardRef((props, ref) => (
+  <input ref={ref} type="text" />
+));
+```
+Using Context API:
+Share data between parent and child components without prop drilling.
+
+42. How would you consume a RESTful JSON API in React?
+You can consume a RESTful API in React using fetch or libraries like axios.
+
+43. Different design patterns used in React?
+Container-Presenter Pattern:
+Separates logic (container) from UI (presenter).
+
+Higher-Order Components (HOC):
+A function that takes a component and returns an enhanced component.
+
+Render Props:
+A component that uses a function as a prop to render dynamic content.
+
+Compound Components:
+Components that work together to share state and behavior.
+
+Custom Hooks:
+Encapsulate reusable logic in hooks.
+
+45. Prop types in React (How to apply validation on props in React)?
+PropTypes is a library used to validate the props passed to a component.
+```
+import PropTypes from 'prop-types';
+
+function Greeting({ name, age }) {
+  return (
+    <p>
+      Hello, {name}. You are {age} years old.
+    </p>
+  );
+}
+
+Greeting.propTypes = {
+  name: PropTypes.string.isRequired,
+  age: PropTypes.number,
+};
+
+Greeting.defaultProps = {
+  age: 18,
+};
+```
+PropTypes.string, PropTypes.number, PropTypes.array, etc., are used to validate prop types.
+isRequired ensures the prop is mandatory.
+defaultProps provides default values for props.
+
+46. What are React Mixins?
+React Mixins were a feature in older versions of React (pre-React 16) that allowed components to share reusable behaviors or logic. They were primarily used with React.createClass to inject shared functionality into components.
+
+Why Mixins are Deprecated:
+Mixins often caused conflicts and made code harder to maintain.
+React now encourages using Higher-Order Components (HOCs), Render Props, or Custom Hooks for sharing logic.
+
+Modern Alternatives:
+Use HOCs, Render Props, or Custom Hooks instead of Mixins.
+
+49. What are the different types of exports and imports?
+In JavaScript (and React), there are two types of exports and imports:
+
+Default Export and Import:
+Used to export a single value from a module.
+Import does not require curly braces.
+Example:
+```
+// File: math.js
+export default function add(a, b) {
+  return a + b;
+}
+
+// File: app.js
+import add from './math';
+console.log(add(2, 3)); // Output: 5
+```
+
+Named Export and Import:
+Used to export multiple values from a module.
+Import requires curly braces.
+Example:
+```
+// File: math.js
+export const add = (a, b) => a + b;
+export const subtract = (a, b) => a - b;
+
+// File: app.js
+import { add, subtract } from './math';
+console.log(add(2, 3)); // Output: 5
+console.log(subtract(5, 3)); // Output: 2
+```
+Key Differences:
+Default Export: Only one default export per file.
+Named Export: Multiple named exports per file.
+
+50. What are the differences between createElement vs cloneElement in React?
+React.createElement:
+- Creates a new React element.
+- Used to create elements programmatically.
+```
+const element = React.createElement('div', { className: 'container' }, 'Hello, World!');
+```
+React.cloneElement:
+- Clones an existing React element and optionally modifies its props or children.
+- Used to reuse or modify existing elements.
+```
+const element = <div className="container">Hello</div>;
+const clonedElement = React.cloneElement(element, { className: 'new-container' });
+```
+
+51. When to use useState and useReducer?
+useState:
+- Used for simple state management.	
+- const [state, setState] = useState(initialState);	
+- Simple counters, toggles, or form inputs.
+```
+const [count, setCount] = useState(0);
+```
+
+useReducer:
+- Used for complex state logic or when state depends on previous state.
+- const [state, dispatch] = useReducer(reducer, initialState);
+- Complex state transitions, such as managing a form with multiple fields.
+```
+const reducer = (state, action) => {
+  switch (action.type) {
+    case 'increment':
+      return { count: state.count + 1 };
+    case 'decrement':
+      return { count: state.count - 1 };
+    default:
+      return state;
+  }
+};
+
+const [state, dispatch] = useReducer(reducer, { count: 0 });
+```
+
+53. What is react-router's context menu?
+React Router does not have a built-in "context menu" feature. However, you can implement a custom context menu (right-click menu) in your React app and use React Router to navigate when a menu item is clicked.
+
+54. What is the file structure of React?
+A typical React project structure looks like this:
+src/
+├── components/         # Reusable components
+│   ├── Header.js
+│   ├── Footer.js
+│   └── Button.js
+├── pages/              # Page-level components
+│   ├── Home.js
+│   ├── About.js
+│   └── Contact.js
+├── hooks/              # Custom hooks
+│   └── useFetch.js
+├── context/            # Context API files
+│   └── ThemeContext.js
+├── assets/             # Static assets (images, fonts, etc.)
+│   ├── images/
+│   └── styles/
+├── App.js              # Root component
+├── index.js            # Entry point
+└── package.json        # Project metadata and dependencies
+
+
+55. What is super in the constructor in Class-based Components?
+In class-based components, super is used to call the constructor of the parent class (React.Component). It is required when you want to access this.props or this.state in the constructor.
+ex:
+```
+class MyComponent extends React.Component {
+  constructor(props) {
+    super(props); // Calls the parent class constructor
+    this.state = { count: 0 };
+  }
+
+  render() {
+    return <h1>Count: {this.state.count}</h1>;
+  }
+}
+```
+
+Key Points:
+super(props) must be called before accessing this in the constructor.
+It ensures that the parent class (React.Component) is properly initialized.
+
+
+➤ Note :
+You can pass React Interviews even if you’ve never built large-scale React applications before.
+If you’ve created a simple React component, you’re halfway there. If you’ve managed state, handled events, or used hooks, you’ve got this.

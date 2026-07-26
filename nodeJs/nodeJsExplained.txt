@@ -1,0 +1,2242 @@
+Sure! Here are detailed explanations for the first 10 questions from your nodeJsExplained.txt file:
+
+### 1. What is the event loop in Node.js? & JavaScript.
+The event loop is a fundamental concept in Node.js and JavaScript that allows for non-blocking, asynchronous operations. It is responsible for handling and executing callbacks and other asynchronous operations.
+
+- **How it works**: The event loop continuously checks the call stack and the callback queue. If the call stack is empty, it takes the first callback from the queue and pushes it onto the call stack for execution.
+- **Components**: Call stack, callback queue, microtask queue, and the event loop itself.
+- **Example**: When you perform an asynchronous operation like reading a file, the event loop allows other code to run while waiting for the file operation to complete.
+
+### 2. What is Node.js?
+Node.js is a runtime environment that allows you to run JavaScript code outside of a web browser. It is built on the V8 JavaScript engine and provides an event-driven, non-blocking I/O model, making it ideal for building scalable network applications.
+
+- **Features**: Asynchronous and event-driven, single-threaded but can handle many connections concurrently, built-in support for various protocols (HTTP, TCP, etc.), and a rich ecosystem of libraries and modules via npm.
+
+### 3. What is a Run time environment?
+A runtime environment is a platform that provides the necessary infrastructure to execute code. It includes the necessary libraries, dependencies, and tools required to run applications.
+
+- **Node.js as a runtime environment**: It provides the V8 engine to execute JavaScript code, along with built-in modules and APIs for file system access, networking, and more.
+
+### 4. What is the diff between req.param & req.query?
+In Express.js, `req.param`, `req.query`, and `req.params` are used to access different types of parameters in an HTTP request.
+
+- **req.params**: Contains route parameters, which are named segments in the URL path (e.g., `/user/:id`).
+- **req.query**: Contains query string parameters, which are key-value pairs in the URL after the `?` (e.g., `/search?query=keyword`).
+- **req.param**: A deprecated method that could access both route and query parameters. It is recommended to use `req.params` and `req.query` instead.
+
+### 5. What is body parser?
+Body-parser is a middleware in Express.js used to parse the body of incoming HTTP requests. It extracts the entire body portion of an incoming request and makes it accessible under `req.body`.
+
+- **Usage**: Commonly used to parse JSON and URL-encoded data.
+- **Example**:
+  ```javascript
+  const bodyParser = require('body-parser');
+  app.use(bodyParser.json()); // Parse JSON bodies
+  app.use(bodyParser.urlencoded({ extended: true })); // Parse URL-encoded bodies
+  ```
+
+### 6. What security mechanism works in NodeJs?
+Node.js applications can implement various security mechanisms to protect against common vulnerabilities.
+
+- **Common Mechanisms**:
+  - **Input Validation**: Ensuring that user input is properly validated and sanitized.
+  - **Authentication and Authorization**: Using libraries like Passport.js for user authentication and role-based access control.
+  - **HTTPS**: Encrypting data in transit using HTTPS.
+  - **Environment Variables**: Storing sensitive information like API keys and database credentials in environment variables.
+  - **Helmet**: A middleware that helps secure Express.js apps by setting various HTTP headers.
+
+### 7. What is the advantage of Express over Node.js?
+Express.js is a web application framework built on top of Node.js that simplifies the process of building web applications and APIs.
+
+- **Advantages**:
+  - **Simplified Routing**: Provides a straightforward way to define routes and handle HTTP requests.
+  - **Middleware Support**: Allows the use of middleware functions to handle various tasks like authentication, logging, and error handling.
+  - **Extensibility**: A large ecosystem of plugins and middleware available via npm.
+  - **Minimal Setup**: Reduces boilerplate code and simplifies server setup.
+
+### 8. What are polyfills in JS?
+Polyfills are pieces of code (usually JavaScript) that provide modern functionality on older browsers that do not natively support it.
+
+- **Purpose**: To ensure compatibility and consistent behavior across different browsers.
+- **Example**: Using a polyfill to add support for `Array.prototype.includes` in older browsers that do not support this method.
+
+### 9. Create a NodeJS server (write the code).
+Here is a simple example of creating a Node.js server using the built-in `http` module:
+
+const http = require('http');
+
+const server = http.createServer((req, res) => {
+  res.statusCode = 200;
+  res.setHeader('Content-Type', 'text/plain');
+  res.end('Hello, World!\n');
+});
+
+const port = 3000;
+server.listen(port, () => {
+  console.log(`Server running at http://localhost:${port}/`);
+});
+
+
+10. Create an Express server (write the code).
+const express = require('express');
+const app = express();
+const port = 3000;
+
+app.get('/', (req, res) => {
+  res.send('Hello, World!');
+});
+
+app.listen(port, () => {
+  console.log(`Server running at http://localhost:${port}/`);
+});
+
+Sure! Here are detailed explanations for questions 11 to 19 from your nodeJsQuestions.txt file:
+
+### 11. What are the main features of Node.js?
+**Node.js** is a runtime environment that allows you to run JavaScript code outside of a web browser. It is built on the V8 JavaScript engine and provides several key features:
+
+**Main Features**:
+- **Asynchronous and Event-Driven**: Node.js uses an event-driven, non-blocking I/O model, making it efficient and suitable for real-time applications.
+- **Single-Threaded**: Although single-threaded, Node.js can handle many connections concurrently using event-driven architecture.
+- **Cross-Platform**: Runs on various operating systems including Windows, Linux, and macOS.
+- **Rich Ecosystem**: Has a vast ecosystem of libraries and modules available via npm (Node Package Manager).
+- **Scalability**: Suitable for building scalable network applications.
+- **Built-in Modules**: Provides a set of built-in modules for various functionalities like HTTP, file system, and more.
+
+### 12. How does Node.js handle asynchronous operations?
+Node.js handles asynchronous operations using the event loop, callbacks, promises, and async/await.
+
+**Asynchronous Operations**:
+- **Event Loop**: Continuously checks the call stack and callback queue, executing callbacks when the call stack is empty.
+- **Callbacks**: Functions passed as arguments to other functions, executed after the completion of asynchronous operations.
+- **Promises**: Objects representing the eventual completion or failure of an asynchronous operation, providing `.then()` and `.catch()` methods.
+- **Async/Await**: Syntactic sugar over promises, allowing asynchronous code to be written in a synchronous style.
+
+**Example**:
+```javascript
+// Using a callback
+fs.readFile('file.txt', (err, data) => {
+  if (err) throw err;
+  console.log(data.toString());
+});
+
+// Using a promise
+fs.promises.readFile('file.txt')
+  .then(data => console.log(data.toString()))
+  .catch(err => console.error(err));
+
+// Using async/await
+async function readFile() {
+  try {
+    const data = await fs.promises.readFile('file.txt');
+    console.log(data.toString());
+  } catch (err) {
+    console.error(err);
+  }
+}
+readFile();
+```
+
+### 13. What is npm and how is it used?
+**npm (Node Package Manager)** is the default package manager for Node.js. It allows developers to install, share, and manage dependencies (libraries and modules) for their projects.
+
+**How npm is Used**:
+- **Installing Packages**: Use `npm install <package-name>` to install packages.
+- **Managing Dependencies**: Lists dependencies in the `package.json` file.
+- **Publishing Packages**: Allows developers to publish their own packages to the npm registry.
+- **Running Scripts**: Define and run custom scripts using the `scripts` field in `package.json`.
+
+**Example**:
+```bash
+# Initialize a new Node.js project
+npm init -y
+
+# Install a package (e.g., Express)
+npm install express
+
+# List installed packages
+npm list
+
+# Run a custom script defined in package.json
+npm run start
+```
+
+### 14. What is the difference between process.nextTick() and setImmediate()?
+Both `process.nextTick()` and `setImmediate()` are used to schedule callbacks in Node.js, but they have different timing characteristics.
+
+**process.nextTick()**:
+- Executes the callback after the current operation completes, before the event loop continues.
+- Higher priority than `setImmediate()`.
+- Used for deferring execution to the next iteration of the event loop.
+
+**setImmediate()**:
+- Executes the callback after the current event loop phase completes.
+- Lower priority than `process.nextTick()`.
+- Used for deferring execution to the next iteration of the event loop, but after I/O events.
+
+**Example**:
+```javascript
+console.log('Start');
+
+process.nextTick(() => {
+  console.log('Next Tick');
+});
+
+setImmediate(() => {
+  console.log('Immediate');
+});
+
+console.log('End');
+```
+**Output**:
+```
+Start
+End
+Next Tick
+Immediate
+```
+
+### 15. How do you handle errors in Node.js?
+Error handling in Node.js can be done using various techniques, including try-catch blocks, error-first callbacks, and promises.
+
+**Error Handling Techniques**:
+- **Try-Catch**: Used for synchronous code and async/await.
+- **Error-First Callbacks**: The first argument of the callback is an error object.
+- **Promises**: Use `.catch()` to handle errors.
+- **Event Emitters**: Handle errors emitted by event emitters.
+
+**Example**:
+```javascript
+// Using try-catch
+try {
+  const data = fs.readFileSync('file.txt');
+  console.log(data.toString());
+} catch (err) {
+  console.error(err);
+}
+
+// Using error-first callback
+fs.readFile('file.txt', (err, data) => {
+  if (err) {
+    console.error(err);
+    return;
+  }
+  console.log(data.toString());
+});
+
+// Using promises
+fs.promises.readFile('file.txt')
+  .then(data => console.log(data.toString()))
+  .catch(err => console.error(err));
+
+// Using async/await with try-catch
+async function readFile() {
+  try {
+    const data = await fs.promises.readFile('file.txt');
+    console.log(data.toString());
+  } catch (err) {
+    console.error(err);
+  }
+}
+readFile();
+```
+
+### 16. What is middleware in Express.js?
+**Middleware** in Express.js is a function that has access to the request object (`req`), the response object (`res`), and the next middleware function in the application’s request-response cycle.
+
+**Purpose of Middleware**:
+- Execute any code.
+- Make changes to the request and response objects.
+- End the request-response cycle.
+- Call the next middleware function.
+
+**Types of Middleware**:
+- **Application-Level Middleware**: Bound to an instance of `express()`.
+- **Router-Level Middleware**: Bound to an instance of `express.Router()`.
+- **Error-Handling Middleware**: Takes four arguments (err, req, res, next).
+- **Built-In Middleware**: Provided by Express (e.g., `express.json()`, `express.static()`).
+- **Third-Party Middleware**: Installed via npm (e.g., `body-parser`, `morgan`).
+
+**Example**:
+```javascript
+const express = require('express');
+const app = express();
+
+// Application-Level Middleware
+app.use((req, res, next) => {
+  console.log('Time:', Date.now());
+  next();
+});
+
+// Router-Level Middleware
+const router = express.Router();
+router.use((req, res, next) => {
+  console.log('Request URL:', req.originalUrl);
+  next();
+});
+app.use('/user', router);
+
+// Error-Handling Middleware
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).send('Something broke!');
+});
+
+app.listen(3000, () => {
+  console.log('Server is running on port 3000');
+});
+```
+
+### 17. How do you create a RESTful API using Node.js?
+Creating a RESTful API using Node.js typically involves using the Express.js framework.
+
+**Steps to Create a RESTful API**:
+1. **Initialize the Project**: Create a new Node.js project and install Express.
+2. **Set Up Express**: Create an Express application.
+3. **Define Routes**: Define routes for different endpoints (GET, POST, PUT, DELETE).
+4. **Handle Requests**: Implement request handlers for each route.
+5. **Connect to Database**: Connect to a database (e.g., MongoDB) to store and retrieve data.
+6. **Start the Server**: Start the Express server.
+
+**Example**:
+```javascript
+const express = require('express');
+const app = express();
+const port = 3000;
+
+app.use(express.json());
+
+// In-memory data store
+let items = [];
+
+// GET /items
+app.get('/items', (req, res) => {
+  res.json(items);
+});
+
+// POST /items
+app.post('/items', (req, res) => {
+  const newItem = req.body;
+  items.push(newItem);
+  res.status(201).json(newItem);
+});
+
+// PUT /items/:id
+app.put('/items/:id', (req, res) => {
+  const id = parseInt(req.params.id);
+  const updatedItem = req.body;
+  items = items.map(item => (item.id === id ? updatedItem : item));
+  res.json(updatedItem);
+});
+
+// DELETE /items/:id
+app.delete('/items/:id', (req, res) => {
+  const id = parseInt(req.params.id);
+  items = items.filter(item => item.id !== id);
+  res.status(204).send();
+});
+
+app.listen(port, () => {
+  console.log(`Server running at http://localhost:${port}/`);
+});
+```
+
+### 18. What are streams in Node.js?
+**Streams** in Node.js are objects that allow you to read data from a source or write data to a destination in a continuous manner. They are used to handle large amounts of data efficiently.
+
+**Types of Streams**:
+- **Readable Streams**: Used for reading data (e.g., `fs.createReadStream`).
+- **Writable Streams**: Used for writing data (e.g., `fs.createWriteStream`).
+- **Duplex Streams**: Both readable and writable (e.g., TCP sockets).
+- **Transform Streams**: A type of duplex stream that can modify or transform the data as it is read and written (e.g., `zlib.createGzip`).
+
+**Example**:
+```javascript
+const fs = require('fs');
+
+// Readable Stream
+const readableStream = fs.createReadStream('input.txt');
+readableStream.on('data', chunk => {
+  console.log(`Received ${chunk.length} bytes of data.`);
+});
+readableStream.on('end', () => {
+  console.log('No more data.');
+});
+
+// Writable Stream
+const writableStream = fs.createWriteStream('output.txt');
+writableStream.write('Hello, World!\n');
+writableStream.end('Goodbye, World!\n');
+
+// Pipe Example
+const readStream = fs.createReadStream('input.txt');
+const writeStream = fs.createWriteStream('output.txt');
+readStream.pipe(writeStream);
+```
+
+### 19. What is the purpose of the require function in Node.js?
+The `require` function in Node.js is used to import modules, JSON, and local files into your application. It is a built-in function that allows you to include and use code from other files or modules.
+
+**Purpose of `require`**:
+- **Module Import**: Import built-in Node.js modules (e.g., `fs`, `http`).
+- **Third-Party Modules**: Import modules installed via npm (e.g., `express`, `lodash`).
+- **Local Files**: Import local files and modules within your project.
+
+**Example**:
+```javascript
+// Importing a built-in module
+const fs = require('fs');
+
+// Importing a third-party module
+const express = require('express');
+
+// Importing a local file
+const myModule = require('./myModule');
+
+// Using the imported modules
+const app = express();
+app.get('/', (req, res) => {
+  res.send('Hello, World!');
+});
+app.listen(3000, () => {
+  console.log('Server is running on port 3000');
+});
+```
+Sure! Here are detailed explanations for questions 20 to 29 from your nodeJsQuestions.txt file:
+
+### 20. How does Node.js handle multi-threading?
+Node.js is single-threaded by design, using an event-driven, non-blocking I/O model. However, it can handle multi-threading through the use of worker threads and the `cluster` module.
+
+**Multi-Threading in Node.js**:
+- **Event Loop**: The main thread runs the event loop, handling asynchronous operations.
+- **Worker Threads**: Introduced in Node.js v10.5.0, worker threads allow for parallel execution of JavaScript code.
+- **Cluster Module**: Allows you to create child processes (workers) that share the same server port, enabling load balancing across multiple CPU cores.
+
+**Example using Worker Threads**:
+```javascript
+const { Worker, isMainThread, parentPort } = require('worker_threads');
+
+if (isMainThread) {
+  // Main thread
+  const worker = new Worker(__filename);
+  worker.on('message', message => console.log(message));
+} else {
+  // Worker thread
+  parentPort.postMessage('Hello from worker thread');
+}
+```
+
+**Example using Cluster Module**:
+```javascript
+const cluster = require('cluster');
+const http = require('http');
+const numCPUs = require('os').cpus().length;
+
+if (cluster.isMaster) {
+  // Fork workers
+  for (let i = 0; i < numCPUs; i++) {
+    cluster.fork();
+  }
+
+  cluster.on('exit', (worker, code, signal) => {
+    console.log(`Worker ${worker.process.pid} died`);
+  });
+} else {
+  // Workers can share any TCP connection
+  http.createServer((req, res) => {
+    res.writeHead(200);
+    res.end('Hello, World!\n');
+  }).listen(8000);
+}
+```
+
+### 21. How do you perform database operations in Node.js?
+Database operations in Node.js can be performed using various database drivers and ORMs (Object-Relational Mappers). Common databases include MongoDB, MySQL, PostgreSQL, and SQLite.
+
+**Example using MongoDB**:
+```javascript
+const { MongoClient } = require('mongodb');
+const url = 'mongodb://localhost:27017';
+const dbName = 'mydatabase';
+
+MongoClient.connect(url, { useUnifiedTopology: true }, (err, client) => {
+  if (err) throw err;
+  const db = client.db(dbName);
+
+  // Insert a document
+  db.collection('users').insertOne({ name: 'John Doe', age: 30 }, (err, result) => {
+    if (err) throw err;
+    console.log('Document inserted');
+    client.close();
+  });
+});
+```
+
+**Example using MySQL**:
+```javascript
+const mysql = require('mysql');
+const connection = mysql.createConnection({
+  host: 'localhost',
+  user: 'root',
+  password: '',
+  database: 'mydatabase'
+});
+
+connection.connect();
+
+connection.query('SELECT * FROM users', (error, results, fields) => {
+  if (error) throw error;
+  console.log(results);
+});
+
+connection.end();
+```
+
+### 22. How to handle multiple requests in Node.js?
+Handling multiple requests in Node.js is achieved through its non-blocking, event-driven architecture. The event loop and asynchronous I/O operations allow Node.js to handle multiple requests efficiently.
+
+**Example using Express.js**:
+```javascript
+const express = require('express');
+const app = express();
+const port = 3000;
+
+app.get('/', (req, res) => {
+  res.send('Hello, World!');
+});
+
+app.get('/users', (req, res) => {
+  res.json([{ name: 'John Doe' }, { name: 'Jane Doe' }]);
+});
+
+app.listen(port, () => {
+  console.log(`Server running at http://localhost:${port}/`);
+});
+```
+
+### 23. What is the use of a header while sending API requests?
+Headers in API requests provide additional information about the request or response. They are used for various purposes, including authentication, content type specification, and caching.
+
+**Common Headers**:
+- **Authorization**: Used for authentication (e.g., `Bearer <token>`).
+- **Content-Type**: Specifies the media type of the resource (e.g., `application/json`).
+- **Accept**: Indicates the media types that the client can process.
+- **Cache-Control**: Directives for caching mechanisms.
+
+**Example**:
+```javascript
+const axios = require('axios');
+
+axios.get('https://api.example.com/data', {
+  headers: {
+    'Authorization': 'Bearer <token>',
+    'Accept': 'application/json'
+  }
+})
+.then(response => console.log(response.data))
+.catch(error => console.error(error));
+```
+
+### 24. What is REST API?
+A **REST API (Representational State Transfer Application Programming Interface)** is an architectural style for designing networked applications. It uses HTTP requests to perform CRUD (Create, Read, Update, Delete) operations on resources.
+
+**Key Principles**:
+- **Stateless**: Each request from the client to the server must contain all the information needed to understand and process the request.
+- **Client-Server**: Separation of client and server concerns.
+- **Uniform Interface**: Standardized way of interacting with resources (e.g., using HTTP methods like GET, POST, PUT, DELETE).
+- **Resource-Based**: Resources are identified by URIs (Uniform Resource Identifiers).
+
+**Example**:
+```javascript
+// GET /users
+app.get('/users', (req, res) => {
+  res.json([{ id: 1, name: 'John Doe' }]);
+});
+
+// POST /users
+app.post('/users', (req, res) => {
+  const newUser = req.body;
+  // Add user to database
+  res.status(201).json(newUser);
+});
+```
+
+### 25. What is the difference between PUT & POST?
+Both PUT and POST are HTTP methods used to send data to the server, but they have different semantics.
+
+**PUT**:
+- **Idempotent**: Multiple identical requests should have the same effect as a single request.
+- **Update or Create**: Used to update a resource or create it if it does not exist.
+- **Full Replacement**: Typically replaces the entire resource.
+
+**POST**:
+- **Non-Idempotent**: Multiple identical requests may have different effects.
+- **Create**: Used to create a new resource.
+- **Partial Update**: Can be used to send partial data to update a resource.
+
+**Example**:
+```javascript
+// PUT /users/1
+app.put('/users/1', (req, res) => {
+  const updatedUser = req.body;
+  // Update user in database
+  res.json(updatedUser);
+});
+
+// POST /users
+app.post('/users', (req, res) => {
+  const newUser = req.body;
+  // Add user to database
+  res.status(201).json(newUser);
+});
+```
+
+### 26. What is Content Negotiation?
+**Content Negotiation** is a mechanism defined in HTTP that makes it possible to serve different representations of a resource at the same URI. The client specifies its preferences using headers, and the server selects the appropriate representation.
+
+**Common Headers for Content Negotiation**:
+- **Accept**: Specifies the media types the client can process (e.g., `application/json`, `text/html`).
+- **Accept-Language**: Specifies the preferred languages (e.g., `en-US`, `fr`).
+- **Accept-Encoding**: Specifies the preferred content encodings (e.g., `gzip`, `deflate`).
+
+**Example**:
+```javascript
+app.get('/data', (req, res) => {
+  const accept = req.headers.accept;
+
+  if (accept.includes('application/json')) {
+    res.json({ message: 'Hello, JSON!' });
+  } else if (accept.includes('text/html')) {
+    res.send('<p>Hello, HTML!</p>');
+  } else {
+    res.type('text').send('Hello, Text!');
+  }
+});
+```
+
+### 27. Diff between GraphQL vs REST API?
+**GraphQL** and **REST API** are two different approaches to building APIs.
+
+**GraphQL**:
+- **Single Endpoint**: All requests are sent to a single endpoint.
+- **Flexible Queries**: Clients can specify exactly what data they need.
+- **Strongly Typed Schema**: Uses a schema to define the structure of the API.
+- **Efficient Data Fetching**: Reduces over-fetching and under-fetching of data.
+
+**REST API**:
+- **Multiple Endpoints**: Different endpoints for different resources.
+- **Fixed Data Structure**: The server defines the structure of the responses.
+- **Stateless**: Each request is independent and contains all the information needed.
+- **Standardized Methods**: Uses standard HTTP methods (GET, POST, PUT, DELETE).
+
+**Example**:
+```graphql
+# GraphQL Query
+query {
+  user(id: 1) {
+    name
+    email
+  }
+}
+```
+
+```http
+# REST API Request
+GET /users/1
+```
+
+### 28. What are SOLID principles?
+**SOLID** principles are a set of design principles for writing maintainable and scalable object-oriented software.
+
+**SOLID**:
+- **S**: Single Responsibility Principle (SRP) - A class should have only one reason to change.
+- **O**: Open/Closed Principle (OCP) - Software entities should be open for extension but closed for modification.
+- **L**: Liskov Substitution Principle (LSP) - Subtypes must be substitutable for their base types.
+- **I**: Interface Segregation Principle (ISP) - Clients should not be forced to depend on interfaces they do not use.
+- **D**: Dependency Inversion Principle (DIP) - High-level modules should not depend on low-level modules; both should depend on abstractions.
+
+**Example**:
+```javascript
+// Single Responsibility Principle
+class User {
+  constructor(name, email) {
+    this.name = name;
+    this.email = email;
+  }
+}
+
+class UserRepository {
+  save(user) {
+    // Save user to database
+  }
+}
+```
+
+### 29. What is microservices?
+**Microservices** is an architectural style that structures an application as a collection of loosely coupled services. Each service is responsible for a specific business capability and can be developed, deployed, and scaled independently.
+
+**Characteristics of Microservices**:
+- **Decentralized Data Management**: Each service manages its own database.
+- **Independent Deployment**: Services can be deployed independently.
+- **Scalability**: Services can be scaled independently based on demand.
+- **Technology Diversity**: Different services can use different technologies and programming languages.
+
+**Example**:
+```javascript
+// User Service
+const express = require('express');
+const app = express();
+app.use(express.json());
+
+app.get('/users', (req, res) => {
+  res.json([{ id: 1, name: 'John Doe' }]);
+});
+
+app.listen(3000, () => {
+  console.log('User service running on port 3000');
+});
+
+// Order Service
+const express = require('express');
+const app = express();
+app.use(express.json());
+
+app.get('/orders', (req, res) => {
+  res.json([{ id: 1, userId: 1, product: 'Book' }]);
+});
+
+app.listen(3001, () => {
+  console.log('Order service running on port 3001');
+});
+```
+Sure! Here are detailed explanations for questions 30 to 39 from your `nodeJsQuestions.txt` file:
+
+### 30. Explain HTTP methods.
+HTTP methods are used to perform actions on resources in a web server. The most common HTTP methods are:
+
+- **GET**: Retrieves data from the server. It is a read-only operation and does not modify the resource.
+  ```http
+  GET /users
+  ```
+
+- **POST**: Sends data to the server to create a new resource.
+  ```http
+  POST /users
+  ```
+
+- **PUT**: Updates an existing resource or creates a new resource if it does not exist. It is idempotent, meaning multiple identical requests have the same effect as a single request.
+  ```http
+  PUT /users/1
+  ```
+
+- **DELETE**: Deletes a resource from the server.
+  ```http
+  DELETE /users/1
+  ```
+
+- **PATCH**: Partially updates an existing resource.
+  ```http
+  PATCH /users/1
+  ```
+
+- **HEAD**: Similar to GET, but it only retrieves the headers and not the body of the response.
+  ```http
+  HEAD /users
+  ```
+
+- **OPTIONS**: Describes the communication options for the target resource.
+  ```http
+  OPTIONS /users
+  ```
+
+### 31. Explain HTTP codes.
+HTTP status codes are issued by a server in response to a client's request. They indicate whether the request was successful or if there was an error.
+
+**Common HTTP Status Codes**:
+- **1xx (Informational)**:
+  - `100 Continue`: The server has received the request headers and the client should proceed to send the request body.
+
+- **2xx (Success)**:
+  - `200 OK`: The request was successful.
+  - `201 Created`: The request was successful and a new resource was created.
+  - `204 No Content`: The request was successful but there is no content to send in the response.
+
+- **3xx (Redirection)**:
+  - `301 Moved Permanently`: The resource has been moved to a new URL permanently.
+  - `302 Found`: The resource has been moved to a new URL temporarily.
+
+- **4xx (Client Error)**:
+  - `400 Bad Request`: The server could not understand the request due to invalid syntax.
+  - `401 Unauthorized`: The client must authenticate itself to get the requested response.
+  - `403 Forbidden`: The client does not have access rights to the content.
+  - `404 Not Found`: The server cannot find the requested resource.
+
+- **5xx (Server Error)**:
+  - `500 Internal Server Error`: The server encountered an unexpected condition.
+  - `502 Bad Gateway`: The server received an invalid response from the upstream server.
+  - `503 Service Unavailable`: The server is not ready to handle the request.
+
+### 32. What is a URI?
+A **URI (Uniform Resource Identifier)** is a string of characters that uniquely identifies a resource on the internet. It can be further classified into URLs (Uniform Resource Locators) and URNs (Uniform Resource Names).
+
+**Components of a URI**:
+- **Scheme**: Indicates the protocol (e.g., `http`, `https`, `ftp`).
+- **Authority**: Includes the domain name or IP address and optionally the port number.
+- **Path**: Specifies the resource's location on the server.
+- **Query**: Contains query parameters for the resource.
+- **Fragment**: Points to a specific part of the resource.
+
+**Example**:
+```plaintext
+https://www.example.com:8080/path/to/resource?query=param#fragment
+```
+
+### 33. What are some best practices in making the URI for RESTful web services?
+**Best Practices for URIs in RESTful Web Services**:
+- **Use Nouns**: URIs should represent resources using nouns, not verbs.
+  ```plaintext
+  /users (correct)
+  /getUsers (incorrect)
+  ```
+
+- **Use Plural Names**: Use plural names for collections of resources.
+  ```plaintext
+  /users (correct)
+  /user (incorrect)
+  ```
+
+- **Hierarchical Structure**: Use a hierarchical structure to represent relationships.
+  ```plaintext
+  /users/1/orders (correct)
+  /orders?userId=1 (incorrect)
+  ```
+
+- **Use Hyphens**: Use hyphens to separate words in URIs.
+  ```plaintext
+  /user-profiles (correct)
+  /user_profiles (incorrect)
+  ```
+
+- **Lowercase Letters**: Use lowercase letters in URIs.
+  ```plaintext
+  /users (correct)
+  /Users (incorrect)
+  ```
+
+- **Avoid File Extensions**: Do not include file extensions in URIs.
+  ```plaintext
+  /users (correct)
+  /users.json (incorrect)
+  ```
+
+### 34. What is the difference between REST & SOAP?
+**REST (Representational State Transfer)** and **SOAP (Simple Object Access Protocol)** are two different approaches to web services.
+
+**REST**:
+- **Architecture Style**: REST is an architectural style that uses standard HTTP methods.
+- **Data Format**: Supports multiple data formats (e.g., JSON, XML, HTML).
+- **Stateless**: Each request from the client to the server must contain all the information needed to understand and process the request.
+- **Performance**: Generally faster and more efficient due to its lightweight nature.
+
+**SOAP**:
+- **Protocol**: SOAP is a protocol with strict standards.
+- **Data Format**: Uses XML exclusively for message format.
+- **Stateful or Stateless**: Can be stateful or stateless.
+- **Performance**: Generally slower due to the verbosity of XML and additional overhead.
+
+**Example**:
+```plaintext
+REST: GET /users/1
+SOAP: <soapenv:Envelope>...</soapenv:Envelope>
+```
+
+### 35. What are the differences between REST & AJAX?
+**REST (Representational State Transfer)** and **AJAX (Asynchronous JavaScript and XML)** are different concepts used in web development.
+
+**REST**:
+- **Architecture Style**: REST is an architectural style for designing networked applications.
+- **Data Format**: Supports multiple data formats (e.g., JSON, XML, HTML).
+- **HTTP Methods**: Uses standard HTTP methods (GET, POST, PUT, DELETE).
+
+**AJAX**:
+- **Technique**: AJAX is a technique for creating asynchronous web applications.
+- **Data Format**: Typically uses JSON or XML for data exchange.
+- **JavaScript**: Uses JavaScript to send and receive data asynchronously without refreshing the page.
+
+**Example**:
+```javascript
+// REST API call using AJAX
+fetch('/users/1')
+  .then(response => response.json())
+  .then(data => console.log(data));
+```
+
+### 36. What are some tools used to develop & test REST API?
+**Tools for Developing & Testing REST APIs**:
+- **Postman**: A popular tool for testing APIs, allowing you to send HTTP requests and view responses.
+- **Insomnia**: Another tool for testing APIs with a user-friendly interface.
+- **Swagger**: A tool for designing, building, and documenting REST APIs.
+- **cURL**: A command-line tool for making HTTP requests.
+- **Newman**: A command-line tool for running Postman collections.
+- **Jest**: A JavaScript testing framework that can be used to write tests for REST APIs.
+- **Mocha**: A JavaScript test framework for Node.js that can be used for API testing.
+
+
+### 38. How to make Node.js code secure?
+**Best Practices for Securing Node.js Code**:
+- **Input Validation**: Validate and sanitize user inputs to prevent injection attacks.
+- **Use HTTPS**: Encrypt data in transit using HTTPS.
+- **Environment Variables**: Store sensitive information like API keys and database credentials in environment variables.
+- **Helmet**: Use Helmet middleware to set various HTTP headers for security.
+  ```javascript
+  const helmet = require('helmet');
+  app.use(helmet());
+  ```
+
+- **Rate Limiting**: Implement rate limiting to prevent brute-force attacks.
+  ```javascript
+  const rateLimit = require('express-rate-limit');
+  const limiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 100 // limit each IP to 100 requests per windowMs
+  });
+  app.use(limiter);
+  ```
+
+- **Avoid Eval**: Avoid using `eval()` and other similar functions.
+- **Dependency Management**: Regularly update dependencies and use tools like `npm audit` to check for vulnerabilities.
+- **Error Handling**: Implement proper error handling to avoid exposing stack traces.
+
+### 39. What is MongoDB sharding?
+**Sharding** in MongoDB is a method for distributing data across multiple servers to support horizontal scaling. It allows MongoDB to handle large datasets and high-throughput operations by distributing the data across multiple shards.
+
+**Components of Sharding**:
+- **Shards**: Each shard is a separate database that holds a subset of the data.
+- **Config Servers**: Store metadata and configuration settings for the cluster.
+- **Query Router (mongos)**: Routes client requests to the appropriate shard(s).
+
+**How Sharding Works**:
+- **Shard Key**: A key that determines how data is distributed across shards.
+- **Data Distribution**: Data is partitioned based on the shard key, and MongoDB balances the data across shards to ensure even distribution.
+
+**Example**:
+```javascript
+// Enable sharding for a database
+sh.enableSharding("mydatabase");
+
+// Shard a collection
+sh.shardCollection("mydatabase.mycollection", { shardKey: 1 });
+```
+Sure! Here are detailed explanations for questions 40 to 46 from your `nodeJsQuestions.txt` file:
+
+### 40. What is indexing?
+**Indexing** in databases is a technique used to improve the speed of data retrieval operations. An index is a data structure that allows the database to find and access data quickly without scanning the entire table.
+
+**Types of Indexes**:
+- **Single-Field Index**: Indexes a single field in a document.
+- **Compound Index**: Indexes multiple fields in a document.
+- **Multikey Index**: Indexes the contents of arrays.
+- **Text Index**: Supports text search queries.
+- **Geospatial Index**: Supports geospatial queries.
+
+**Example in MongoDB**:
+```javascript
+// Create an index on the "name" field
+db.collection.createIndex({ name: 1 });
+
+// Create a compound index on the "name" and "age" fields
+db.collection.createIndex({ name: 1, age: -1 });
+```
+
+### 41. How to optimize MongoDB query?
+Optimizing MongoDB queries involves several strategies to improve performance and efficiency.
+
+**Optimization Strategies**:
+- **Use Indexes**: Create indexes on fields that are frequently queried.
+- **Limit and Skip**: Use `limit` and `skip` to reduce the amount of data processed.
+- **Projection**: Use projection to return only the necessary fields.
+  ```javascript
+  db.collection.find({}, { name: 1, age: 1 });
+  ```
+
+- **Query Optimization**: Use efficient query operators and avoid unnecessary operations.
+- **Aggregation Framework**: Use the aggregation framework for complex data processing.
+- **Sharding**: Distribute data across multiple shards to balance the load.
+
+**Example**:
+```javascript
+// Using projection to return only the "name" and "age" fields
+db.collection.find({}, { name: 1, age: 1 });
+
+// Using limit and skip to paginate results
+db.collection.find().skip(10).limit(10);
+```
+
+### 42. What is MongoDB indexing?
+**MongoDB indexing** is a technique used to improve the performance of queries by creating indexes on fields in a collection. Indexes allow MongoDB to quickly locate and access the data without scanning the entire collection.
+
+**Types of Indexes in MongoDB**:
+- **Single-Field Index**: Indexes a single field.
+- **Compound Index**: Indexes multiple fields.
+- **Multikey Index**: Indexes array fields.
+- **Text Index**: Supports text search queries.
+- **Geospatial Index**: Supports geospatial queries.
+
+**Example**:
+```javascript
+// Create a single-field index on the "name" field
+db.collection.createIndex({ name: 1 });
+
+// Create a compound index on the "name" and "age" fields
+db.collection.createIndex({ name: 1, age: -1 });
+```
+
+### 43. How to create image upload thumbnail feature?
+Creating an image upload thumbnail feature involves uploading an image, generating a thumbnail, and storing both the original image and the thumbnail.
+
+**Steps**:
+1. **Set Up Express**: Create an Express application.
+2. **Install Multer**: Use Multer middleware for handling file uploads.
+3. **Generate Thumbnail**: Use a library like Sharp to generate thumbnails.
+4. **Store Images**: Save the original image and thumbnail to the file system or a database.
+
+**Example**:
+```javascript
+const express = require('express');
+const multer = require('multer');
+const sharp = require('sharp');
+const fs = require('fs');
+const path = require('path');
+
+const app = express();
+const upload = multer({ dest: 'uploads/' });
+
+app.post('/upload', upload.single('image'), async (req, res) => {
+  const filePath = req.file.path;
+  const thumbnailPath = path.join('uploads', 'thumbnail-' + req.file.filename);
+
+  // Generate thumbnail
+  await sharp(filePath)
+    .resize(100, 100)
+    .toFile(thumbnailPath);
+
+  res.json({ message: 'Image uploaded and thumbnail created' });
+});
+
+app.listen(3000, () => {
+  console.log('Server running on port 3000');
+});
+```
+
+### 44. Implementation of debounce & throttling
+**Debounce** and **throttling** are techniques used to control the rate at which a function is executed.
+
+**Debounce**:
+- Ensures that a function is only executed after a specified delay has passed since the last time it was invoked.
+- Useful for scenarios like search input where you want to wait until the user has stopped typing.
+
+**Example**:
+```javascript
+function debounce(func, delay) {
+  let timeoutId;
+  return function(...args) {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => {
+      func.apply(this, args);
+    }, delay);
+  };
+}
+
+const debouncedFunction = debounce(() => {
+  console.log('Debounced function executed');
+}, 300);
+
+window.addEventListener('resize', debouncedFunction);
+```
+
+**Throttling**:
+- Ensures that a function is only executed once in a specified interval, regardless of how many times it is invoked.
+- Useful for scenarios like window resizing or scrolling where you want to limit the rate of execution.
+
+**Example**:
+```javascript
+function throttle(func, interval) {
+  let lastTime = 0;
+  return function(...args) {
+    const now = Date.now();
+    if (now - lastTime >= interval) {
+      lastTime = now;
+      func.apply(this, args);
+    }
+  };
+}
+
+const throttledFunction = throttle(() => {
+  console.log('Throttled function executed');
+}, 300);
+
+window.addEventListener('scroll', throttledFunction);
+```
+
+### 45. Rate limiting, and data encryption to protect users and their data.
+**Rate Limiting**:
+Rate limiting is a technique used to control the number of requests a client can make to a server within a specified time period. It helps prevent abuse and ensures fair usage of resources.
+
+**Example using Express-Rate-Limit**:
+```javascript
+const rateLimit = require('express-rate-limit');
+
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100 // limit each IP to 100 requests per windowMs
+});
+
+app.use(limiter);
+```
+
+**Data Encryption**:
+Data encryption is the process of converting plaintext data into ciphertext to protect it from unauthorized access. It ensures data confidentiality and integrity.
+
+**Example using Crypto**:
+```javascript
+const crypto = require('crypto');
+
+// Encrypt data
+function encrypt(text, secretKey) {
+  const cipher = crypto.createCipher('aes-256-cbc', secretKey);
+  let encrypted = cipher.update(text, 'utf8', 'hex');
+  encrypted += cipher.final('hex');
+  return encrypted;
+}
+
+// Decrypt data
+function decrypt(encrypted, secretKey) {
+  const decipher = crypto.createDecipher('aes-256-cbc', secretKey);
+  let decrypted = decipher.update(encrypted, 'hex', 'utf8');
+  decrypted += decipher.final('utf8');
+  return decrypted;
+}
+
+const secretKey = 'mySecretKey';
+const originalText = 'Hello, World!';
+const encryptedText = encrypt(originalText, secretKey);
+const decryptedText = decrypt(encryptedText, secretKey);
+
+console.log('Original:', originalText);
+console.log('Encrypted:', encryptedText);
+console.log('Decrypted:', decryptedText);
+```
+
+### 46. How to create image upload thumbnail feature
+Creating an image upload thumbnail feature involves uploading an image, generating a thumbnail, and storing both the original image and the thumbnail.
+
+**Steps**:
+1. **Set Up Express**: Create an Express application.
+2. **Install Multer**: Use Multer middleware for handling file uploads.
+3. **Generate Thumbnail**: Use a library like Sharp to generate thumbnails.
+4. **Store Images**: Save the original image and thumbnail to the file system or a database.
+
+**Example**:
+```javascript
+const express = require('express');
+const multer = require('multer');
+const sharp = require('sharp');
+const fs = require('fs');
+const path = require('path');
+
+const app = express();
+const upload = multer({ dest: 'uploads/' });
+
+app.post('/upload', upload.single('image'), async (req, res) => {
+  const filePath = req.file.path;
+  const thumbnailPath = path.join('uploads', 'thumbnail-' + req.file.filename);
+
+  // Generate thumbnail
+  await sharp(filePath)
+    .resize(100, 100)
+    .toFile(thumbnailPath);
+
+  res.json({ message: 'Image uploaded and thumbnail created' });
+});
+
+app.listen(3000, () => {
+  console.log('Server running on port 3000');
+});
+```
+
+
+--- ADVANCED (2026 Full-Stack Interview Level — 4+ yrs) ---
+
+### 47. Explain backpressure in Node.js streams. How does Node handle it?
+**Backpressure** occurs when a writable stream cannot process data as fast as a readable stream produces it. Without handling backpressure, data piles up in memory and can crash the application.
+
+**How Node.js handles it:**
+- When you call `writable.write(chunk)`, it returns `false` if the internal buffer is full.
+- The readable stream should pause and wait for the `'drain'` event before sending more data.
+- `stream.pipeline()` handles backpressure automatically (preferred over `.pipe()`).
+
+**Example — Manual backpressure handling:**
+```javascript
+const fs = require('fs');
+const readable = fs.createReadStream('largefile.txt');
+const writable = fs.createWriteStream('output.txt');
+
+readable.on('data', (chunk) => {
+  const canContinue = writable.write(chunk);
+  if (!canContinue) {
+    readable.pause(); // Stop reading until drain
+  }
+});
+
+writable.on('drain', () => {
+  readable.resume(); // Resume reading
+});
+
+readable.on('end', () => {
+  writable.end();
+});
+```
+
+**Example — Using pipeline (recommended):**
+```javascript
+const { pipeline } = require('stream/promises');
+const fs = require('fs');
+const zlib = require('zlib');
+
+await pipeline(
+  fs.createReadStream('input.txt'),
+  zlib.createGzip(),
+  fs.createWriteStream('input.txt.gz')
+);
+// Backpressure handled automatically, errors propagated
+```
+
+### 48. How do Worker Threads differ from Child Processes? When to use each?
+Both allow running code outside the main event loop, but they work differently:
+
+**Worker Threads (`worker_threads` module):**
+- Share the same process and memory space (can share ArrayBuffer via SharedArrayBuffer)
+- Lightweight — lower overhead than spawning new processes
+- Communicate via `parentPort.postMessage()` and `worker.postMessage()`
+- **Use for:** CPU-intensive tasks (image processing, encryption, parsing large JSON)
+
+**Child Processes (`child_process` module):**
+- Spawn entirely new OS processes with separate memory
+- Higher overhead but fully isolated
+- Can run any system command or script (`exec`, `spawn`, `fork`)
+- `fork()` creates a new Node.js process with IPC channel
+- **Use for:** Running shell commands, executing separate scripts, full isolation needed
+
+**Example — Worker Thread:**
+```javascript
+// main.js
+const { Worker } = require('worker_threads');
+
+const worker = new Worker('./heavy-task.js', {
+  workerData: { iterations: 1000000 }
+});
+
+worker.on('message', (result) => console.log('Result:', result));
+worker.on('error', (err) => console.error(err));
+
+// heavy-task.js
+const { workerData, parentPort } = require('worker_threads');
+let sum = 0;
+for (let i = 0; i < workerData.iterations; i++) { sum += i; }
+parentPort.postMessage(sum);
+```
+
+**Example — Child Process:**
+```javascript
+const { fork } = require('child_process');
+const child = fork('./child-script.js');
+
+child.send({ task: 'processData' });
+child.on('message', (result) => console.log('Child says:', result));
+```
+
+### 49. How would you implement graceful shutdown in a Node.js app?
+**Graceful shutdown** means the server stops accepting new connections, finishes ongoing requests, closes database connections, and then exits cleanly.
+
+**Why it matters:** In production (Docker, Kubernetes), your app receives SIGTERM before being killed. If you don't handle it, active requests get dropped.
+
+```javascript
+const express = require('express');
+const mongoose = require('mongoose');
+
+const app = express();
+const server = app.listen(3000);
+
+function gracefulShutdown(signal) {
+  console.log(`${signal} received. Starting graceful shutdown...`);
+
+  // 1. Stop accepting new connections
+  server.close(() => {
+    console.log('HTTP server closed.');
+
+    // 2. Close database connections
+    mongoose.connection.close(false, () => {
+      console.log('MongoDB connection closed.');
+
+      // 3. Close any other resources (Redis, message queues, etc.)
+      process.exit(0);
+    });
+  });
+
+  // 4. Force exit if graceful shutdown takes too long
+  setTimeout(() => {
+    console.error('Forced shutdown — timeout exceeded.');
+    process.exit(1);
+  }, 10000); // 10 second timeout
+}
+
+process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
+process.on('SIGINT', () => gracefulShutdown('SIGINT'));
+```
+
+### 50. Explain the cluster module and how PM2 uses it in production.
+The **cluster module** allows you to create multiple worker processes that share the same server port, utilizing all CPU cores.
+
+**How it works:**
+- The master process forks worker processes (one per CPU core).
+- The OS distributes incoming connections across workers (round-robin on most platforms).
+- If a worker crashes, the master can fork a new one.
+
+**Example:**
+```javascript
+const cluster = require('cluster');
+const os = require('os');
+const express = require('express');
+
+if (cluster.isMaster) {
+  const numCPUs = os.cpus().length;
+  console.log(`Master process ${process.pid} forking ${numCPUs} workers`);
+
+  for (let i = 0; i < numCPUs; i++) {
+    cluster.fork();
+  }
+
+  cluster.on('exit', (worker) => {
+    console.log(`Worker ${worker.process.pid} died. Forking a new one.`);
+    cluster.fork(); // Auto-restart
+  });
+} else {
+  const app = express();
+  app.get('/', (req, res) => res.send(`Worker ${process.pid}`));
+  app.listen(3000);
+}
+```
+
+**PM2 cluster mode:**
+- PM2 abstracts all the above. You just run: `pm2 start app.js -i max`
+- `-i max` = one worker per CPU core
+- PM2 handles: auto-restart on crash, zero-downtime reload (`pm2 reload`), log management, monitoring
+
+### 51. What is the difference between process.nextTick() and queueMicrotask()?
+Both execute callbacks before the next event loop phase, but they have different priority:
+
+| Feature | `process.nextTick()` | `queueMicrotask()` |
+|---|---|---|
+| Priority | Runs BEFORE microtasks (Promises) | Runs WITH microtasks (same queue as Promises) |
+| When it runs | After current operation, before I/O | After current operation, after nextTick |
+| Recursion risk | Can starve I/O if called recursively | Less likely to starve I/O |
+| Standard | Node.js specific | Web standard (also works in browsers) |
+
+**Execution order:**
+```javascript
+console.log('1 - start');
+
+process.nextTick(() => console.log('2 - nextTick'));
+queueMicrotask(() => console.log('3 - queueMicrotask'));
+Promise.resolve().then(() => console.log('4 - Promise'));
+
+console.log('5 - end');
+
+// Output: 1 - start → 5 - end → 2 - nextTick → 3 - queueMicrotask → 4 - Promise
+```
+
+**Rule of thumb:** Use `queueMicrotask()` for standard-compliant code. Use `process.nextTick()` only when you need something to execute before all other microtasks.
+
+### 52. How do you detect and fix memory leaks in Node.js?
+**Common causes of memory leaks:**
+- Global variables that grow indefinitely
+- Event listeners not removed (`.on()` without `.off()`)
+- Closures holding references to large objects
+- Caches without size limits or TTL
+- Unreleased timers (`setInterval` without `clearInterval`)
+
+**Detection tools:**
+1. **`--inspect` flag + Chrome DevTools:**
+   ```bash
+   node --inspect app.js
+   ```
+   Open `chrome://inspect` → take heap snapshots → compare snapshots over time.
+
+2. **`process.memoryUsage()`:**
+   ```javascript
+   setInterval(() => {
+     const mem = process.memoryUsage();
+     console.log(`Heap: ${Math.round(mem.heapUsed / 1024 / 1024)} MB`);
+   }, 5000);
+   ```
+
+3. **`clinic.js`:**
+   ```bash
+   npx clinic doctor -- node app.js
+   ```
+   Generates visual reports showing memory trends.
+
+**Fixes:**
+- Use `WeakMap`/`WeakSet` for caches (garbage collected when keys are unreferenced)
+- Always remove event listeners in cleanup
+- Set cache limits (LRU cache with `lru-cache` package)
+- Clear intervals/timeouts when no longer needed
+
+### 53. What is libuv and what role does it play in Node.js?
+**libuv** is a C library that provides Node.js with its event loop and asynchronous I/O capabilities. It's the reason Node.js can be non-blocking despite JavaScript being single-threaded.
+
+**What libuv provides:**
+- **Event loop** — the core mechanism that handles async operations
+- **Thread pool** — 4 threads by default (configurable via `UV_THREADPOOL_SIZE`, max 1024) for operations that can't be done asynchronously at the OS level
+- **Async I/O** — file system operations, DNS lookups
+- **Timers** — setTimeout, setInterval, setImmediate
+- **TCP/UDP sockets** — networking
+- **Child processes** — spawning and managing
+- **Signal handling** — SIGTERM, SIGINT, etc.
+
+**What uses the thread pool:**
+- File system operations (`fs.readFile`, etc.)
+- DNS lookups (`dns.lookup()`)
+- Crypto operations (`crypto.pbkdf2`, `crypto.randomBytes`)
+- Compression (`zlib`)
+
+**What does NOT use the thread pool (uses OS async primitives instead):**
+- Network I/O (TCP, UDP, HTTP)
+- `dns.resolve()` (uses c-ares library)
+- Timers
+
+### 54. Explain Readable, Writable, Duplex, and Transform streams with use cases.
+
+| Stream Type | Description | Use Case |
+|---|---|---|
+| **Readable** | Source of data (you read FROM it) | `fs.createReadStream()`, HTTP request body |
+| **Writable** | Destination for data (you write TO it) | `fs.createWriteStream()`, HTTP response |
+| **Duplex** | Both readable AND writable (independent) | TCP sockets, WebSocket connections |
+| **Transform** | Duplex where output is computed from input | `zlib.createGzip()`, encryption streams |
+
+**Example — Transform stream (convert to uppercase):**
+```javascript
+const { Transform } = require('stream');
+
+const upperCase = new Transform({
+  transform(chunk, encoding, callback) {
+    this.push(chunk.toString().toUpperCase());
+    callback();
+  }
+});
+
+process.stdin.pipe(upperCase).pipe(process.stdout);
+```
+
+**Example — Chaining streams:**
+```javascript
+const fs = require('fs');
+const zlib = require('zlib');
+const { pipeline } = require('stream/promises');
+
+// Read file → compress → write compressed file
+await pipeline(
+  fs.createReadStream('data.json'),
+  zlib.createGzip(),
+  fs.createWriteStream('data.json.gz')
+);
+```
+
+### 55. How would you implement rate limiting in Express?
+
+**Token Bucket algorithm** is most common. Use `express-rate-limit` for quick implementation, or build a custom one with Redis for distributed systems.
+
+**Simple — express-rate-limit:**
+```javascript
+const rateLimit = require('express-rate-limit');
+
+const apiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // 100 requests per window per IP
+  standardHeaders: true, // Return rate limit info in `RateLimit-*` headers
+  legacyHeaders: false,
+  message: { error: 'Too many requests, please try again later.' }
+});
+
+app.use('/api/', apiLimiter);
+```
+
+**Distributed — Redis-based (Sliding Window):**
+```javascript
+const Redis = require('ioredis');
+const redis = new Redis();
+
+async function slidingWindowRateLimit(req, res, next) {
+  const key = `rate:${req.ip}`;
+  const now = Date.now();
+  const windowMs = 60 * 1000; // 1 minute
+  const maxRequests = 60;
+
+  // Remove old entries outside the window
+  await redis.zremrangebyscore(key, 0, now - windowMs);
+
+  // Count requests in current window
+  const count = await redis.zcard(key);
+
+  if (count >= maxRequests) {
+    return res.status(429).json({ error: 'Rate limit exceeded' });
+  }
+
+  // Add current request
+  await redis.zadd(key, now, `${now}-${Math.random()}`);
+  await redis.expire(key, Math.ceil(windowMs / 1000));
+
+  next();
+}
+```
+
+### 56. What is helmet.js and what headers does it set?
+**helmet.js** is Express middleware that sets security-related HTTP headers to protect against common web vulnerabilities.
+
+```javascript
+const helmet = require('helmet');
+app.use(helmet());
+```
+
+**Headers it sets by default:**
+| Header | What it does |
+|---|---|
+| `Content-Security-Policy` | Prevents XSS, clickjacking, code injection |
+| `X-Content-Type-Options: nosniff` | Prevents MIME type sniffing |
+| `X-Frame-Options: SAMEORIGIN` | Prevents clickjacking |
+| `Strict-Transport-Security` | Forces HTTPS |
+| `X-XSS-Protection: 0` | Disables buggy browser XSS filter (CSP is better) |
+| `X-DNS-Prefetch-Control: off` | Controls DNS prefetching |
+| `X-Permitted-Cross-Domain-Policies: none` | Prevents Adobe Flash/Acrobat loading |
+| `Referrer-Policy: no-referrer` | Controls referrer information |
+| `X-Download-Options: noopen` | Prevents IE from executing downloads |
+
+### 57. Explain the purpose of a reverse proxy (Nginx) in front of Node.js.
+A **reverse proxy** sits between the client and your Node.js server, forwarding requests to the backend.
+
+**Why use Nginx in front of Node.js:**
+- **SSL/TLS Termination** — Nginx handles HTTPS, Node.js handles HTTP (simpler, faster)
+- **Static File Serving** — Nginx serves static files (images, CSS, JS) much faster than Node.js
+- **Load Balancing** — Distribute traffic across multiple Node.js instances
+- **Gzip Compression** — Offload compression from Node.js
+- **Rate Limiting & Caching** — At the proxy level before requests hit Node.js
+- **Security** — Hides Node.js from direct exposure, blocks malformed requests
+- **Connection Buffering** — Handles slow clients so Node.js workers are freed up
+
+**Basic Nginx config:**
+```nginx
+upstream node_app {
+  server 127.0.0.1:3000;
+  server 127.0.0.1:3001;
+}
+
+server {
+  listen 80;
+  server_name example.com;
+
+  location / {
+    proxy_pass http://node_app;
+    proxy_http_version 1.1;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection 'upgrade';
+    proxy_set_header Host $host;
+    proxy_cache_bypass $http_upgrade;
+  }
+
+  location /static/ {
+    root /var/www;
+    expires 30d;
+  }
+}
+```
+
+### 58. How do you handle environment-specific configurations in Node.js?
+**Best practices:**
+
+1. **`.env` files with `dotenv`:**
+   ```bash
+   # .env
+   PORT=3000
+   DB_URI=mongodb://localhost:27017/myapp
+   JWT_SECRET=my-secret-key
+   ```
+   ```javascript
+   require('dotenv').config();
+   const port = process.env.PORT || 3000;
+   ```
+
+2. **Environment-specific configs:**
+   ```javascript
+   // config/index.js
+   const configs = {
+     development: {
+       db: 'mongodb://localhost:27017/myapp_dev',
+       logLevel: 'debug',
+     },
+     production: {
+       db: process.env.DB_URI,
+       logLevel: 'error',
+     },
+     test: {
+       db: 'mongodb://localhost:27017/myapp_test',
+       logLevel: 'silent',
+     },
+   };
+   module.exports = configs[process.env.NODE_ENV || 'development'];
+   ```
+
+3. **Validation with Zod/Joi:**
+   ```javascript
+   const { z } = require('zod');
+
+   const envSchema = z.object({
+     PORT: z.coerce.number().default(3000),
+     DB_URI: z.string().url(),
+     JWT_SECRET: z.string().min(32),
+     NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
+   });
+
+   const env = envSchema.parse(process.env);
+   // Throws at startup if any required env var is missing
+   ```
+
+**Rules:** Never commit `.env` to git. Use `.env.example` with placeholder values. Use secrets management (AWS Secrets Manager, Vault) in production.
+
+### 59. What caching strategies can you use in a Node.js app?
+
+| Strategy | How it works | Best for |
+|---|---|---|
+| **Cache-aside (Lazy)** | App checks cache first, loads from DB on miss, writes to cache | Most common, general purpose |
+| **Write-through** | App writes to cache AND DB simultaneously | Data consistency matters |
+| **Write-behind** | App writes to cache, cache writes to DB asynchronously | High write throughput |
+| **Read-through** | Cache itself loads from DB on miss | Simplified app logic |
+
+**Example — Cache-aside with Redis:**
+```javascript
+const Redis = require('ioredis');
+const redis = new Redis();
+
+async function getUser(userId) {
+  // 1. Check cache
+  const cached = await redis.get(`user:${userId}`);
+  if (cached) return JSON.parse(cached);
+
+  // 2. Cache miss — fetch from DB
+  const user = await User.findById(userId);
+
+  // 3. Store in cache with TTL
+  await redis.set(`user:${userId}`, JSON.stringify(user), 'EX', 3600); // 1 hour
+
+  return user;
+}
+
+// Invalidate cache on update
+async function updateUser(userId, data) {
+  await User.findByIdAndUpdate(userId, data);
+  await redis.del(`user:${userId}`); // Invalidate
+}
+```
+
+**Other caching layers:**
+- **In-memory cache** (`node-cache`, `lru-cache`) — single instance, no network hop
+- **HTTP caching** — ETags, Cache-Control headers
+- **CDN caching** — Cloudflare, CloudFront for static assets
+- **Database query cache** — MongoDB result caching
+
+### 60. How would you implement a job queue in Node.js?
+**Job queues** handle tasks that shouldn't block the request-response cycle: sending emails, processing images, generating reports.
+
+**BullMQ (Redis-based) — Most popular in Node.js ecosystem:**
+```javascript
+// Setup
+const { Queue, Worker } = require('bullmq');
+const Redis = require('ioredis');
+const connection = new Redis({ maxRetriesPerRequest: null });
+
+// 1. Create a queue
+const emailQueue = new Queue('emails', { connection });
+
+// 2. Add jobs (from your API route)
+app.post('/register', async (req, res) => {
+  const user = await User.create(req.body);
+
+  // Add email job — doesn't block the response
+  await emailQueue.add('welcome-email', {
+    to: user.email,
+    name: user.name
+  }, {
+    attempts: 3,            // Retry 3 times on failure
+    backoff: { type: 'exponential', delay: 2000 },
+    removeOnComplete: true
+  });
+
+  res.status(201).json(user);
+});
+
+// 3. Process jobs (separate worker file or process)
+const worker = new Worker('emails', async (job) => {
+  console.log(`Sending ${job.name} to ${job.data.to}`);
+  await sendEmail(job.data.to, job.data.name);
+}, { connection, concurrency: 5 });
+
+worker.on('completed', (job) => console.log(`Job ${job.id} completed`));
+worker.on('failed', (job, err) => console.error(`Job ${job.id} failed:`, err));
+```
+
+**Other queue options:**
+- **Agenda** — MongoDB-based (simpler, no Redis needed)
+- **RabbitMQ / Kafka** — for complex event-driven architectures
+- **AWS SQS** — fully managed, serverless
+
+### 61. Explain the difference between pipeline() and .pipe() for streams.
+
+| Feature | `.pipe()` | `pipeline()` |
+|---|---|---|
+| Error handling | Does NOT propagate errors | Propagates errors from any stream |
+| Cleanup | Does NOT destroy streams on error | Destroys all streams on error |
+| Return value | Returns destination stream | Returns Promise (with `stream/promises`) |
+| Recommended | Legacy — avoid in new code | Yes — use this always |
+
+**`.pipe()` problem:**
+```javascript
+// If readStream errors, writeStream stays open (resource leak)
+readStream.pipe(writeStream);
+
+// You have to manually handle errors on EVERY stream
+readStream.on('error', handleError);
+writeStream.on('error', handleError);
+```
+
+**`pipeline()` solution:**
+```javascript
+const { pipeline } = require('stream/promises');
+
+try {
+  await pipeline(readStream, transformStream, writeStream);
+  console.log('Pipeline completed');
+} catch (err) {
+  console.error('Pipeline failed:', err);
+  // All streams are automatically destroyed
+}
+```
+
+### 62. What is the V8 garbage collector and how does it work?
+V8 (Node.js's JavaScript engine) uses a **generational garbage collector** — it divides memory into generations based on object age.
+
+**Heap structure:**
+- **New Space (Young Generation):** Small (~1-8 MB). Newly created objects live here. Collected frequently.
+- **Old Space (Old Generation):** Larger. Objects that survive 2 GC cycles in New Space are promoted here. Collected less frequently.
+
+**GC Algorithms:**
+1. **Scavenge (Minor GC):** Runs on New Space. Uses "semi-space" — copies live objects from one half to the other, dead objects are left behind. Very fast.
+2. **Mark-Sweep (Major GC):** Runs on Old Space. Marks all reachable objects, sweeps (frees) unreachable ones.
+3. **Mark-Compact:** Runs after Mark-Sweep. Compacts memory by moving objects together to reduce fragmentation.
+4. **Incremental/Concurrent:** Major GC runs incrementally to avoid long pauses (important for server responsiveness).
+
+**Practical impact:**
+- Objects < 64KB → New Space → fast cleanup
+- Long-lived objects → Old Space → more expensive to collect
+- Avoid creating many short-lived large objects
+- Monitor with `--trace-gc` flag or `v8.getHeapStatistics()`
+
+### 63. How do you handle uncaught exceptions and unhandled rejections in production?
+
+```javascript
+// Catch synchronous errors that weren't caught anywhere
+process.on('uncaughtException', (err) => {
+  console.error('UNCAUGHT EXCEPTION:', err);
+  // Log to external service (Sentry, Datadog, etc.)
+  // Then EXIT — the process is in an undefined state
+  process.exit(1);
+});
+
+// Catch unhandled Promise rejections
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('UNHANDLED REJECTION:', reason);
+  // In Node 15+, this crashes the process by default
+  // Log and exit gracefully
+  process.exit(1);
+});
+```
+
+**Best practices:**
+- **Always exit after uncaughtException** — the process state is unreliable
+- Use PM2 or Docker to auto-restart the process
+- Log errors to an external service BEFORE exiting
+- The real fix: add proper try/catch and .catch() in your code
+- Use Express error-handling middleware for route errors:
+```javascript
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(err.statusCode || 500).json({
+    status: 'error',
+    message: err.message || 'Internal Server Error'
+  });
+});
+```
+
+### 64. What are operational errors vs programmer errors? How do you handle each?
+
+| Type | Examples | How to handle |
+|---|---|---|
+| **Operational** | DB connection timeout, invalid user input, file not found, API rate limited | Handle gracefully — retry, return error to client, use fallback |
+| **Programmer** | TypeError, reading property of undefined, wrong function arguments | Fix the bug. Crash and restart in production. |
+
+**Key distinction:** Operational errors are expected — they happen in production. Programmer errors are bugs — they shouldn't happen.
+
+```javascript
+// Custom operational error class
+class AppError extends Error {
+  constructor(message, statusCode) {
+    super(message);
+    this.statusCode = statusCode;
+    this.isOperational = true; // Flag to distinguish
+    Error.captureStackTrace(this, this.constructor);
+  }
+}
+
+// In error handler middleware
+app.use((err, req, res, next) => {
+  if (err.isOperational) {
+    // Known error — send clean response to client
+    return res.status(err.statusCode).json({ message: err.message });
+  }
+  // Programmer error — log and crash
+  console.error('PROGRAMMER ERROR:', err);
+  process.exit(1); // PM2 will restart
+});
+```
+
+### 65. Explain multi-stage Docker builds for Node.js apps.
+Multi-stage builds produce smaller, more secure production images by separating build-time dependencies from runtime.
+
+```dockerfile
+# Stage 1: Build
+FROM node:20-alpine AS builder
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci                 # Install ALL dependencies (including devDependencies)
+COPY . .
+RUN npm run build          # TypeScript compilation, etc.
+
+# Stage 2: Production
+FROM node:20-alpine
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci --omit=dev      # Install ONLY production dependencies
+COPY --from=builder /app/dist ./dist
+
+# Security: don't run as root
+USER node
+
+EXPOSE 3000
+CMD ["node", "dist/index.js"]
+```
+
+**Benefits:**
+- Final image has NO devDependencies, NO source code, NO build tools
+- Image size drops from ~1GB to ~150-200MB
+- Smaller attack surface in production
+- Layer caching speeds up builds
+
+### 66. What is structured logging and why use Winston/Pino instead of console.log?
+**`console.log` problems in production:**
+- No log levels (can't filter by severity)
+- No timestamps
+- No structured format (hard to parse in log aggregation tools)
+- Synchronous — can block event loop under heavy logging
+
+**Structured logging with Pino (fastest Node.js logger):**
+```javascript
+const pino = require('pino');
+const logger = pino({
+  level: process.env.LOG_LEVEL || 'info',
+  transport: process.env.NODE_ENV === 'development'
+    ? { target: 'pino-pretty' } // Human-readable in dev
+    : undefined,                 // JSON in production
+});
+
+// Usage
+logger.info({ userId: '123', action: 'login' }, 'User logged in');
+logger.error({ err, orderId: '456' }, 'Payment failed');
+logger.warn({ memoryUsage: process.memoryUsage() }, 'High memory');
+
+// Output in production (JSON — parseable by Datadog, ELK, etc.):
+// {"level":30,"time":1712200000000,"userId":"123","action":"login","msg":"User logged in"}
+```
+
+**Log levels:** `fatal` > `error` > `warn` > `info` > `debug` > `trace`
+Set `LOG_LEVEL=error` in production to only see errors. Set `LOG_LEVEL=debug` when debugging.
+
+### 67. How do you implement OAuth 2.0 / OpenID Connect in Express?
+**OAuth 2.0 Authorization Code Flow (most common for web apps):**
+
+1. User clicks "Login with Google"
+2. Your server redirects to Google's authorization endpoint
+3. User grants permission → Google redirects back with an authorization code
+4. Your server exchanges the code for access token + ID token
+5. You extract user info from the ID token and create/find the user in your DB
+
+**Using Passport.js:**
+```javascript
+const passport = require('passport');
+const GoogleStrategy = require('passport-google-oauth20').Strategy;
+
+passport.use(new GoogleStrategy({
+  clientID: process.env.GOOGLE_CLIENT_ID,
+  clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+  callbackURL: '/auth/google/callback'
+}, async (accessToken, refreshToken, profile, done) => {
+  // Find or create user in your database
+  let user = await User.findOne({ googleId: profile.id });
+  if (!user) {
+    user = await User.create({
+      googleId: profile.id,
+      name: profile.displayName,
+      email: profile.emails[0].value
+    });
+  }
+  done(null, user);
+}));
+
+// Routes
+app.get('/auth/google',
+  passport.authenticate('google', { scope: ['profile', 'email'] })
+);
+
+app.get('/auth/google/callback',
+  passport.authenticate('google', { failureRedirect: '/login' }),
+  (req, res) => {
+    const token = generateJWT(req.user); // Issue your own JWT
+    res.redirect(`/dashboard?token=${token}`);
+  }
+);
+```
+
+### 68. Explain refresh token rotation and reuse detection.
+**Problem:** Access tokens expire quickly (15 min). Users shouldn't re-login every 15 minutes.
+**Solution:** Refresh tokens — longer-lived tokens used to get new access tokens.
+
+**Refresh Token Rotation:**
+- Every time a refresh token is used, issue a NEW refresh token and invalidate the old one.
+- This limits the window of vulnerability if a refresh token is stolen.
+
+**Reuse Detection:**
+- If someone tries to use an already-rotated (old) refresh token, it means the token was stolen.
+- Immediately invalidate ALL refresh tokens for that user (force re-login).
+
+```javascript
+// Token refresh endpoint
+app.post('/auth/refresh', async (req, res) => {
+  const { refreshToken } = req.body;
+
+  // 1. Find stored token in DB
+  const storedToken = await RefreshToken.findOne({ token: refreshToken });
+
+  if (!storedToken) {
+    return res.status(401).json({ error: 'Invalid refresh token. Please login again.' });
+  }
+
+  if (storedToken.isUsed) {
+    // REUSE DETECTED — someone stole the old token
+    await RefreshToken.deleteMany({ userId: storedToken.userId });
+    return res.status(401).json({ error: 'Security breach. All sessions revoked.' });
+  }
+
+  // 2. Mark current token as used
+  storedToken.isUsed = true;
+  await storedToken.save();
+
+  // 3. Issue new tokens
+  const newAccessToken = generateAccessToken(storedToken.userId);
+  const newRefreshToken = crypto.randomBytes(64).toString('hex');
+
+  await RefreshToken.create({
+    token: newRefreshToken,
+    userId: storedToken.userId,
+    expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) // 7 days
+  });
+
+  res.json({ accessToken: newAccessToken, refreshToken: newRefreshToken });
+});
+```
+
+### 69. What is RBAC (Role-Based Access Control)? How to implement in Express?
+**RBAC** restricts access based on user roles. Each role has a set of permissions.
+
+**Simple RBAC middleware:**
+```javascript
+// Define roles and permissions
+const permissions = {
+  admin: ['read', 'write', 'delete', 'manage_users'],
+  restaurant_owner: ['read', 'write', 'manage_menu'],
+  customer: ['read', 'place_order'],
+};
+
+// Middleware factory
+function authorize(...requiredPermissions) {
+  return (req, res, next) => {
+    const userRole = req.user.role; // Set by auth middleware
+    const userPermissions = permissions[userRole] || [];
+
+    const hasPermission = requiredPermissions.every(
+      (perm) => userPermissions.includes(perm)
+    );
+
+    if (!hasPermission) {
+      return res.status(403).json({ error: 'Insufficient permissions' });
+    }
+    next();
+  };
+}
+
+// Usage in routes
+app.delete('/api/restaurants/:id',
+  authenticate,                    // Verify JWT
+  authorize('delete'),             // Check permission
+  restaurantController.delete
+);
+
+app.post('/api/menu',
+  authenticate,
+  authorize('manage_menu'),
+  menuController.create
+);
+```
+
+### 70. How would you design an API versioning strategy?
+**Common strategies:**
+
+1. **URI Path Versioning (Most common):**
+   ```javascript
+   app.use('/api/v1/users', v1UserRoutes);
+   app.use('/api/v2/users', v2UserRoutes);
+   ```
+
+2. **Header Versioning:**
+   ```javascript
+   app.use('/api/users', (req, res, next) => {
+     const version = req.headers['api-version'] || '1';
+     if (version === '2') return v2UserRoutes(req, res, next);
+     return v1UserRoutes(req, res, next);
+   });
+   ```
+
+3. **Query Parameter:** `/api/users?version=2`
+
+**Best practices:**
+- Use URI versioning — most explicit and cacheable
+- Keep at most 2 versions active
+- Deprecation headers: `Deprecation: true`, `Sunset: Sat, 01 Jan 2027 00:00:00 GMT`
+- Document breaking changes clearly
+- Use semantic versioning for your API
+
+### 71. Explain cursor-based pagination vs offset-based. When to use each?
+
+**Offset-based:** `GET /api/items?page=3&limit=20` → `skip(40).limit(20)`
+| Pros | Cons |
+|---|---|
+| Simple to implement | Slow on large datasets (skip scans rows) |
+| Can jump to any page | Inconsistent if data changes between pages |
+
+**Cursor-based:** `GET /api/items?cursor=abc123&limit=20`
+| Pros | Cons |
+|---|---|
+| Consistent results even if data changes | Can't jump to arbitrary pages |
+| Performance stays constant regardless of position | Slightly more complex |
+
+```javascript
+// Cursor-based pagination
+app.get('/api/orders', async (req, res) => {
+  const { cursor, limit = 20 } = req.query;
+  const query = cursor
+    ? { _id: { $gt: cursor } }  // Get items AFTER cursor
+    : {};
+
+  const orders = await Order.find(query)
+    .sort({ _id: 1 })
+    .limit(parseInt(limit) + 1);  // Fetch one extra to check hasMore
+
+  const hasMore = orders.length > limit;
+  if (hasMore) orders.pop();  // Remove the extra
+
+  res.json({
+    data: orders,
+    nextCursor: hasMore ? orders[orders.length - 1]._id : null,
+    hasMore
+  });
+});
+```
+
+**When to use which:**
+- Offset → admin panels, small datasets, need page numbers
+- Cursor → infinite scroll, large datasets, real-time feeds, APIs
+
+### 72. What is IDOR (Insecure Direct Object Reference) and how to prevent it?
+**IDOR** is a vulnerability where a user can access other users' data by modifying a parameter (like an ID in the URL).
+
+**Vulnerable code:**
+```javascript
+// Anyone with a valid JWT can access ANY user's orders by changing the ID
+app.get('/api/orders/:orderId', authenticate, async (req, res) => {
+  const order = await Order.findById(req.params.orderId); // ← No ownership check!
+  res.json(order);
+});
+```
+
+**Secure code:**
+```javascript
+app.get('/api/orders/:orderId', authenticate, async (req, res) => {
+  const order = await Order.findOne({
+    _id: req.params.orderId,
+    userId: req.user._id  // ← Only return if the order belongs to this user
+  });
+
+  if (!order) return res.status(404).json({ error: 'Order not found' });
+  res.json(order);
+});
+```
+
+**Prevention strategies:**
+- Always verify resource ownership in queries
+- Use middleware for authorization checks
+- Avoid exposing sequential IDs (use UUIDs)
+- Test with different user accounts
+
+### 73. How do you validate request body/query/params? (Joi, Zod)
+**Never trust client input.** Validate everything on the server.
+
+**Using Zod (TypeScript-first, most popular in 2026):**
+```javascript
+const { z } = require('zod');
+
+const createOrderSchema = z.object({
+  body: z.object({
+    restaurantId: z.string().length(24),  // MongoDB ObjectId
+    items: z.array(z.object({
+      menuItemId: z.string().length(24),
+      quantity: z.number().int().min(1).max(50),
+    })).min(1).max(20),
+    deliveryAddress: z.string().min(10).max(500),
+    notes: z.string().max(200).optional(),
+  }),
+  params: z.object({}),
+  query: z.object({}),
+});
+
+// Reusable validation middleware
+function validate(schema) {
+  return (req, res, next) => {
+    const result = schema.safeParse({
+      body: req.body,
+      params: req.params,
+      query: req.query,
+    });
+
+    if (!result.success) {
+      return res.status(400).json({
+        error: 'Validation failed',
+        details: result.error.issues
+      });
+    }
+    next();
+  };
+}
+
+app.post('/api/orders', authenticate, validate(createOrderSchema), orderController.create);
+```
+
+### 74. Explain the Circuit Breaker pattern for external API calls.
+**Problem:** If a third-party API (payment gateway, email service) is down, your app keeps sending requests, wasting resources and slowing down.
+
+**Circuit Breaker states:**
+1. **CLOSED** (normal) — Requests flow through. Track failures.
+2. **OPEN** (tripped) — After N failures, stop sending requests. Return error immediately.
+3. **HALF-OPEN** (testing) — After a timeout, allow one test request. If it succeeds → CLOSED. If it fails → OPEN.
+
+```javascript
+// Using opossum (Node.js circuit breaker library)
+const CircuitBreaker = require('opossum');
+
+const paymentService = async (orderData) => {
+  return axios.post('https://payment-api.com/charge', orderData);
+};
+
+const breaker = new CircuitBreaker(paymentService, {
+  timeout: 5000,         // If function takes > 5s, trigger failure
+  errorThresholdPercentage: 50,  // Open circuit if 50% requests fail
+  resetTimeout: 30000,   // Try again after 30 seconds
+});
+
+breaker.on('open', () => console.log('Circuit OPENED — stopping requests'));
+breaker.on('halfOpen', () => console.log('Circuit HALF-OPEN — testing'));
+breaker.on('close', () => console.log('Circuit CLOSED — back to normal'));
+
+// Fallback when circuit is open
+breaker.fallback(() => ({
+  status: 'queued',
+  message: 'Payment service temporarily unavailable. Your order is queued.'
+}));
+
+// Use in your route
+app.post('/api/pay', async (req, res) => {
+  const result = await breaker.fire(req.body);
+  res.json(result);
+});
+```
+
+### 75. What are pre-signed URLs and when would you use them for file uploads?
+**Problem:** Uploading files through your server uses your server's bandwidth and memory.
+**Solution:** Pre-signed URLs let the client upload directly to cloud storage (S3), bypassing your server.
+
+**Flow:**
+1. Client asks your server "I want to upload a file"
+2. Server generates a pre-signed URL (valid for e.g., 5 minutes) from S3
+3. Server sends the URL back to the client
+4. Client uploads directly to S3 using the pre-signed URL
+5. S3 notifies your server (via webhook or client confirmation)
+
+```javascript
+const { S3Client, PutObjectCommand } = require('@aws-sdk/client-s3');
+const { getSignedUrl } = require('@aws-sdk/s3-request-presigner');
+
+const s3 = new S3Client({ region: 'ap-south-1' });
+
+app.post('/api/upload/presigned-url', authenticate, async (req, res) => {
+  const { fileName, fileType } = req.body;
+
+  // Validate file type
+  const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
+  if (!allowedTypes.includes(fileType)) {
+    return res.status(400).json({ error: 'Invalid file type' });
+  }
+
+  const key = `uploads/${req.user._id}/${Date.now()}-${fileName}`;
+
+  const command = new PutObjectCommand({
+    Bucket: process.env.S3_BUCKET,
+    Key: key,
+    ContentType: fileType,
+  });
+
+  const presignedUrl = await getSignedUrl(s3, command, { expiresIn: 300 }); // 5 min
+
+  res.json({ uploadUrl: presignedUrl, key });
+});
+```
+
+**Benefits:**
+- Server doesn't handle file data — saves bandwidth and memory
+- Supports large files without server timeout issues
+- S3 handles storage, CDN, replication automatically
+- Secure — URL expires, only allows the specified operation

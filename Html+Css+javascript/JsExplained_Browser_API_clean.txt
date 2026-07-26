@@ -1,0 +1,837 @@
+================================================================================
+  JAVASCRIPT BROWSER & WEB APIs — INTERVIEW PREPARATION (2024-2026)
+================================================================================
+  Covers: DOM Events, Observers, Storage, Web Workers, Performance APIs
+  Total Questions: 30
+================================================================================
+
+
+================================================================================
+  SECTION 1: DOM EVENTS — BUBBLING, CAPTURING, DELEGATION
+================================================================================
+
+### 1. What is Event Delegation?
+
+Event Delegation is a pattern where a single event listener is attached to a PARENT element instead of individual child elements. It leverages event bubbling — when a child element is clicked, the event bubbles up to the parent, which handles it.
+
+    <ul id="list">
+        <li>Item 1</li>
+        <li>Item 2</li>
+        <li>Item 3</li>
+    </ul>
+
+    // ❌ Without delegation — listener on every child
+    document.querySelectorAll("li").forEach(li => {
+        li.addEventListener("click", () => console.log(li.textContent));
+    });
+
+    // ✅ With delegation — single listener on parent
+    document.getElementById("list").addEventListener("click", (e) => {
+        if (e.target.tagName === "LI") {
+            console.log(e.target.textContent);
+        }
+    });
+
+**Advantages:**
+- Fewer event listeners → better memory usage and performance.
+- Automatically works with dynamically added child elements.
+- Cleaner, more maintainable code.
+
+---
+
+### 2. What is Event Bubbling?
+
+Event Bubbling is the default behavior where an event triggered on a child element propagates UPWARD through its ancestor elements in the DOM tree.
+
+    <div id="grandparent">
+        <div id="parent">
+            <button id="child">Click me</button>
+        </div>
+    </div>
+
+    document.getElementById("child").addEventListener("click", () => console.log("Child"));
+    document.getElementById("parent").addEventListener("click", () => console.log("Parent"));
+    document.getElementById("grandparent").addEventListener("click", () => console.log("Grandparent"));
+
+    // Click the button → Output: Child → Parent → Grandparent
+
+---
+
+### 3. What is Event Capturing (Trickling)?
+
+Event Capturing is the opposite of bubbling — the event travels DOWNWARD from the root to the target element. It is triggered by setting { capture: true } or passing `true` as the third argument to addEventListener.
+
+    document.getElementById("grandparent").addEventListener("click",
+        () => console.log("Grandparent"), true  // capture phase
+    );
+    document.getElementById("parent").addEventListener("click",
+        () => console.log("Parent"), true
+    );
+    document.getElementById("child").addEventListener("click",
+        () => console.log("Child")  // bubbling phase (default)
+    );
+
+    // Click button → Output: Grandparent → Parent → Child
+
+---
+
+### 4. What are the 3 phases of Event Propagation?
+
+When an event occurs, it goes through three phases:
+
+1. **Capturing Phase (top → target)**
+   Event travels from the window/document down to the target element.
+
+2. **Target Phase**
+   Event reaches the target element (the element that was directly interacted with).
+
+3. **Bubbling Phase (target → top)**
+   Event travels back up from the target to the window/document.
+
+    element.addEventListener("click", handler, true);   // runs in capturing phase
+    element.addEventListener("click", handler, false);  // runs in bubbling phase (default)
+
+    // You can check which phase using event.eventPhase
+    // 1 = Capturing, 2 = Target, 3 = Bubbling
+
+---
+
+### 5. What is stopPropagation()?
+
+`event.stopPropagation()` prevents the event from continuing to propagate through the DOM tree (stops both bubbling and capturing).
+
+    document.getElementById("child").addEventListener("click", (e) => {
+        e.stopPropagation();
+        console.log("Child only — event won't reach parent");
+    });
+
+    document.getElementById("parent").addEventListener("click", () => {
+        console.log("This will NOT run if child stops propagation");
+    });
+
+**stopImmediatePropagation():** Also prevents other handlers on the SAME element from running.
+
+    element.addEventListener("click", (e) => {
+        e.stopImmediatePropagation();
+        console.log("First handler runs");
+    });
+    element.addEventListener("click", () => {
+        console.log("This will NOT run");  // stopped by stopImmediatePropagation
+    });
+
+---
+
+### 6. What is preventDefault()?
+
+`event.preventDefault()` stops the browser's DEFAULT behavior for that event, but does NOT stop event propagation.
+
+    // Prevent form submission
+    form.addEventListener("submit", (e) => {
+        e.preventDefault();  // page won't reload
+        // custom validation & AJAX submit
+    });
+
+    // Prevent link navigation
+    link.addEventListener("click", (e) => {
+        e.preventDefault();  // won't navigate to href
+    });
+
+    // Prevent checkbox toggle
+    checkbox.addEventListener("click", (e) => {
+        e.preventDefault();  // checkbox won't check/uncheck
+    });
+
+    // Prevent right-click context menu
+    document.addEventListener("contextmenu", (e) => {
+        e.preventDefault();
+    });
+
+---
+
+### 7. What is the difference between event.target and event.currentTarget?
+
+**event.target** — The element that ORIGINALLY triggered the event (the clicked element).
+**event.currentTarget** — The element that the event listener is ATTACHED to.
+
+    <div id="parent">
+        <button id="child">Click</button>
+    </div>
+
+    document.getElementById("parent").addEventListener("click", (e) => {
+        console.log("target:", e.target.id);         // "child" (what was clicked)
+        console.log("currentTarget:", e.currentTarget.id); // "parent" (where listener is)
+    });
+
+In event delegation, `e.target` identifies which child was clicked, while `e.currentTarget` is the parent element handling the event.
+
+---
+
+### 8. How does Event Delegation work with dynamically added elements?
+
+Since delegation attaches the listener to a parent that already exists, it automatically handles elements added to the DOM later.
+
+    const list = document.getElementById("list");
+
+    // Delegation — works for all items, even future ones
+    list.addEventListener("click", (e) => {
+        if (e.target.matches("li.item")) {
+            console.log("Clicked:", e.target.textContent);
+        }
+    });
+
+    // Dynamically add a new item
+    const newItem = document.createElement("li");
+    newItem.className = "item";
+    newItem.textContent = "New Item";
+    list.appendChild(newItem);
+    // Clicking "New Item" works without adding a new listener
+
+Use `e.target.matches(selector)` or `e.target.closest(selector)` for reliable matching:
+
+    list.addEventListener("click", (e) => {
+        const item = e.target.closest(".item");  // finds nearest matching ancestor
+        if (item) {
+            console.log(item.textContent);
+        }
+    });
+
+---
+
+### 9. What are common use cases for Event Delegation?
+
+1. **Lists and menus** — Handle clicks on any list item with one listener.
+2. **Tables** — Handle cell clicks, row selection.
+3. **Dynamic content** — SPAs where DOM elements are frequently added/removed.
+4. **Tab/accordion components** — Handle tab switching from a parent container.
+5. **Form inputs** — Validate multiple fields with one listener on the form.
+6. **Todo apps** — Delete/edit buttons on dynamically created todo items.
+
+
+================================================================================
+  SECTION 2: OBSERVERS — INTERSECTION, MUTATION, RESIZE
+================================================================================
+
+### 10. What is the IntersectionObserver API?
+
+IntersectionObserver detects when an element enters or exits the viewport (or a specified container). It's more performant than scroll event listeners.
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                console.log("Element is visible:", entry.target);
+                entry.target.classList.add("visible");
+                // observer.unobserve(entry.target);  // stop observing after first trigger
+            }
+        });
+    }, {
+        root: null,          // viewport (default)
+        rootMargin: "0px",   // margin around root
+        threshold: 0.5       // 50% visible triggers callback
+    });
+
+    observer.observe(document.querySelector(".lazy-image"));
+
+**Use Cases:**
+- Lazy loading images and components.
+- Infinite scrolling.
+- Triggering animations on scroll.
+- Analytics — tracking if an element was seen.
+
+---
+
+### 11. What is the MutationObserver API?
+
+MutationObserver watches for changes in the DOM tree — additions, removals, attribute changes, text changes.
+
+    const observer = new MutationObserver((mutations) => {
+        mutations.forEach(mutation => {
+            console.log("Type:", mutation.type);
+            console.log("Target:", mutation.target);
+
+            if (mutation.type === "childList") {
+                mutation.addedNodes.forEach(node => console.log("Added:", node));
+                mutation.removedNodes.forEach(node => console.log("Removed:", node));
+            }
+        });
+    });
+
+    observer.observe(document.getElementById("app"), {
+        childList: true,     // watch for added/removed children
+        attributes: true,    // watch for attribute changes
+        subtree: true,       // watch all descendants
+        characterData: true  // watch text content changes
+    });
+
+    // Stop observing
+    observer.disconnect();
+
+**Use Cases:**
+- Detecting DOM changes by third-party scripts.
+- Auto-saving form changes.
+- Accessibility tools.
+- Reacting to dynamic content updates.
+
+---
+
+### 12. What is the ResizeObserver API?
+
+ResizeObserver monitors changes to an element's dimensions (width, height).
+
+    const observer = new ResizeObserver((entries) => {
+        entries.forEach(entry => {
+            const { width, height } = entry.contentRect;
+            console.log(`New size: ${width} x ${height}`);
+        });
+    });
+
+    observer.observe(document.querySelector(".container"));
+
+**Use Cases:**
+- Responsive components without media queries.
+- Chart/canvas resizing.
+- Adjusting layouts dynamically.
+- Virtual scrolling containers.
+
+Key Advantage: Unlike window.resize, ResizeObserver works on individual elements, not just the window.
+
+
+================================================================================
+  SECTION 3: WEB STORAGE & DATA PERSISTENCE
+================================================================================
+
+### 13. What is the difference between localStorage, sessionStorage, and Cookies?
+
+| Feature          | localStorage        | sessionStorage      | Cookies              |
+|----------------- |-------------------- |-------------------- |--------------------- |
+| Capacity         | ~5-10 MB            | ~5-10 MB            | ~4 KB                |
+| Lifetime         | Until manually cleared | Until tab closes  | Configurable (Expires/Max-Age) |
+| Sent to server   | No                  | No                  | Yes (every HTTP request) |
+| Scope            | Same origin         | Same origin + tab   | Same origin + path   |
+| API              | getItem/setItem     | getItem/setItem     | document.cookie      |
+| Data type        | String only         | String only         | String only          |
+
+    // localStorage
+    localStorage.setItem("name", "Krushna");
+    localStorage.getItem("name");      // "Krushna"
+    localStorage.removeItem("name");
+    localStorage.clear();
+
+    // sessionStorage (same API)
+    sessionStorage.setItem("temp", "data");
+
+    // Storing objects (must serialize)
+    localStorage.setItem("user", JSON.stringify({ name: "Krushna", age: 25 }));
+    const user = JSON.parse(localStorage.getItem("user"));
+
+    // Cookies
+    document.cookie = "name=Krushna; expires=Fri, 31 Dec 2025 23:59:59 GMT; path=/";
+
+---
+
+### 14. What is IndexedDB?
+
+IndexedDB is a low-level browser API for storing large amounts of structured data (including files/blobs). It's a transactional, key-value NoSQL database in the browser.
+
+    const request = indexedDB.open("MyDatabase", 1);
+
+    request.onupgradeneeded = (e) => {
+        const db = e.target.result;
+        const store = db.createObjectStore("users", { keyPath: "id" });
+        store.createIndex("name", "name", { unique: false });
+    };
+
+    request.onsuccess = (e) => {
+        const db = e.target.result;
+
+        // Add data
+        const tx = db.transaction("users", "readwrite");
+        tx.objectStore("users").add({ id: 1, name: "Krushna", age: 25 });
+
+        // Read data
+        const readTx = db.transaction("users", "readonly");
+        const getReq = readTx.objectStore("users").get(1);
+        getReq.onsuccess = () => console.log(getReq.result);
+    };
+
+**Use Cases:** Offline-first apps, caching large datasets, PWA data storage.
+**Libraries that simplify IndexedDB:** Dexie.js, idb, localForage.
+
+---
+
+### 15. What is the Cache API?
+
+The Cache API provides a way to store and retrieve HTTP request/response pairs. Used primarily with Service Workers for offline support.
+
+    // Store a response
+    caches.open("my-cache-v1").then(cache => {
+        cache.add("/api/data");                           // fetch and cache
+        cache.put("/api/custom", new Response("cached")); // manual cache
+    });
+
+    // Retrieve from cache
+    caches.match("/api/data").then(response => {
+        if (response) {
+            return response.json();
+        }
+    });
+
+    // Delete a cache
+    caches.delete("my-cache-v1");
+
+**Use Cases:** PWA offline support, caching static assets, network-first/cache-first strategies.
+
+
+================================================================================
+  SECTION 4: FETCH, ABORT, AND NETWORK APIs
+================================================================================
+
+### 16. What is the Fetch API and how does it work?
+
+Fetch is the modern way to make HTTP requests, replacing XMLHttpRequest. It returns a Promise.
+
+    // GET request
+    const response = await fetch("/api/users");
+    const data = await response.json();
+
+    // POST request
+    const response = await fetch("/api/users", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: "Krushna", age: 25 })
+    });
+
+    // Error handling — fetch does NOT reject on HTTP errors (404, 500)
+    const response = await fetch("/api/data");
+    if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+    const data = await response.json();
+
+    // Response methods
+    response.json()     // parse as JSON
+    response.text()     // parse as text
+    response.blob()     // parse as Blob
+    response.formData() // parse as FormData
+    response.arrayBuffer()
+
+---
+
+### 17. What is AbortController?
+
+AbortController allows you to cancel one or more fetch requests or any async operation.
+
+    const controller = new AbortController();
+    const signal = controller.signal;
+
+    // Pass signal to fetch
+    fetch("/api/data", { signal })
+        .then(res => res.json())
+        .then(data => console.log(data))
+        .catch(err => {
+            if (err.name === "AbortError") {
+                console.log("Request was cancelled");
+            }
+        });
+
+    // Cancel the request
+    controller.abort();
+
+    // With timeout
+    const controller = new AbortController();
+    setTimeout(() => controller.abort(), 5000);  // cancel after 5s
+
+    // AbortSignal.timeout() (modern)
+    fetch("/api/data", { signal: AbortSignal.timeout(5000) });
+
+**Use Cases:**
+- Cancel pending requests when component unmounts (React useEffect cleanup).
+- Implement request timeouts.
+- Cancel previous search request on new keystroke (debounced search).
+
+    // React cleanup example
+    useEffect(() => {
+        const controller = new AbortController();
+        fetch("/api/data", { signal: controller.signal })
+            .then(res => res.json())
+            .then(setData);
+        return () => controller.abort();  // cleanup
+    }, []);
+
+---
+
+### 18. What is the Beacon API?
+
+The Beacon API sends small amounts of data to a server asynchronously, guaranteed to be sent even if the page is being unloaded.
+
+    // Send analytics data when user leaves
+    window.addEventListener("visibilitychange", () => {
+        if (document.visibilityState === "hidden") {
+            navigator.sendBeacon("/analytics", JSON.stringify({
+                page: location.href,
+                duration: performance.now()
+            }));
+        }
+    });
+
+Key Difference from fetch: Beacons are guaranteed to be sent during page unload. Fetch requests during unload may be cancelled by the browser.
+
+
+================================================================================
+  SECTION 5: WEB WORKERS & SERVICE WORKERS
+================================================================================
+
+### 19. What are Web Workers?
+
+Web Workers run JavaScript in a background thread, separate from the main UI thread. This prevents heavy computations from blocking the UI.
+
+    // main.js
+    const worker = new Worker("worker.js");
+
+    worker.postMessage({ data: [1, 2, 3, 4, 5] });
+
+    worker.onmessage = (e) => {
+        console.log("Result from worker:", e.data);
+    };
+
+    worker.onerror = (e) => {
+        console.error("Worker error:", e.message);
+    };
+
+    worker.terminate();  // stop the worker
+
+    // worker.js
+    self.onmessage = (e) => {
+        const result = e.data.data.reduce((a, b) => a + b, 0);
+        self.postMessage(result);
+    };
+
+**Limitations:**
+- No access to DOM, window, document.
+- No access to parent page variables.
+- Communication only via postMessage/onmessage.
+- Same-origin policy applies.
+
+**Types:**
+- **Dedicated Worker** — used by a single script.
+- **Shared Worker** — shared between multiple scripts/tabs.
+
+**Use Cases:** Image processing, data parsing, complex calculations, encryption.
+
+---
+
+### 20. What are Service Workers?
+
+A Service Worker is a script that runs in the background, separate from the web page. It acts as a proxy between the browser and the network.
+
+    // Register
+    if ("serviceWorker" in navigator) {
+        navigator.serviceWorker.register("/sw.js")
+            .then(reg => console.log("SW registered:", reg.scope));
+    }
+
+    // sw.js — Cache-first strategy
+    self.addEventListener("install", (e) => {
+        e.waitUntil(
+            caches.open("v1").then(cache => {
+                return cache.addAll(["/", "/index.html", "/styles.css"]);
+            })
+        );
+    });
+
+    self.addEventListener("fetch", (e) => {
+        e.respondWith(
+            caches.match(e.request).then(response => {
+                return response || fetch(e.request);
+            })
+        );
+    });
+
+**Lifecycle:** Install → Activate → Fetch (idle between events).
+
+**Use Cases:**
+- Offline support (PWA).
+- Background sync.
+- Push notifications.
+- Network request interception and caching.
+
+**Key Differences from Web Workers:**
+
+| Feature          | Web Worker              | Service Worker             |
+|----------------- |------------------------ |--------------------------- |
+| Purpose          | CPU-intensive tasks     | Network proxy, caching     |
+| Lifetime         | Dies with page          | Persists after page closes |
+| DOM access       | No                      | No                         |
+| Network access   | Yes                     | Yes (intercepts requests)  |
+| HTTPS required   | No                      | Yes (except localhost)     |
+
+
+================================================================================
+  SECTION 6: PERFORMANCE & RENDERING APIs
+================================================================================
+
+### 21. What is requestAnimationFrame()?
+
+`requestAnimationFrame()` schedules a function to run before the browser's next repaint (~60fps = every ~16.7ms). It's the recommended way to create smooth animations.
+
+    function animate() {
+        element.style.left = (parseInt(element.style.left) + 1) + "px";
+        if (parseInt(element.style.left) < 300) {
+            requestAnimationFrame(animate);
+        }
+    }
+    requestAnimationFrame(animate);
+
+    // Cancel animation
+    const id = requestAnimationFrame(animate);
+    cancelAnimationFrame(id);
+
+**Why not setTimeout for animations?**
+- setTimeout doesn't sync with the browser's refresh rate.
+- requestAnimationFrame pauses when the tab is not visible (saves battery).
+- Produces smoother, more consistent animations.
+
+---
+
+### 22. What is the Performance API?
+
+The Performance API provides tools to measure and analyze web performance.
+
+    // Measure execution time
+    performance.mark("start");
+    // ... expensive operation
+    performance.mark("end");
+    performance.measure("operation", "start", "end");
+    const measure = performance.getEntriesByName("operation")[0];
+    console.log(`Duration: ${measure.duration}ms`);
+
+    // High-resolution timestamp
+    const start = performance.now();
+    // ... code
+    console.log(`Took: ${performance.now() - start}ms`);
+
+    // Navigation timing
+    const nav = performance.getEntriesByType("navigation")[0];
+    console.log("DOM Interactive:", nav.domInteractive);
+    console.log("DOM Complete:", nav.domComplete);
+    console.log("Load Event:", nav.loadEventEnd);
+
+    // Resource timing
+    const resources = performance.getEntriesByType("resource");
+    resources.forEach(r => console.log(r.name, r.duration));
+
+---
+
+### 23. What is the Page Visibility API?
+
+The Page Visibility API detects whether the page is currently visible to the user (e.g., tab is active) or hidden (tab is in background).
+
+    document.addEventListener("visibilitychange", () => {
+        if (document.visibilityState === "visible") {
+            console.log("Tab is active — resume operations");
+            // Resume video, animations, polling
+        } else {
+            console.log("Tab is hidden — pause operations");
+            // Pause video, stop animations, reduce polling
+        }
+    });
+
+    // Check current state
+    document.hidden;            // true/false
+    document.visibilityState;   // "visible" | "hidden" | "prerender"
+
+**Use Cases:** Pause/resume media, reduce API polling, analytics (time on page), save battery.
+
+
+================================================================================
+  SECTION 7: MODERN BROWSER APIs
+================================================================================
+
+### 24. What is the Clipboard API?
+
+The Clipboard API provides async methods to read from and write to the system clipboard.
+
+    // Copy text
+    async function copyText(text) {
+        try {
+            await navigator.clipboard.writeText(text);
+            console.log("Copied!");
+        } catch (err) {
+            console.error("Failed to copy:", err);
+        }
+    }
+
+    // Read text
+    async function pasteText() {
+        const text = await navigator.clipboard.readText();
+        console.log("Pasted:", text);
+    }
+
+    // Copy rich content (images, HTML)
+    const blob = new Blob(["<b>Bold text</b>"], { type: "text/html" });
+    await navigator.clipboard.write([
+        new ClipboardItem({ "text/html": blob })
+    ]);
+
+Note: Requires HTTPS and user gesture (click). Browser will ask for permission.
+
+---
+
+### 25. What is the History API?
+
+The History API lets you manipulate the browser's session history (back/forward navigation) without full page reloads — essential for SPAs.
+
+    // Push a new state
+    history.pushState({ page: "about" }, "About", "/about");
+
+    // Replace current state
+    history.replaceState({ page: "home" }, "Home", "/");
+
+    // Navigate
+    history.back();
+    history.forward();
+    history.go(-2);  // go back 2 pages
+
+    // Listen for popstate (back/forward button)
+    window.addEventListener("popstate", (e) => {
+        console.log("State:", e.state);
+        // Update UI based on state
+    });
+
+Note: pushState/replaceState do NOT trigger popstate — only browser back/forward buttons do.
+
+---
+
+### 26. What is the Broadcast Channel API?
+
+The Broadcast Channel API allows communication between different tabs, windows, or iframes of the same origin.
+
+    // Tab 1 — Send
+    const channel = new BroadcastChannel("my-channel");
+    channel.postMessage({ type: "logout", user: "Krushna" });
+
+    // Tab 2 — Receive
+    const channel = new BroadcastChannel("my-channel");
+    channel.onmessage = (e) => {
+        console.log("Received:", e.data);
+        if (e.data.type === "logout") {
+            // Log out user in this tab too
+        }
+    };
+
+    channel.close();  // cleanup
+
+**Use Cases:** Sync logout across tabs, share state between tabs, coordinate background tasks.
+
+---
+
+### 27. What are Custom Events?
+
+You can create and dispatch your own events using the CustomEvent constructor.
+
+    // Create a custom event
+    const event = new CustomEvent("userLogin", {
+        detail: { username: "Krushna", role: "admin" },
+        bubbles: true,
+        cancelable: true
+    });
+
+    // Listen for it
+    document.addEventListener("userLogin", (e) => {
+        console.log("User logged in:", e.detail.username);
+    });
+
+    // Dispatch it
+    document.dispatchEvent(event);
+
+**Use Cases:** Component communication, custom notification systems, decoupled architectures.
+
+---
+
+### 28. What is the Geolocation API?
+
+    navigator.geolocation.getCurrentPosition(
+        (position) => {
+            console.log("Latitude:", position.coords.latitude);
+            console.log("Longitude:", position.coords.longitude);
+            console.log("Accuracy:", position.coords.accuracy, "meters");
+        },
+        (error) => {
+            console.error("Error:", error.message);
+        },
+        {
+            enableHighAccuracy: true,
+            timeout: 5000,
+            maximumAge: 0
+        }
+    );
+
+    // Watch position changes
+    const watchId = navigator.geolocation.watchPosition(successCallback, errorCallback);
+    navigator.geolocation.clearWatch(watchId);
+
+Note: Requires HTTPS. Browser will prompt user for permission.
+
+---
+
+### 29. What is the Notification API?
+
+    // Request permission
+    const permission = await Notification.requestPermission();
+
+    if (permission === "granted") {
+        const notification = new Notification("New Message", {
+            body: "You have a new message from Krushna",
+            icon: "/icon.png",
+            tag: "message-1"    // prevents duplicate notifications
+        });
+
+        notification.onclick = () => {
+            window.focus();
+            notification.close();
+        };
+
+        // Auto-close after 5s
+        setTimeout(() => notification.close(), 5000);
+    }
+
+**Push Notifications (via Service Worker):**
+
+    // sw.js
+    self.addEventListener("push", (e) => {
+        const data = e.data.json();
+        self.registration.showNotification(data.title, {
+            body: data.body,
+            icon: data.icon
+        });
+    });
+
+---
+
+### 30. What is requestIdleCallback()?
+
+`requestIdleCallback()` schedules a function to run when the browser's main thread is idle — during gaps between frames or when the user is not interacting.
+
+    requestIdleCallback((deadline) => {
+        while (deadline.timeRemaining() > 0) {
+            // Do non-urgent work
+            processNextItem();
+        }
+    }, { timeout: 2000 });  // force run within 2s if no idle time
+
+    // Cancel
+    const id = requestIdleCallback(callback);
+    cancelIdleCallback(id);
+
+**Use Cases:**
+- Analytics and telemetry.
+- Preloading/prefetching resources.
+- Non-critical DOM updates.
+- Lazy initialization of components.
+
+**Difference from requestAnimationFrame:**
+- requestAnimationFrame: runs BEFORE paint (for visual updates).
+- requestIdleCallback: runs DURING idle time (for background tasks).
+
+================================================================================
+  END OF BROWSER & WEB APIs (30 QUESTIONS)
+================================================================================

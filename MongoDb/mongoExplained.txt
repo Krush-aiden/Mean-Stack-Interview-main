@@ -1,0 +1,1313 @@
+Sure! Here are detailed explanations for the top 10 questions from your mongoQuestions.txt file:
+
+### 1. What is MongoDB and what are its main features?
+**MongoDB** is a NoSQL database that uses a document-oriented data model. It stores data in flexible, JSON-like documents, which means fields can vary from document to document and data structure can be changed over time.
+
+**Main Features**:
+- **Document-Oriented Storage**: Data is stored in documents (BSON format), which are similar to JSON.
+- **Schema Flexibility**: Allows for dynamic schemas, making it easy to evolve data models.
+- **Scalability**: Supports horizontal scaling through sharding.
+- **Indexing**: Supports various types of indexes to improve query performance.
+- **Replication**: Provides high availability through replica sets.
+- **Aggregation**: Offers powerful aggregation framework for data processing and transformation.
+- **Geospatial Queries**: Supports geospatial indexes and queries.
+- **Ad Hoc Queries**: Supports a rich query language for filtering and retrieving data.
+
+### 2. How does MongoDB handle schema design and data modeling?
+MongoDB uses a flexible schema design, allowing for dynamic schemas. This means that documents within a collection do not need to have the same set of fields, and data types for fields can differ across documents.
+
+**Schema Design and Data Modeling**:
+- **Embedded Documents**: Nest related data within a single document to reduce the need for joins and improve read performance.
+- **References**: Use references to normalize data and maintain relationships between documents.
+- **Denormalization**: Duplicate data to optimize read performance, at the cost of increased storage and potential data inconsistency.
+- **Indexes**: Create indexes to improve query performance.
+- **Data Types**: Use appropriate data types for fields to optimize storage and performance.
+
+### 3. What are the key differences between find() and findOne() methods?
+- **find()**:
+  - Returns a cursor to the documents that match the query criteria.
+  - Can return multiple documents.
+  - Example: `db.collection.find({ age: { $gt: 25 } })`
+
+- **findOne()**:
+  - Returns the first document that matches the query criteria.
+  - Returns a single document.
+  - Example: `db.collection.findOne({ age: { $gt: 25 } })`
+
+### 4. Explain how indexing works in MongoDB and why it is important.
+**Indexing** in MongoDB is a way to improve the performance of queries by creating a data structure that allows for faster data retrieval.
+
+**How Indexing Works**:
+- Indexes are created on fields in a collection.
+- MongoDB uses B-tree data structures for indexes.
+- When a query is executed, MongoDB uses the index to quickly locate the documents that match the query criteria.
+
+**Importance of Indexing**:
+- **Performance**: Significantly improves query performance by reducing the amount of data MongoDB needs to scan.
+- **Efficiency**: Helps in sorting and filtering data efficiently.
+- **Query Optimization**: Allows MongoDB to optimize query execution plans.
+
+### 5. What is a MongoDB replica set, and why is it used?
+A **replica set** in MongoDB is a group of mongod instances that maintain the same data set. Replica sets provide redundancy and high availability.
+
+**Why Replica Sets are Used**:
+- **High Availability**: Ensures that the database remains available even if one or more members of the replica set fail.
+- **Data Redundancy**: Provides data redundancy by replicating data across multiple nodes.
+- **Automatic Failover**: Automatically elects a new primary node if the current primary node fails.
+- **Read Scalability**: Allows for read operations to be distributed across multiple nodes.
+
+### 6. How does sharding work in MongoDB?
+**Sharding** is a method for distributing data across multiple servers to support horizontal scaling.
+
+**How Sharding Works**:
+- **Shards**: Each shard is a separate database that holds a subset of the data.
+- **Config Servers**: Store metadata and configuration settings for the cluster.
+- **Query Router (mongos)**: Routes client requests to the appropriate shard(s).
+
+**Sharding Process**:
+- Data is partitioned based on a shard key.
+- The shard key determines how data is distributed across shards.
+- MongoDB balances the data across shards to ensure even distribution.
+
+### 7. What are MongoDB aggregation pipelines, and how do they work?
+**Aggregation pipelines** in MongoDB are a framework for data aggregation, allowing for complex data processing and transformation.
+
+**How Aggregation Pipelines Work**:
+- **Stages**: An aggregation pipeline consists of multiple stages, each performing a specific operation on the data.
+- **Operators**: Each stage uses operators to process the data (e.g., `$match`, `$group`, `$project`).
+- **Pipeline**: Data flows through the pipeline stages sequentially, with each stage transforming the data.
+
+**Example**:
+```javascript
+db.collection.aggregate([
+  { $match: { status: "A" } },
+  { $group: { _id: "$cust_id", total: { $sum: "$amount" } } },
+  { $sort: { total: -1 } }
+]);
+```
+
+### 8. How do you perform data updates in MongoDB?
+Data updates in MongoDB can be performed using various update methods.
+
+**Update Methods**:
+- **updateOne()**: Updates a single document that matches the filter criteria.
+  ```javascript
+  db.collection.updateOne({ _id: 1 }, { $set: { status: "B" } });
+  ```
+- **updateMany()**: Updates multiple documents that match the filter criteria.
+  ```javascript
+  db.collection.updateMany({ status: "A" }, { $set: { status: "B" } });
+  ```
+- **replaceOne()**: Replaces a single document that matches the filter criteria with a new document.
+  ```javascript
+  db.collection.replaceOne({ _id: 1 }, { status: "C", amount: 100 });
+  ```
+
+### 9. What are some common MongoDB operators and their uses?
+**Common MongoDB Operators**:
+- **Comparison Operators**: `$eq`, `$ne`, `$gt`, `$gte`, `$lt`, `$lte`
+  - Example: `{ age: { $gt: 25 } }`
+- **Logical Operators**: `$and`, `$or`, `$not`, `$nor`
+  - Example: `{ $or: [{ status: "A" }, { qty: { $lt: 30 } }] }`
+- **Element Operators**: `$exists`, `$type`
+  - Example: `{ age: { $exists: true } }`
+- **Array Operators**: `$in`, `$nin`, `$all`, `$size`, `$elemMatch`
+  - Example: `{ tags: { $in: ["red", "blue"] } }`
+- **Update Operators**: `$set`, `$unset`, `$inc`, `$push`, `$pull`
+  - Example: `{ $set: { status: "A" } }`
+
+### 10. How does MongoDB handle transactions?
+**Transactions** in MongoDB allow for multiple operations to be executed in a single, atomic operation, ensuring data consistency.
+
+**How Transactions Work**:
+- **Multi-Document Transactions**: Supported in replica sets and sharded clusters.
+- **ACID Properties**: Transactions provide Atomicity, Consistency, Isolation, and Durability.
+- **Session**: Transactions are associated with a session, and all operations within the transaction are executed in the context of that session.
+
+**Example**:
+```javascript
+const session = client.startSession();
+session.startTransaction();
+
+try {
+  db.collection1.updateOne({ _id: 1 }, { $set: { status: "A" } }, { session });
+  db.collection2.updateOne({ _id: 2 }, { $set: { status: "B" } }, { session });
+  session.commitTransaction();
+} catch (error) {
+  session.abortTransaction();
+} finally {
+  session.endSession();
+}
+```
+
+These explanations should help you understand the key concepts and functionalities related to MongoDB.
+
+Similar code found with 1 license type
+
+
+### 11. What is a MongoDB aggregation framework, and how is it different from a SQL JOIN?
+The **MongoDB aggregation framework** is a powerful tool for performing data aggregation operations, such as filtering, grouping, and transforming data.
+
+**Aggregation Framework**:
+- **Stages**: Consists of multiple stages, each performing a specific operation on the data.
+- **Operators**: Uses operators like `$match`, `$group`, `$project`, etc., to process data.
+
+**Difference from SQL JOIN**:
+- **SQL JOIN**: Combines rows from two or more tables based on a related column.
+- **Aggregation Framework**: Uses a pipeline approach to process and transform data within a single collection or across collections using `$lookup`.
+
+**Example**:
+```javascript
+db.orders.aggregate([
+  { $lookup: {
+      from: "customers",
+      localField: "customerId",
+      foreignField: "_id",
+      as: "customerDetails"
+    }
+  },
+  { $unwind: "$customerDetails" },
+  { $project: {
+      orderId: 1,
+      customerName: "$customerDetails.name",
+      totalAmount: 1
+    }
+  }
+]);
+```
+
+### 12. Explain the role of the ObjectId in MongoDB.
+**ObjectId** is a unique identifier for documents in MongoDB. It is the default value for the `_id` field in a document.
+
+**Role of ObjectId**:
+- **Uniqueness**: Ensures each document has a unique identifier.
+- **Timestamp**: Encodes the creation time of the document.
+- **Distributed Systems**: Generates unique IDs across distributed systems without requiring a central authority.
+
+**Structure**:
+- **Timestamp**: First 4 bytes represent the creation time.
+- **Machine Identifier**: Next 3 bytes represent the machine identifier.
+- **Process ID**: Next 2 bytes represent the process ID.
+- **Counter**: Last 3 bytes represent an incrementing counter.
+
+**Example**:
+```javascript
+{
+  _id: ObjectId("507f1f77bcf86cd799439011"),
+  name: "John Doe",
+  age: 30
+}
+```
+
+### 13. How do you perform a full-text search in MongoDB?
+**Full-text search** in MongoDB allows you to search for text within string fields in documents.
+
+**Steps to Perform Full-Text Search**:
+1. **Create a Text Index**: Create a text index on the fields you want to search.
+   ```javascript
+   db.collection.createIndex({ content: "text" });
+   ```
+
+2. **Perform the Search**: Use the `$text` operator to perform the search.
+   ```javascript
+   db.collection.find({ $text: { $search: "keyword" } });
+   ```
+
+**Example**:
+```javascript
+db.articles.createIndex({ title: "text", body: "text" });
+
+db.articles.find({ $text: { $search: "MongoDB" } });
+```
+
+### 14. What is the purpose of the $geoNear aggregation stage?
+The **$geoNear** aggregation stage is used to perform geospatial queries in MongoDB, returning documents based on their proximity to a specified point.
+
+**Purpose**:
+- **Proximity Search**: Finds documents near a specified point.
+- **Geospatial Analysis**: Performs geospatial analysis and calculations.
+
+**Example**:
+```javascript
+db.places.aggregate([
+  {
+    $geoNear: {
+      near: { type: "Point", coordinates: [ -73.9667, 40.78 ] },
+      distanceField: "dist.calculated",
+      maxDistance: 1000,
+      query: { type: "restaurant" },
+      includeLocs: "dist.location",
+      spherical: true
+    }
+  }
+]);
+```
+
+### 15. How can you ensure data consistency and prevent data loss in MongoDB?
+Ensuring data consistency and preventing data loss in MongoDB involves several strategies and best practices.
+
+**Strategies**:
+- **Replica Sets**: Use replica sets to provide data redundancy and high availability.
+- **Journaling**: Enable journaling to ensure data durability and recoverability.
+- **Write Concerns**: Use appropriate write concerns to ensure data is written to the desired number of replica set members.
+- **Backups**: Regularly perform backups to protect against data loss.
+- **Transactions**: Use transactions to ensure atomicity and consistency for multiple operations.
+
+**Example**:
+```javascript
+// Using write concern to ensure data is written to at least 2 replica set members
+db.collection.insertOne({ name: "John Doe" }, { writeConcern: { w: 2 } });
+
+// Starting a transaction to ensure atomicity
+const session = client.startSession();
+session.startTransaction();
+
+try {
+  db.collection1.updateOne({ _id: 1 }, { $set: { status: "A" } }, { session });
+  db.collection2.updateOne({ _id: 2 }, { $set: { status: "B" } }, { session });
+  session.commitTransaction();
+} catch (error) {
+  session.abortTransaction();
+} finally {
+  session.endSession();
+}
+```
+
+
+--- ADVANCED (2026 Full-Stack Interview Level — 4+ yrs) ---
+
+### 16. What are MongoDB schema design patterns? (Bucket, Computed, Polymorphic, Outlier)
+MongoDB schema design patterns are reusable solutions for common data modeling challenges.
+
+**Bucket Pattern:**
+Groups related data into "buckets" to reduce the number of documents. Ideal for time-series data.
+```javascript
+// Instead of one document per temperature reading (millions of docs)
+// Group readings into hourly buckets
+{
+  sensorId: "sensor_001",
+  date: ISODate("2026-04-04T10:00:00Z"),
+  readings: [
+    { time: ISODate("2026-04-04T10:01:00Z"), temp: 22.5 },
+    { time: ISODate("2026-04-04T10:02:00Z"), temp: 22.7 },
+    // ... up to 60 readings per bucket
+  ],
+  count: 60,
+  avgTemp: 22.6
+}
+```
+
+**Computed Pattern:**
+Pre-calculate values that are frequently read but expensive to compute.
+```javascript
+// Instead of running aggregation every time to get restaurant rating
+{
+  name: "Pizza Palace",
+  reviews: [...],
+  // Computed fields — updated on each new review
+  totalReviews: 234,
+  avgRating: 4.5,          // Pre-computed, not calculated on read
+  ratingBreakdown: { "5": 120, "4": 70, "3": 30, "2": 10, "1": 4 }
+}
+```
+
+**Polymorphic Pattern:**
+Different document shapes in the same collection, sharing common fields.
+```javascript
+// Notifications collection — different types, same collection
+{ type: "order_update", userId: "123", orderId: "456", status: "delivered" }
+{ type: "promotion", userId: "123", promoCode: "SAVE20", expiresAt: "..." }
+{ type: "chat_message", userId: "123", senderId: "789", message: "Hello!" }
+// Query: db.notifications.find({ userId: "123" }).sort({ createdAt: -1 })
+```
+
+**Outlier Pattern:**
+Handle documents that are significantly larger than others. Move overflow data to a separate collection.
+```javascript
+// If a user has 10,000+ followers (outlier), store extras separately
+{
+  userId: "celebrity_123",
+  followers: ["user1", "user2", ...], // First 1000
+  hasOverflow: true
+}
+// Overflow collection
+{ userId: "celebrity_123", followers: ["user1001", "user1002", ...] }
+```
+
+### 17. Explain the aggregation pipeline with $lookup and $unwind for joining collections.
+`$lookup` performs a left outer join with another collection. `$unwind` deconstructs arrays into individual documents.
+
+**Example — Get orders with customer details:**
+```javascript
+db.orders.aggregate([
+  // Stage 1: Join with customers collection
+  {
+    $lookup: {
+      from: "customers",          // Collection to join
+      localField: "customerId",   // Field in orders
+      foreignField: "_id",        // Field in customers
+      as: "customerInfo"          // Output array field
+    }
+  },
+  // Stage 2: $lookup returns an array — $unwind flattens it
+  { $unwind: "$customerInfo" },
+
+  // Stage 3: Join with restaurant collection
+  {
+    $lookup: {
+      from: "restaurants",
+      localField: "restaurantId",
+      foreignField: "_id",
+      as: "restaurant"
+    }
+  },
+  { $unwind: "$restaurant" },
+
+  // Stage 4: Shape the output
+  {
+    $project: {
+      orderId: "$_id",
+      customerName: "$customerInfo.name",
+      customerEmail: "$customerInfo.email",
+      restaurantName: "$restaurant.name",
+      items: 1,
+      totalAmount: 1,
+      status: 1,
+      createdAt: 1
+    }
+  },
+
+  // Stage 5: Filter and sort
+  { $match: { status: "delivered" } },
+  { $sort: { createdAt: -1 } },
+  { $limit: 20 }
+]);
+```
+
+**Performance tip:** Always `$match` before `$lookup` to reduce the number of documents being joined.
+
+### 18. How does MongoDB handle multi-document ACID transactions?
+MongoDB supports **multi-document ACID transactions** since v4.0 (replica sets) and v4.2 (sharded clusters).
+
+**ACID in MongoDB:**
+- **Atomicity:** All operations in the transaction succeed or all are rolled back
+- **Consistency:** Data moves from one valid state to another
+- **Isolation:** Concurrent transactions don't interfere with each other
+- **Durability:** Committed data survives system failures
+
+**Example — Transfer money between accounts:**
+```javascript
+const session = await mongoose.startSession();
+session.startTransaction();
+
+try {
+  // Debit from sender
+  await Account.findByIdAndUpdate(
+    senderId,
+    { $inc: { balance: -amount } },
+    { session }
+  );
+
+  // Credit to receiver
+  await Account.findByIdAndUpdate(
+    receiverId,
+    { $inc: { balance: amount } },
+    { session }
+  );
+
+  // Create transaction record
+  await Transaction.create([{
+    from: senderId,
+    to: receiverId,
+    amount,
+    status: 'completed'
+  }], { session });
+
+  await session.commitTransaction();
+} catch (error) {
+  await session.abortTransaction();
+  throw error;
+} finally {
+  session.endSession();
+}
+```
+
+**Important notes:**
+- Transactions require a replica set (even for local development — use `mongod --replSet rs0`)
+- Keep transactions short (< 60 seconds default timeout)
+- MongoDB is optimized for single-document atomicity — use transactions only when needed
+- Transactions have performance overhead due to locking
+
+### 19. What are read/write concerns and how do they affect data consistency?
+**Write Concern** — how many replica set members must acknowledge a write before it's considered successful.
+
+| Write Concern | Meaning | Use Case |
+|---|---|---|
+| `w: 0` | Fire and forget — no acknowledgment | Logging, non-critical data |
+| `w: 1` (default) | Primary acknowledges | General use |
+| `w: "majority"` | Majority of replicas acknowledge | Financial data, critical operations |
+
+**Read Concern** — what data a read operation returns based on replication.
+
+| Read Concern | Meaning |
+|---|---|
+| `"local"` (default) | Returns latest data on the queried node (may be rolled back) |
+| `"available"` | Similar to local, earliest for sharded clusters |
+| `"majority"` | Only returns data acknowledged by majority (durable) |
+| `"linearizable"` | Strongest — reads reflect all writes acknowledged before the read |
+
+```javascript
+// Critical payment — use majority for both read and write
+const order = await Order.findById(orderId).read('majority');
+
+await Order.updateOne(
+  { _id: orderId },
+  { status: 'paid' },
+  { writeConcern: { w: 'majority', wtimeout: 5000 } }
+);
+```
+
+### 20. How do you use Change Streams for real-time data sync?
+**Change Streams** let you watch for real-time changes to a collection, database, or entire deployment. Built on top of the oplog (requires replica set).
+
+**Use cases:** Real-time notifications, syncing data to cache, audit logs, triggering side effects.
+
+```javascript
+const mongoose = require('mongoose');
+
+// Watch a specific collection
+const changeStream = Order.watch([
+  { $match: { operationType: { $in: ['insert', 'update'] } } }
+]);
+
+changeStream.on('change', (change) => {
+  console.log('Change detected:', change.operationType);
+
+  if (change.operationType === 'insert') {
+    // New order placed — notify restaurant
+    const order = change.fullDocument;
+    io.to(`restaurant:${order.restaurantId}`).emit('new-order', order);
+  }
+
+  if (change.operationType === 'update') {
+    // Order status changed — notify customer
+    const orderId = change.documentKey._id;
+    const updatedFields = change.updateDescription.updatedFields;
+    io.to(`order:${orderId}`).emit('order-update', updatedFields);
+  }
+});
+
+// Handle errors and resume
+changeStream.on('error', (err) => {
+  console.error('Change stream error:', err);
+  // Reconnect logic with resume token
+});
+```
+
+**With resume tokens:** If the connection drops, you can resume from where you left off:
+```javascript
+let resumeToken;
+changeStream.on('change', (change) => {
+  resumeToken = change._id; // Save resume token
+  // process change...
+});
+
+// On reconnect:
+const resumed = Order.watch([], { resumeAfter: resumeToken });
+```
+
+### 21. Explain compound indexes and how index direction affects sorting performance.
+A **compound index** indexes multiple fields together. The **order and direction** of fields matters.
+
+```javascript
+// Compound index on { restaurantId: 1, createdAt: -1 }
+db.orders.createIndex({ restaurantId: 1, createdAt: -1 });
+```
+
+**Index direction matters for sorting:**
+- Index `{ a: 1, b: 1 }` supports sorts: `{ a: 1, b: 1 }` and `{ a: -1, b: -1 }`
+- It does NOT efficiently support: `{ a: 1, b: -1 }` (mixed directions need a matching index)
+
+```javascript
+// This index: { restaurantId: 1, createdAt: -1 }
+// ✅ Efficient: db.orders.find({ restaurantId: "123" }).sort({ createdAt: -1 })
+// ✅ Efficient: db.orders.find({ restaurantId: "123" }).sort({ createdAt: 1 })  // reverse scan
+// ❌ Not used: db.orders.find().sort({ createdAt: -1 })  // restaurantId not in query
+```
+
+**ESR Rule (Equality, Sort, Range):**
+- **E**quality filters first → **S**ort fields next → **R**ange conditions last
+```javascript
+// Query: Find active orders for a restaurant, sorted by date, price > 100
+// Optimal index:
+db.orders.createIndex({
+  restaurantId: 1,    // Equality
+  createdAt: -1,      // Sort
+  totalAmount: 1      // Range
+});
+```
+
+### 22. When to embed vs reference documents? What factors decide the approach?
+
+| Factor | Embed | Reference |
+|---|---|---|
+| Relationship | One-to-few | One-to-many or Many-to-many |
+| Access pattern | Always read together | Read independently |
+| Document size | Combined < 16MB | Could exceed 16MB limit |
+| Update frequency | Rarely changes | Frequently updated |
+
+**Embed — Menu items inside Restaurant:**
+```javascript
+// Good: Menus are always fetched with restaurant, rarely updated independently
+{
+  name: "Pizza Palace",
+  menu: [
+    { name: "Margherita", price: 299, category: "Pizza" },
+    { name: "Farmhouse", price: 399, category: "Pizza" }
+  ]
+}
+```
+
+**Reference — Orders referencing Users:**
+```javascript
+// Good: Orders and users are independent entities, queried separately
+// Order document
+{ userId: ObjectId("..."), items: [...], total: 599 }
+
+// User document
+{ _id: ObjectId("..."), name: "John", email: "john@email.com" }
+```
+
+**Hybrid approach (most common in production):**
+```javascript
+// Order embeds essential user info (denormalization) + references full user
+{
+  userId: ObjectId("..."),
+  customerName: "John",      // Denormalized — avoids $lookup for display
+  customerPhone: "999...",
+  items: [...]
+}
+```
+
+### 23. How would you optimize a slow MongoDB aggregation pipeline?
+**Step 1: Use `explain()` to diagnose:**
+```javascript
+db.orders.aggregate([...]).explain("executionStats");
+// Look for: COLLSCAN (bad), IXSCAN (good), nReturned vs totalDocsExamined
+```
+
+**Optimization strategies:**
+1. **`$match` first** — Filter early, reduce documents for subsequent stages
+2. **Use indexes** — Ensure `$match` and `$sort` can use indexes
+3. **`$project` early** — Drop unnecessary fields to reduce memory usage
+4. **Avoid `$unwind` on large arrays** — Creates one document per array element
+5. **Use `allowDiskUse: true`** for large pipelines (when RAM limit of 100MB is exceeded)
+6. **`$limit` early** — If you only need top N results
+7. **$facet wisely** — Each facet runs independently, can be expensive
+
+```javascript
+// ❌ Slow — full collection scan, then filter
+db.orders.aggregate([
+  { $lookup: { from: "customers", ... } },
+  { $match: { status: "delivered" } }    // Too late!
+]);
+
+// ✅ Fast — filter first, then join
+db.orders.aggregate([
+  { $match: { status: "delivered" } },   // Uses index, reduces docs
+  { $sort: { createdAt: -1 } },          // Uses index
+  { $limit: 100 },                       // Reduce before join
+  { $lookup: { from: "customers", ... } }
+]);
+```
+
+### 24. What are TTL indexes and when would you use them?
+**TTL (Time-To-Live) indexes** automatically delete documents after a specified time period. MongoDB runs a background task every 60 seconds to remove expired documents.
+
+**Use cases:** Session storage, temporary tokens, logs, OTP codes, cache entries.
+
+```javascript
+// Documents expire 24 hours after creation
+db.sessions.createIndex(
+  { createdAt: 1 },
+  { expireAfterSeconds: 86400 }  // 24 hours
+);
+
+// Documents expire at a specific date/time
+db.otpCodes.createIndex(
+  { expiresAt: 1 },
+  { expireAfterSeconds: 0 }  // Expire at the date in expiresAt field
+);
+
+// Insert with custom expiry
+db.otpCodes.insertOne({
+  userId: "123",
+  code: "456789",
+  expiresAt: new Date(Date.now() + 5 * 60 * 1000)  // 5 minutes from now
+});
+```
+
+**Important notes:**
+- TTL index must be on a Date field
+- Background task runs every 60 seconds (deletion might be slightly delayed)
+- Can only be a single-field index (not compound)
+- Cannot be used on capped collections
+
+### 25. Explain the $facet stage in aggregation. When is it useful?
+**`$facet`** runs multiple aggregation pipelines within a single stage on the same set of input documents. Each pipeline produces its own output.
+
+**Use case:** Dashboard data — get counts, stats, and paginated data in ONE query instead of multiple.
+
+```javascript
+db.orders.aggregate([
+  { $match: { restaurantId: ObjectId("...") } },
+  {
+    $facet: {
+      // Pipeline 1: Paginated results
+      data: [
+        { $sort: { createdAt: -1 } },
+        { $skip: 0 },
+        { $limit: 20 },
+        { $project: { customerName: 1, total: 1, status: 1, createdAt: 1 } }
+      ],
+
+      // Pipeline 2: Total count (for pagination)
+      totalCount: [
+        { $count: "count" }
+      ],
+
+      // Pipeline 3: Status breakdown
+      statusBreakdown: [
+        { $group: { _id: "$status", count: { $sum: 1 } } }
+      ],
+
+      // Pipeline 4: Revenue stats
+      revenueStats: [
+        {
+          $group: {
+            _id: null,
+            totalRevenue: { $sum: "$total" },
+            avgOrderValue: { $avg: "$total" },
+            maxOrder: { $max: "$total" }
+          }
+        }
+      ]
+    }
+  }
+]);
+
+// Single query returns: paginated orders + total count + status breakdown + revenue stats
+```
+
+### 26. How does Mongoose discriminator work for inheritance patterns?
+**Discriminators** allow you to have multiple models with overlapping schemas stored in the same collection. Like inheritance in OOP.
+
+```javascript
+const mongoose = require('mongoose');
+
+// Base schema
+const notificationSchema = new mongoose.Schema({
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+  message: { type: String, required: true },
+  read: { type: Boolean, default: false }
+}, { timestamps: true, discriminatorKey: 'type' });
+
+const Notification = mongoose.model('Notification', notificationSchema);
+
+// Order notification — extends base with order-specific fields
+const OrderNotification = Notification.discriminator('OrderNotification',
+  new mongoose.Schema({
+    orderId: { type: mongoose.Schema.Types.ObjectId, ref: 'Order' },
+    status: { type: String, enum: ['placed', 'preparing', 'delivered'] }
+  })
+);
+
+// Chat notification — extends base with chat-specific fields
+const ChatNotification = Notification.discriminator('ChatNotification',
+  new mongoose.Schema({
+    senderId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+    chatRoomId: String
+  })
+);
+
+// All stored in one 'notifications' collection
+await OrderNotification.create({
+  userId: '...', message: 'Your order is ready', orderId: '...', status: 'preparing'
+});
+
+// Query all notifications for a user
+const all = await Notification.find({ userId: '...' });
+
+// Query only order notifications
+const orders = await OrderNotification.find({ userId: '...' });
+```
+
+### 27. What are covered queries and why do they matter for performance?
+A **covered query** is one where ALL the fields in the query and the projection are part of an index. MongoDB returns results directly from the index without reading the actual documents — extremely fast.
+
+```javascript
+// Create a compound index
+db.orders.createIndex({ restaurantId: 1, status: 1, totalAmount: 1 });
+
+// ✅ Covered query — all fields are in the index
+db.orders.find(
+  { restaurantId: "123", status: "delivered" },
+  { totalAmount: 1, _id: 0 }   // Projection must exclude _id!
+);
+
+// ❌ NOT covered — "customerName" is not in the index
+db.orders.find(
+  { restaurantId: "123" },
+  { totalAmount: 1, customerName: 1, _id: 0 }
+);
+```
+
+**How to verify:**
+```javascript
+db.orders.find({ ... }).explain("executionStats");
+// Look for: totalDocsExamined: 0
+// If totalDocsExamined is 0, it's a covered query
+```
+
+**Why it matters:** Index data is typically in RAM. Fetching from index = no disk I/O = orders of magnitude faster on large collections.
+
+### 28. How do you handle schema migration/versioning in MongoDB?
+Unlike SQL databases, MongoDB doesn't have built-in migration tools. You need strategies:
+
+**1. Application-level versioning:**
+```javascript
+const userSchema = new mongoose.Schema({
+  schemaVersion: { type: Number, default: 2 },
+  name: String,
+  // v1: address was a string
+  // v2: address is an object
+  address: mongoose.Schema.Types.Mixed
+});
+
+// Middleware to auto-migrate on read
+userSchema.pre('init', function(doc) {
+  if (doc.schemaVersion === 1) {
+    doc.address = { street: doc.address, city: '', zip: '' };
+    doc.schemaVersion = 2;
+  }
+});
+```
+
+**2. Migration scripts (recommended for production):**
+```javascript
+// migrations/002_address_to_object.js
+async function up(db) {
+  const users = db.collection('users');
+
+  await users.updateMany(
+    { schemaVersion: { $lt: 2 }, address: { $type: 'string' } },
+    [
+      {
+        $set: {
+          address: { street: '$address', city: '', zip: '' },
+          schemaVersion: 2
+        }
+      }
+    ]
+  );
+  console.log('Migration 002 complete');
+}
+```
+
+**Tools:** `migrate-mongo`, `mongodb-migrations`
+
+**Best practices:**
+- Always add new fields as optional (no breaking change)
+- Run migrations in staging before production
+- Use `$exists` checks for backward compatibility
+- Keep a `schemaVersion` field for tracking
+
+### 29. Explain optimistic concurrency control in MongoDB. (version fields)
+**Optimistic concurrency** handles conflicts when multiple users edit the same document simultaneously. Instead of locking, you use a version field.
+
+**How it works:**
+1. Read the document (note the version number)
+2. Modify locally
+3. Write back ONLY if the version hasn't changed
+4. If version changed → someone else modified it → retry or reject
+
+**Mongoose built-in (`__v` field):**
+```javascript
+const restaurantSchema = new mongoose.Schema({
+  name: String,
+  menu: [{ name: String, price: Number }]
+});
+
+// Enable optimistic concurrency
+restaurantSchema.set('optimisticConcurrency', true);
+
+const restaurant = await Restaurant.findById(id);
+restaurant.menu.push({ name: 'New Item', price: 299 });
+
+try {
+  await restaurant.save();
+} catch (err) {
+  if (err.name === 'VersionError') {
+    // Another request modified this document
+    // Retry: re-fetch and re-apply changes
+    console.log('Conflict detected — retrying...');
+  }
+}
+```
+
+**Manual approach:**
+```javascript
+const result = await Restaurant.updateOne(
+  { _id: restaurantId, __v: currentVersion },  // Match version
+  {
+    $push: { menu: { name: 'New Item', price: 299 } },
+    $inc: { __v: 1 }  // Increment version
+  }
+);
+
+if (result.modifiedCount === 0) {
+  throw new Error('Conflict — document was modified by another request');
+}
+```
+
+### 30. What is MongoDB Atlas Search and how does it compare to text indexes?
+
+| Feature | Text Index | Atlas Search (Lucene-based) |
+|---|---|---|
+| Search type | Basic keyword matching | Full-text with fuzzy, autocomplete, synonyms |
+| Relevance scoring | Basic TF-IDF | Advanced BM25 + custom scoring |
+| Facets | Not available | Built-in faceted search |
+| Autocomplete | Not built-in | Native autocomplete tokenizer |
+| Highlighting | Not available | Highlight matching text |
+| Performance | Good for simple search | Better for complex search at scale |
+| Cost | Free (self-hosted) | Atlas-only feature |
+
+**Atlas Search example:**
+```javascript
+db.restaurants.aggregate([
+  {
+    $search: {
+      index: "restaurant_search",
+      compound: {
+        must: [
+          { text: { query: "pizza", path: "menu.name", fuzzy: { maxEdits: 1 } } }
+        ],
+        should: [
+          { text: { query: "pizza", path: "name", score: { boost: { value: 3 } } } }
+        ],
+        filter: [
+          { range: { path: "rating", gte: 4.0 } }
+        ]
+      }
+    }
+  },
+  { $limit: 20 },
+  {
+    $project: {
+      name: 1,
+      rating: 1,
+      score: { $meta: "searchScore" }
+    }
+  }
+]);
+```
+
+### 31. Explain the difference between Mongoose populate() and MongoDB $lookup.
+
+| Feature | `populate()` | `$lookup` |
+|---|---|---|
+| How it works | Multiple queries (one per reference) | Single aggregation query (server-side join) |
+| Performance | N+1 queries for N references | Single query, more efficient |
+| Flexibility | Simple, follows schema refs | Full aggregation power (filter, project, sort) |
+| Nested populate | Supported (chained `.populate()`) | Use `$lookup` inside `pipeline` |
+| When to use | Simple refs, small datasets | Complex joins, large datasets, analytics |
+
+```javascript
+// populate() — 2 queries behind the scenes
+const order = await Order.findById(id).populate('userId', 'name email');
+
+// $lookup — single query
+const orders = await Order.aggregate([
+  { $match: { _id: mongoose.Types.ObjectId(id) } },
+  {
+    $lookup: {
+      from: 'users',
+      localField: 'userId',
+      foreignField: '_id',
+      as: 'user',
+      pipeline: [{ $project: { name: 1, email: 1 } }]  // Filter inside lookup
+    }
+  },
+  { $unwind: '$user' }
+]);
+```
+
+### 32. When would you use lean() queries in Mongoose? What's the performance impact?
+**`lean()`** returns plain JavaScript objects instead of Mongoose documents. This skips hydration (adding Mongoose methods, virtuals, change tracking).
+
+```javascript
+// Without lean — full Mongoose document (heavier)
+const user = await User.findById(id);
+user.save();            // ✅ Works
+user.virtualField;      // ✅ Works
+user instanceof User;   // true
+
+// With lean — plain object (lighter, 5-10x faster)
+const user = await User.findById(id).lean();
+user.save();            // ❌ Error — no save method
+user.virtualField;      // ❌ Undefined — no virtuals
+user instanceof User;   // false
+```
+
+**When to use `lean()`:**
+- Read-only API responses (most GET endpoints)
+- Aggregation results being sent to client
+- Bulk data processing (reporting, exports)
+- Anytime you don't need to modify and save the document
+
+**Performance impact:** 2-5x faster for simple queries, up to 10x on large result sets. Less memory usage.
+
+### 33. What are Mongoose pre/post hooks? Give real-world examples.
+**Hooks (middleware)** run functions before or after certain Mongoose operations.
+
+```javascript
+const userSchema = new mongoose.Schema({
+  email: String,
+  password: String,
+  name: String
+});
+
+// PRE save — hash password before saving
+userSchema.pre('save', async function (next) {
+  if (!this.isModified('password')) return next();
+  this.password = await bcrypt.hash(this.password, 12);
+  next();
+});
+
+// PRE find — exclude soft-deleted documents
+userSchema.pre(/^find/, function (next) {
+  this.where({ deleted: { $ne: true } });
+  next();
+});
+
+// POST save — send welcome email after user creation
+userSchema.post('save', async function (doc) {
+  if (doc.isNew) {
+    await emailQueue.add('welcome', { email: doc.email, name: doc.name });
+  }
+});
+
+// PRE remove — cascade delete related data
+userSchema.pre('findOneAndDelete', async function (next) {
+  const userId = this.getQuery()._id;
+  await Order.deleteMany({ userId });
+  await Review.deleteMany({ userId });
+  next();
+});
+```
+
+**Hook types:** `save`, `validate`, `remove`, `updateOne`, `deleteOne`, `find`, `findOne`, `aggregate`, `init`
+
+### 34. Explain the $graphLookup stage for hierarchical/tree data.
+**`$graphLookup`** performs a recursive search on a collection — perfect for trees, org charts, category hierarchies, social graphs.
+
+```javascript
+// Categories collection (self-referencing)
+// { _id: "electronics", parent: null }
+// { _id: "phones", parent: "electronics" }
+// { _id: "iphones", parent: "phones" }
+// { _id: "iphone15", parent: "iphones" }
+
+db.categories.aggregate([
+  { $match: { _id: "electronics" } },
+  {
+    $graphLookup: {
+      from: "categories",
+      startWith: "$_id",              // Start from this field
+      connectFromField: "_id",         // Match this field...
+      connectToField: "parent",        // ...with this field in next level
+      as: "subcategories",             // Output array name
+      maxDepth: 5,                     // Max levels deep
+      depthField: "level"             // Track depth in results
+    }
+  }
+]);
+
+// Returns: electronics + all descendants (phones, iphones, iphone15)
+// with a "level" field showing depth (0, 1, 2)
+```
+
+**Use cases:** Category trees, employee org charts, friend-of-friend queries, dependency resolution.
+
+### 35. How does MongoDB handle connection pooling? How to configure it with Mongoose?
+**Connection pooling** maintains a set of open connections to the database, reusing them instead of creating new ones for each query.
+
+```javascript
+// Mongoose connection with pool configuration
+mongoose.connect(process.env.DB_URI, {
+  maxPoolSize: 10,          // Max simultaneous connections (default: 100)
+  minPoolSize: 2,           // Keep at least 2 connections open
+  maxIdleTimeMS: 30000,     // Close idle connections after 30s
+  serverSelectionTimeoutMS: 5000, // Timeout for server selection
+  socketTimeoutMS: 45000,   // Close sockets after 45s of inactivity
+  heartbeatFrequencyMS: 10000,   // Check server health every 10s
+});
+
+// Monitor connection pool events
+mongoose.connection.on('connected', () => console.log('MongoDB connected'));
+mongoose.connection.on('disconnected', () => console.log('MongoDB disconnected'));
+mongoose.connection.on('error', (err) => console.error('MongoDB error:', err));
+
+// Graceful shutdown
+process.on('SIGTERM', async () => {
+  await mongoose.connection.close();
+  process.exit(0);
+});
+```
+
+**How it works:**
+- When a query is made, Mongoose borrows a connection from the pool
+- After query completes, connection is returned to the pool (not closed)
+- If pool is full, new queries wait in a queue
+
+**Sizing guidelines:**
+- Default pool (100) is fine for most apps
+- For serverless (Lambda): `maxPoolSize: 1` to avoid exhausting connections
+- Monitor with MongoDB Atlas: `connections.current` metric
+
+### 36. What are partial indexes and sparse indexes? When to use each?
+
+**Partial Index:** Only indexes documents matching a filter expression. Smaller, more efficient.
+```javascript
+// Only index orders that are "pending" — no need to index delivered orders
+db.orders.createIndex(
+  { createdAt: 1 },
+  { partialFilterExpression: { status: "pending" } }
+);
+
+// This query uses the partial index:
+db.orders.find({ status: "pending" }).sort({ createdAt: 1 });
+
+// This query does NOT use it:
+db.orders.find({ status: "delivered" }).sort({ createdAt: 1 });
+```
+
+**Sparse Index:** Only indexes documents where the indexed field EXISTS. Skips documents without that field.
+```javascript
+// Not all users have a phone number — sparse index only covers those who do
+db.users.createIndex(
+  { phone: 1 },
+  { sparse: true, unique: true }
+);
+// Allows multiple documents WITHOUT "phone" field (unique + sparse)
+```
+
+**When to use:**
+- **Partial index** → when you frequently query a subset of data (active orders, unread notifications)
+- **Sparse index** → when the field is optional and you want unique constraints on it
+
+### 37. How do you read and interpret explain() output? (IXSCAN vs COLLSCAN)
+
+```javascript
+db.orders.find({ restaurantId: "123", status: "pending" }).explain("executionStats");
+```
+
+**Key fields to check:**
+| Field | Good Value | Bad Value |
+|---|---|---|
+| `winningPlan.stage` | `IXSCAN` (index scan) | `COLLSCAN` (full collection scan) |
+| `totalDocsExamined` | Close to `nReturned` | Much higher than `nReturned` |
+| `totalKeysExamined` | Close to `nReturned` | Much higher = wrong index |
+| `executionTimeMillis` | Low | High = optimize needed |
+
+**Example output interpretation:**
+```javascript
+{
+  nReturned: 20,           // Returned 20 documents
+  totalDocsExamined: 20,   // ✅ Examined only 20 (perfect)
+  totalKeysExamined: 20,   // ✅ Used index efficiently
+  executionTimeMillis: 2,  // ✅ 2ms
+  winningPlan: {
+    stage: "IXSCAN",       // ✅ Using an index
+    indexName: "restaurantId_1_status_1"
+  }
+}
+
+// vs BAD output:
+{
+  nReturned: 20,
+  totalDocsExamined: 500000,  // ❌ Scanned 500K docs for 20 results
+  winningPlan: { stage: "COLLSCAN" }  // ❌ No index used
+}
+```
+
+### 38. Design a MongoDB schema for a food delivery app (restaurants, menus, orders, users).
+
+```javascript
+// Users collection
+{
+  _id: ObjectId,
+  name: String,
+  email: String,         // unique index
+  phone: String,
+  passwordHash: String,
+  role: "customer" | "restaurant_owner" | "admin",
+  addresses: [{
+    label: "Home" | "Work" | "Other",
+    street: String,
+    city: String,
+    coordinates: { type: "Point", coordinates: [lng, lat] }
+  }],
+  createdAt: Date
+}
+
+// Restaurants collection
+{
+  _id: ObjectId,
+  ownerId: ObjectId,         // ref: Users
+  name: String,
+  cuisine: [String],          // ["Italian", "Pizza"]
+  location: { type: "Point", coordinates: [lng, lat] },  // 2dsphere index
+  rating: { avg: 4.5, count: 234 },  // Computed pattern
+  isActive: Boolean,
+  deliveryRadius: Number,     // km
+  openingHours: { open: "09:00", close: "23:00" }
+}
+
+// Menu Items collection (separate — can be large, updated independently)
+{
+  _id: ObjectId,
+  restaurantId: ObjectId,    // compound index with category
+  name: String,
+  description: String,
+  price: Number,
+  category: String,
+  image: String,
+  isVeg: Boolean,
+  isAvailable: Boolean
+}
+
+// Orders collection
+{
+  _id: ObjectId,
+  userId: ObjectId,
+  restaurantId: ObjectId,
+  items: [{                   // Embedded — snapshot at time of order
+    menuItemId: ObjectId,
+    name: String,             // Denormalized
+    price: Number,            // Price at time of order
+    quantity: Number
+  }],
+  totalAmount: Number,
+  status: "placed" | "confirmed" | "preparing" | "out_for_delivery" | "delivered" | "cancelled",
+  deliveryAddress: { street: String, coordinates: [lng, lat] },
+  paymentId: String,
+  createdAt: Date,
+  updatedAt: Date
+}
+
+// Key indexes:
+// db.restaurants.createIndex({ location: "2dsphere" })
+// db.orders.createIndex({ userId: 1, createdAt: -1 })
+// db.orders.createIndex({ restaurantId: 1, status: 1, createdAt: -1 })
+// db.menuItems.createIndex({ restaurantId: 1, category: 1 })
+```
+
+### 39. How would you implement full-text search with weighted fields in MongoDB?
+
+```javascript
+// Create a weighted text index
+db.restaurants.createIndex(
+  {
+    name: "text",
+    cuisine: "text",
+    description: "text"
+  },
+  {
+    weights: {
+      name: 10,           // Name matches are 10x more important
+      cuisine: 5,          // Cuisine matches are 5x
+      description: 1       // Description matches are base weight
+    },
+    name: "restaurant_text_search"
+  }
+);
+
+// Search with relevance score
+db.restaurants.find(
+  { $text: { $search: "italian pizza" } },
+  { score: { $meta: "textScore" } }
+).sort({ score: { $meta: "textScore" } });
+
+// Combine with other filters
+db.restaurants.find({
+  $text: { $search: "pizza" },
+  isActive: true,
+  "rating.avg": { $gte: 4.0 }
+}).sort({ score: { $meta: "textScore" } }).limit(20);
+```
+
+**Limitations of text indexes:**
+- Only one text index per collection
+- No fuzzy matching (use Atlas Search for that)
+- No autocomplete
+- Language-specific stemming can be inconsistent
+
+### 40. Explain the bucket pattern for time-series or IoT data in MongoDB.
+The **bucket pattern** groups related data into time-based buckets, reducing the number of documents and improving query performance.
+
+**Without bucket pattern (bad for scale):**
+```javascript
+// 1 document per reading = millions of documents
+{ sensorId: "s1", temp: 22.5, timestamp: ISODate("2026-04-04T10:01:00Z") }
+{ sensorId: "s1", temp: 22.7, timestamp: ISODate("2026-04-04T10:02:00Z") }
+// ... 1 million documents per day per sensor
+```
+
+**With bucket pattern:**
+```javascript
+// 1 document per hour = 24 documents per day per sensor
+{
+  sensorId: "s1",
+  bucketStart: ISODate("2026-04-04T10:00:00Z"),
+  bucketEnd: ISODate("2026-04-04T10:59:59Z"),
+  measurements: [
+    { time: ISODate("2026-04-04T10:01:00Z"), temp: 22.5, humidity: 45 },
+    { time: ISODate("2026-04-04T10:02:00Z"), temp: 22.7, humidity: 44 },
+    // ... up to 60 readings
+  ],
+  count: 60,
+  // Pre-computed stats (Computed Pattern combined)
+  stats: {
+    avgTemp: 22.6,
+    minTemp: 22.1,
+    maxTemp: 23.0
+  }
+}
+
+// Index
+db.sensorData.createIndex({ sensorId: 1, bucketStart: 1 });
+
+// Query: Get all readings for sensor s1 on April 4th
+db.sensorData.find({
+  sensorId: "s1",
+  bucketStart: { $gte: ISODate("2026-04-04"), $lt: ISODate("2026-04-05") }
+});
+```
+
+**Benefits:**
+- 60x fewer documents (1 per hour vs 1 per minute)
+- Fewer index entries = faster queries
+- Pre-computed stats avoid aggregation at query time
+- Natural data archival (delete old buckets)
+
+**Note:** MongoDB 5.0+ has native Time Series Collections that implement this pattern automatically:
+```javascript
+db.createCollection("sensorData", {
+  timeseries: {
+    timeField: "timestamp",
+    metaField: "sensorId",
+    granularity: "minutes"
+  }
+});
+```

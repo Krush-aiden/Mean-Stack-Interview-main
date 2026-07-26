@@ -1,0 +1,146 @@
+How to do localization in React?
+What is the drawback of React Js?
+How to do a test case in React using Jest?
+Which version of React ?
+which is the latest version of react ? 
+How do you handle async calls in React?
+What is concurrent rendering in React?
+What happens with a component when it receives new props?
+What are some common pitfalls when doing data fetching?
+When is it a good idea to use a class (open discussion)?
+What is the purpose of React Fragments?
+What are React Portals, and how can they be useful?
+Explain the concept of code splitting in React.
+How do you optimize the performance of a React application?
+What are source maps ?
+What is derived state ?
+What is a pure component and an impure component in React?
+Why does mutating state directly not work in React?
+What's the difference between mutation and creating new references?
+How do you update nested arrays in state?
+What are the performance implications of creating new arrays?
+When should you use the previous state pattern?
+what is Hydration in React
+different JSX events ?
+
+𝗕𝗮𝘀𝗶𝗰 𝗟𝗲𝘃𝗲𝗹 𝗤𝘂𝗲𝘀𝘁𝗶𝗼𝗻𝘀:
+
+1. What is React and how does it work?
+2. What are the differences between functional and class components?
+3. What are props and state? How are they different?
+4. What is JSX, and why is it used in React?
+5. How do you create a simple React component?
+6. What is the Virtual DOM, and why is it important?
+7. What is the purpose of the key prop in React lists?
+8. How do you handle events in React?
+9. What are default props in React?
+10. What is conditional rendering in React?
+
+𝗠𝗼𝗱𝗲𝗿𝗮𝘁𝗲 𝗟𝗲𝘃𝗲𝗹 𝗤𝘂𝗲𝘀𝘁𝗶𝗼𝗻𝘀:
+
+11. What are React Hooks? Can you explain useState and useEffect with examples?
+12. What is the difference between controlled and uncontrolled components?
+13. What is React Router, and how does client-side routing work?
+14. What is the Context API, and when should you use it instead of Redux?
+15. What is prop drilling, and how can it be avoided?
+19. How does React handle forms, and what are controlled inputs?
+20. What is Web Workers
+21. what is useTransition()
+
+𝗔𝗱𝘃𝗮𝗻𝗰𝗲𝗱 𝗟𝗲𝘃𝗲𝗹 𝗤𝘂𝗲𝘀𝘁𝗶𝗼𝗻𝘀:
+
+21. What is reconciliation in React?
+22. How does React’s diffing algorithm work?
+26. What are render props, and how are they different from HOCs? 
+27. How does server-side rendering (SSR) differ from client-side rendering (CSR) in React?
+28. What are React Fiber and Concurrent Mode?
+29. How do you test React components? What are the commonly used testing libraries?
+
+<< == More Questions =>>
+ 10. What are synthetic events in react ?
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🟡 React 19 — New Features (Interview Questions)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+30. What are Form Actions in React 19, and how do they differ from the traditional onSubmit handler?
+31. What is useActionState(), and what problems does it solve compared to multiple useState calls?
+32. What does the isPending flag in useActionState() represent, and how is it used?
+33. What is the useFormStatus hook? When would you use it over prop drilling or Context?
+34. What is the useOptimistic hook? Give a real-world use case.
+35. How does useOptimistic differ from a regular useState-based optimistic update?
+36. What is the use() API in React 19? What can it read, and what are its limitations?
+37. Why does use() require proper caching (e.g., from a framework) to avoid redundant re-renders?
+38. How has ref handling changed in React 19? What was required before, and what changed?
+39. What is native document metadata support in React 19, and what library does it replace?
+40. What is the difference between useActionState() and useTransition() for async state updates?
+ 11. What are the difference between Package.json and Package.lock.json ?
+ 34. What is the purpose of callback function as an argument of setState() ?
+ 38. What are the different ways to pass data from child component to parent component in react ?
+ 39. Practical question: How to send data from child to parent using callback functions ?
+ 40. Practical question: How to send the data from child component to parent using useRef ?
+ 42. How would you consume a RESTful JSON API in react js ?
+ 43. different design patterns used in react ?
+ 45. prop types in react(How to apply validation on props in react)
+ 46. What are React Mixins ?
+ 49. What are the different types of exports and imports ?
+ 50. What are the differences between create element vs clone element in react ?
+ 51. When to use useState and useReducer ?
+ 53. What is react-router has context menu
+ 54. what is the file structure of React
+ 55. what is super in constructor in Class based Component explain
+
+𝗥𝗲𝗮𝗹 𝘁𝗮𝗹𝗸:
+Most candidates get filtered out, not because they don’t know the tools,
+but because they can’t explain how they used them in real-world scenarios.
+
+Here are 10 real-time, real-world questions to help you go from:
+
+❌ I studied this on YouTube to ✅ I’ve solved this in production
+
+𝟭. 𝗛𝗼𝘄 𝗱𝗼 𝘆𝗼𝘂 𝗱𝗲𝘀𝗶𝗴𝗻 𝗮 𝘀𝗰𝗮𝗹𝗮𝗯𝗹𝗲, 𝗿𝗲𝘂𝘀𝗮𝗯𝗹𝗲 𝗰𝗼𝗺𝗽𝗼𝗻𝗲𝗻𝘁 𝗹𝗶𝗯𝗿𝗮𝗿𝘆 𝗳𝗼𝗿 𝗮 𝗹𝗮𝗿𝗴𝗲 𝘄𝗲𝗯 𝗮𝗽𝗽𝗹𝗶𝗰𝗮𝘁𝗶𝗼𝗻?
+ → Talk about design patterns, atomic design, and Storybook for isolated component testing.
+
+𝟮. 𝗛𝗼𝘄 𝗱𝗼 𝘆𝗼𝘂 𝗲𝗻𝘀𝘂𝗿𝗲 𝗿𝗲𝘀𝗽𝗼𝗻𝘀𝗶𝘃𝗲𝗻𝗲𝘀𝘀 𝗶𝗻 𝘆𝗼𝘂𝗿 𝗮𝗽𝗽𝗹𝗶𝗰𝗮𝘁𝗶𝗼𝗻 𝗮𝗰𝗿𝗼𝘀𝘀 𝗱𝗶𝗳𝗳𝗲𝗿𝗲𝗻𝘁 𝗱𝗲𝘃𝗶𝗰𝗲𝘀?
+ → Use of Flexbox, Grid, CSS media queries, and tools like CSS-in-JS (Styled Components, Emotion).
+
+𝟯. 𝗛𝗼𝘄 𝗱𝗼 𝘆𝗼𝘂 𝗶𝗺𝗽𝗹𝗲𝗺𝗲𝗻𝘁 𝗮𝗻𝗱 𝗼𝗽𝘁𝗶𝗺𝗶𝘇𝗲 𝗮 𝗨𝗜 𝗰𝗼𝗺𝗽𝗼𝗻𝗲𝗻𝘁 𝗹𝗶𝗸𝗲 𝗮 𝗺𝗼𝗱𝗮𝗹 𝗼𝗿 𝗮 𝗱𝗿𝗼𝗽𝗱𝗼𝘄𝗻?
+ → Explain event delegation, useRef, and the importance of closing events and ESC key press handling.
+
+𝟰. 𝗛𝗼𝘄 𝗱𝗼 𝘆𝗼𝘂 𝗮𝗽𝗽𝗿𝗼𝗮𝗰𝗵 𝗺𝗮𝗻𝗮𝗴𝗶𝗻𝗴 𝘀𝘁𝗮𝘁𝗲 𝗶𝗻 𝗰𝗼𝗺𝗽𝗹𝗲𝘅 𝗥𝗲𝗮𝗰𝘁 𝗮𝗽𝗽𝘀?
+ → Explain Redux or Recoil, useReducer, Context API, and when you’d use each based on complexity.
+
+𝟱. 𝗪𝗵𝗮𝘁’𝘀 𝘆𝗼𝘂𝗿 𝗮𝗽𝗽𝗿𝗼𝗮𝗰𝗵 𝘁𝗼 𝗲𝗿𝗿𝗼𝗿 𝗯𝗼𝘂𝗻𝗱𝗮𝗿𝗶𝗲𝘀 𝗮𝗻𝗱 𝗵𝗮𝗻𝗱𝗹𝗶𝗻𝗴 𝘂𝗻𝗲𝘅𝗽𝗲𝗰𝘁𝗲𝗱 𝗲𝗿𝗿𝗼𝗿𝘀 𝗶𝗻 𝗥𝗲𝗮𝗰𝘁?
+ → Explain React error boundaries, logging with Sentry, and graceful error handling in UI.
+
+𝟲. 𝗛𝗼𝘄 𝗱𝗼 𝘆𝗼𝘂 𝗵𝗮𝗻𝗱𝗹𝗲 𝗿𝗼𝘂𝘁𝗶𝗻𝗴 𝗶𝗻 𝘀𝗶𝗻𝗴𝗹𝗲-𝗽𝗮𝗴𝗲 𝗮𝗽𝗽𝗹𝗶𝗰𝗮𝘁𝗶𝗼𝗻𝘀?
+→ Discuss React Router, dynamic routing, nested routes, and lazy loading of routes.
+
+𝟳. 𝗛𝗼𝘄 𝗱𝗼 𝘆𝗼𝘂 𝗲𝗻𝘀𝘂𝗿𝗲 𝗮𝗰𝗰𝗲𝘀𝘀𝗶𝗯𝗶𝗹𝗶𝘁𝘆 𝗶𝗻 𝘆𝗼𝘂𝗿 𝘄𝗲𝗯 𝗮𝗽𝗽𝗹𝗶𝗰𝗮𝘁𝗶𝗼𝗻𝘀?
+ → Talk about ARIA roles, semantic HTML, keyboard navigation, and ensuring screen reader compatibility.
+
+𝟴. 𝗛𝗼𝘄 𝗱𝗼 𝘆𝗼𝘂 𝗵𝗮𝗻𝗱𝗹𝗲 𝗳𝗼𝗿𝗺 𝘃𝗮𝗹𝗶𝗱𝗮𝘁𝗶𝗼𝗻 𝗶𝗻 𝗮 𝗥𝗲𝗮𝗰𝘁 𝗮𝗽𝗽?
+ → Discuss Yup, React Hook Form, and server-side validation with form error feedback.
+
+𝟵. 𝗛𝗼𝘄 𝗱𝗼 𝘆𝗼𝘂 𝗼𝗽𝘁𝗶𝗺𝗶𝘇𝗲 𝗮𝗻 𝗮𝗽𝗽𝗹𝗶𝗰𝗮𝘁𝗶𝗼𝗻 𝗳𝗼𝗿 𝗵𝗶𝗴𝗵 𝗶𝗻𝘁𝗲𝗿𝗮𝗰𝘁𝗶𝘃𝗶𝘁𝘆 (𝗲.𝗴., 𝗰𝗼𝗺𝗽𝗹𝗲𝘅 𝗳𝗼𝗿𝗺𝘀 𝗼𝗿 𝗿𝗲𝗮𝗹-𝘁𝗶𝗺𝗲 𝘂𝗽𝗱𝗮𝘁𝗲𝘀)?
+→ Talk about debouncing, throttling, and WebSockets for real-time updates, and form libraries like Formik or React Hook Form
+
+
+20. What is meant by forward ref ? - code
+
+21 .Custom hooks - Code
+22. Context Api - Code
+
+16. What is React.memo, and how does it help with performance optimization? - code 
+17. What is the difference between useMemo and useCallback? - code 
+
+23. What is React.lazy and Suspense? How does lazy loading work in React? - code
+
+18. What is a Higher-Order Component (HOC), and how is it used? - code
+25. How do you handle authentication and protected routes in React? - code
+
+
+Js
+- 1 definition
+- 1 bookish example
+- 1 practical example

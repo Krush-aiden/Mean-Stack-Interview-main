@@ -1,0 +1,466 @@
+What is the event loop in Node.js? & JavaScript.
+What is Node.js?
+What is a Run time environment?
+What is the diff between req.param & req.query?
+What is body parser?
+What security mechanism works in NodeJs?
+What is the advantage of Express over Node.js?
+What are polyfills in JS?
+Create a NodeJS server (write the code).
+Create an Express server (write the code).
+What are the main features of Node.js?
+How does Node.js handle asynchronous operations?
+What is npm and how is it used?
+What is the difference between process.nextTick() and setImmediate()?
+How do you handle errors in Node.js?
+What is middleware in Express.js?
+How do you create a RESTful API using Node.js?
+What are streams in Node.js?
+What is the purpose of the require function in Node.js?
+What is the difference between module.exports and exports?
+How does Node.js handle multi-threading?
+How do you perform database operations in Node.js?
+How to handle multiple requests in NodeJs?
+What is the use of a header while sending API requests?
+What is REST API?
+What is the difference between PUT & POST?
+What is Content Negotiation?
+Diff between GraphQL vs REST API?
+What are SOLID principles?
+What is microservices?
+Explain HTTP methods.
+Explain HTTP codes.
+What is a URI?
+What are some best practices in making the URI for RESTful web services?
+What is the difference between REST & SOAP?
+What are the differences between REST & AJAX?
+What are some tools used to develop & test REST API?
+Real world example of REST API.
+how to make node js code secure
+what is mongoDB shredding
+what is indexing
+how to optimize mongoDB query
+what is mongoDB indexing
+how to create image upload thumbnail feature
+implementation of debounce & throttling
+rate limiting, and data encryption to protect users and their data.
+disAdvantage of middleWares
+
+--- ADVANCED (2026 Full-Stack Interview Level — 4+ yrs) ---
+
+47. Explain backpressure in Node.js streams. How does Node handle it?
+48. How do Worker Threads differ from Child Processes? When to use each?
+49. How would you implement graceful shutdown in a Node.js app? (SIGTERM, SIGINT)
+50. Explain the cluster module and how PM2 uses it in production.
+51. What is the difference between process.nextTick() and queueMicrotask()?
+52. How do you detect and fix memory leaks in Node.js? (tools, patterns)
+53. What is libuv and what role does it play in Node.js?
+54. Explain Readable, Writable, Duplex, and Transform streams with use cases.
+55. How would you implement rate limiting in Express? (Token bucket, sliding window)
+56. What is helmet.js and what headers does it set?
+57. Explain the purpose of a reverse proxy (Nginx) in front of Node.js.
+58. How do you handle environment-specific configurations in Node.js?
+59. What caching strategies can you use in a Node.js app? (Cache-aside, write-through)
+60. How would you implement a job queue in Node.js? (BullMQ, Redis)
+61. Explain the difference between pipeline() and .pipe() for streams.
+62. What is the V8 garbage collector and how does it work? (Scavenge, Mark-Sweep)
+63. How do you handle uncaught exceptions and unhandled rejections in production?
+64. What are operational errors vs programmer errors? How do you handle each?
+65. Explain multi-stage Docker builds for Node.js apps.
+66. What is structured logging and why use Winston/Pino instead of console.log?
+67. How do you implement OAuth 2.0 / OpenID Connect in Express?
+68. Explain refresh token rotation and reuse detection.
+69. What is RBAC (Role-Based Access Control)? How to implement in Express?
+70. How would you design an API versioning strategy?
+71. Explain cursor-based pagination vs offset-based. When to use each?
+72. What is IDOR (Insecure Direct Object Reference) and how to prevent it?
+73. How do you validate request body/query/params? (Joi, Zod)
+74. Explain the Circuit Breaker pattern for external API calls.
+75. What are pre-signed URLs and when would you use them for file uploads?
+
+--- SYSTEM DESIGN (4+ Years Node.js Developer) ---
+
+Q1. Design a URL Shortener service (like bit.ly) using Node.js.
+Answer:
+  Components:
+    - API Layer: Express.js server with two endpoints:
+        POST /shorten  → accepts long URL, returns short code
+        GET /:code     → redirects to original URL
+    - ID Generation: Use nanoid (7–8 chars) for a unique short code. Optionally use a counter-based Base62 encoding for predictable growth.
+    - Storage: MongoDB or PostgreSQL to store { shortCode, originalUrl, createdAt, clickCount }.
+    - Cache: Redis to cache shortCode → originalUrl lookups (TTL ~24h) so redirects don't hit DB on every request.
+    - Rate Limiting: Apply per-IP rate limiting on POST /shorten to prevent abuse.
+    - Analytics: On each GET, publish an event to a BullMQ queue to asynchronously increment click count — don't block the redirect.
+  Scaling Considerations:
+    - Horizontal scaling behind a load balancer (Nginx / AWS ALB).
+    - DB read replicas for redirect lookups (read-heavy workload).
+    - CDN for static assets if a dashboard is attached.
+
+---
+
+Q2. Design a real-time chat application using Node.js and WebSockets.
+Answer:
+  Components:
+    - Transport: Socket.IO over WebSocket (with long-polling fallback).
+    - Rooms: Socket.IO rooms map to chat channels/conversations.
+    - Message Flow:
+        1. Client emits "sendMessage" event with { roomId, text, senderId }.
+        2. Server validates, persists to MongoDB (messages collection), then broadcasts to room.
+    - Presence: Track online users in Redis (SET with TTL); broadcast "userOnline" / "userOffline" events.
+    - Multiple Node instances: Use Socket.IO Redis Adapter so events are shared across all pods.
+    - Auth: JWT validated on socket "connection" event via handshake query/headers.
+    - Message history: REST endpoint GET /rooms/:id/messages with cursor-based pagination.
+  Storage Schema:
+    - messages: { _id, roomId, senderId, text, createdAt, readBy[] }
+    - rooms:    { _id, name, members[], lastMessage, updatedAt }
+  Scaling:
+    - Sticky sessions OR Redis pub/sub adapter to handle multi-instance fan-out.
+    - Store media files in S3; send pre-signed URLs rather than raw bytes through the socket.
+
+---
+
+Q3. Design a scalable REST API for an e-commerce platform.
+Answer:
+  Services (Microservice split):
+    - Product Service   → CRUD products, search (Elasticsearch), inventory
+    - Order Service     → place order, order state machine (PENDING → PAID → SHIPPED → DELIVERED)
+    - User Service      → register, login, JWT issuance, address book
+    - Payment Service   → integrates Stripe/Razorpay, emits PAYMENT_SUCCESS/FAILED events
+    - Notification Svc  → consumes events from queue, sends email/SMS via SendGrid/Twilio
+  Communication:
+    - Synchronous:  REST or gRPC between services for low-latency queries.
+    - Asynchronous: RabbitMQ or Kafka for events (OrderPlaced → Payment, Inventory, Notification).
+  API Gateway (Express / Kong):
+    - Single entry point for clients.
+    - Handles auth (JWT), rate limiting, logging, request routing.
+  Resilience:
+    - Circuit Breaker (opossum) on calls to Payment Service.
+    - Retry with exponential backoff for transient failures.
+    - Idempotency keys on POST /orders to prevent duplicate charges.
+  Caching:
+    - Redis cache on product catalog (TTL ~5 min), invalidated on product update.
+    - HTTP cache headers (ETag, Cache-Control) on GET endpoints.
+  Database:
+    - Product/Order: PostgreSQL (ACID transactions for inventory deduction).
+    - Sessions/Cart:  Redis.
+    - Search:         Elasticsearch synced via change-data-capture (Debezium).
+
+---
+
+Q4. Design a rate limiter for a public API in Node.js.
+Answer:
+  Algorithms:
+    - Token Bucket:   Allow burst traffic; tokens replenish at a fixed rate. Good for general APIs.
+    - Sliding Window Log: Precise, stores timestamps per request in Redis sorted set. Higher memory cost.
+    - Sliding Window Counter: Approximation; blends current and previous window counts — low memory, fast.
+  Implementation with Redis (Sliding Window Counter):
+    - Key: "ratelimit:<userId>:<windowStart>"
+    - On each request:
+        1. INCR the key, set TTL = window size (e.g. 60s).
+        2. Blend: count = current_window + (previous_window * overlap_fraction).
+        3. If count > limit → return 429 Too Many Requests with Retry-After header.
+  Express Middleware:
+    - Attach as middleware per-route or globally.
+    - Use ioredis pipeline for atomic INCR + EXPIRE to avoid race conditions.
+    - For distributed systems, use a single Redis cluster (or Lua script for atomicity).
+  Headers to return:
+    - X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Reset
+
+---
+
+Q5. Design a notification system (email, push, SMS) for a large-scale app.
+Answer:
+  Flow:
+    1. Producer (Order Service, User Service) publishes events to a message queue (BullMQ / Kafka).
+       e.g.  { type: "ORDER_SHIPPED", userId, orderId, channel: ["email","push"] }
+    2. Notification Worker consumes events, looks up user preferences/device tokens.
+    3. Workers dispatch via:
+       - Email:  SendGrid / AWS SES
+       - Push:   Firebase Cloud Messaging (FCM)
+       - SMS:    Twilio
+  Reliability:
+    - Dead Letter Queue (DLQ): Failed jobs moved to DLQ after 3 retries with exponential backoff.
+    - Idempotency: Store notificationId in DB; skip if already sent.
+    - Acknowledgement: Mark job done only after provider confirms delivery.
+  Scalability:
+    - Multiple worker replicas; horizontal scaling driven by queue depth (KEDA on Kubernetes).
+    - Separate queues per channel (email-queue, sms-queue) so a slow SMS provider doesn't block emails.
+  User Preferences:
+    - Respect opt-out flags per channel per notification type stored in DB.
+    - Batch digest: for low-priority events, aggregate and send once per hour.
+
+---
+
+Q6. How would you design a file upload service that handles large files?
+Answer:
+  Direct upload to S3 (recommended, bypasses your server):
+    1. Client requests a pre-signed PUT URL from your API (POST /upload/presign).
+    2. API generates URL using AWS SDK (expires in 15 min, scoped to specific key).
+    3. Client uploads file directly to S3 using the pre-signed URL.
+    4. S3 triggers a Lambda / SNS notification → your API records metadata in DB.
+  Multipart upload (files > 100 MB):
+    - Client splits file into parts (5 MB minimum each).
+    - Initiates multipart upload → gets UploadId.
+    - Uploads each part in parallel → collects ETags.
+    - Completes multipart upload → S3 assembles the file.
+  Post-upload processing (thumbnails, virus scan, transcoding):
+    - S3 event triggers a BullMQ job / Lambda.
+    - Worker processes file asynchronously, updates DB with status.
+  Security:
+    - Pre-signed URL scoped to exact file size (ContentLengthRange condition).
+    - Validate file type by reading magic bytes server-side, not just extension.
+    - Store files with randomized keys (UUID), not original file names.
+    - Enable S3 server-side encryption (SSE-S3 or SSE-KMS).
+
+---
+
+Q7. Design a caching strategy for a high-traffic Node.js API.
+Answer:
+  Layers of caching:
+    1. CDN (CloudFront / Cloudflare): Cache static assets and public GET responses at edge.
+    2. HTTP Cache Headers: Set Cache-Control, ETag, Last-Modified on responses for client/proxy caching.
+    3. Application Cache (Redis): Cache-aside pattern for DB query results.
+       - On GET: check Redis → if miss, query DB, store result in Redis with TTL.
+       - On write (POST/PUT/DELETE): invalidate or update relevant cache keys.
+    4. In-Process Cache (node-cache / LRU cache): For extremely hot data (e.g. config, feature flags) — avoid Redis round-trip.
+  Cache invalidation strategies:
+    - TTL-based expiry: Simple, may serve stale data briefly. OK for product listings.
+    - Event-driven invalidation: On data change, publish an event → cache layer deletes keys. More precise.
+    - Write-through: Update cache on every write. Keeps cache warm but adds write latency.
+  Pitfalls to avoid:
+    - Cache stampede: Use probabilistic early expiry or a lock (Redlock) to prevent thundering herd.
+    - Caching non-deterministic or user-specific data without namespacing keys per user.
+    - Forgetting to set TTL (memory leak in Redis).
+
+---
+
+Q8. How would you handle database migrations in a production Node.js application?
+Answer:
+  Tool: Use a migration library — Knex.js migrations (SQL) or Mongoose migrate (NoSQL).
+  Principles:
+    - Migrations are versioned, sequential files committed to Git alongside code.
+    - Each migration has an up() and down() (rollback) function.
+    - Never modify an already-applied migration — create a new one.
+  Zero-downtime migrations (Blue-Green / Rolling deployment):
+    Step 1 — Expand:  Add new column/index as nullable. Deploy code that writes to both old and new columns.
+    Step 2 — Migrate: Backfill data in batches (don't lock the table). CREATE INDEX CONCURRENTLY in Postgres.
+    Step 3 — Contract: Remove old column once all traffic uses the new schema.
+  CI/CD integration:
+    - Run migrations as a pre-deploy step (separate container/job).
+    - Gate deployment on migration success — rollback if it fails.
+    - Store migration state in a migrations table in the DB (not in the filesystem).
+  Safety rules:
+    - Never DROP COLUMN or rename in the same deploy as the code change.
+    - Test rollback (down()) in staging before production.
+    - Take a DB snapshot before large migrations.
+
+================================================================================
+--- INTERVIEW CODING ROUND — Task Manager API (Judge a 4yr+ Node.js Dev) ---
+================================================================================
+
+QUESTION TO ASK THE CANDIDATE:
+---------------------------------
+"I want you to build a simple Task Manager REST API using Node.js and Express.
+You have 20–25 minutes. Use any packages you're comfortable with.
+
+Requirements:
+  1. A user can CREATE a task         → POST   /tasks
+  2. A user can GET all their tasks   → GET    /tasks
+  3. A user can GET a single task     → GET    /tasks/:id
+  4. A user can UPDATE a task         → PATCH  /tasks/:id
+  5. A user can DELETE a task         → DELETE /tasks/:id
+
+A task has:  title (required), description, status (todo / in-progress / done), createdAt
+
+Don't worry about a real database — use an in-memory array or mock data.
+Don't worry about auth for now — we'll talk about it after.
+
+I want to see your folder structure, how you write your routes, controllers,
+and how you handle errors and edge cases."
+
+
+================================================================================
+WHAT THE EXPECTED ANSWER LOOKS LIKE:
+================================================================================
+
+-- Folder Structure (green flag if they split this up themselves) --
+
+  project/
+  ├── app.js
+  ├── routes/
+  │   └── taskRoutes.js
+  ├── controllers/
+  │   └── taskController.js
+  ├── models/
+  │   └── task.js          (or inline schema if using in-memory data)
+  └── middleware/
+      └── validateTask.js
+
+
+-- app.js --
+
+  const express = require('express');
+  const taskRoutes = require('./routes/taskRoutes');
+
+  const app = express();
+  app.use(express.json());
+  app.use('/tasks', taskRoutes);
+
+  app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(err.status || 500).json({ message: err.message || 'Internal Server Error' });
+  });
+
+  app.listen(3000, () => console.log('Server running on port 3000'));
+  module.exports = app;
+
+
+-- routes/taskRoutes.js --
+  const express = require('express');
+  const router = express.Router();
+  const { getAllTasks, getTaskById, createTask, updateTask, deleteTask } = require('../controllers/taskController');
+  const { validateTask } = require('../middleware/validateTask');
+
+  router.get('/',        getAllTasks);
+  router.get('/:id',     getTaskById);
+  router.post('/',       validateTask, createTask);
+  router.patch('/:id',   updateTask);
+  router.delete('/:id',  deleteTask);
+
+  module.exports = router;
+
+
+-- models/task.js (in-memory store) --
+
+  const { v4: uuidv4 } = require('uuid');
+
+  const tasks = [];
+
+  const VALID_STATUSES = ['todo', 'in-progress', 'done'];
+
+  module.exports = { tasks, uuidv4, VALID_STATUSES };
+
+
+-- middleware/validateTask.js --
+
+  const { VALID_STATUSES } = require('../models/task');
+
+  function validateTask(req, res, next) {
+    const { title, status } = req.body;
+    if (!title || typeof title !== 'string' || !title.trim()) {
+      return res.status(400).json({ message: 'title is required and must be a non-empty string' });
+    }
+    if (status && !VALID_STATUSES.includes(status)) {
+      return res.status(400).json({ message: `status must be one of: ${VALID_STATUSES.join(', ')}` });
+    }
+    next();
+  }
+
+  module.exports = { validateTask };
+
+
+-- controllers/taskController.js --
+
+  const { tasks, uuidv4 } = require('../models/task');
+
+  // GET /tasks  — optional ?status= filter (bonus)
+  function getAllTasks(req, res) {
+    const { status } = req.query;
+    const result = status ? tasks.filter(t => t.status === status) : tasks;
+    res.status(200).json(result);
+  }
+
+  // GET /tasks/:id
+  function getTaskById(req, res) {
+    const task = tasks.find(t => t.id === req.params.id);
+    if (!task) return res.status(404).json({ message: 'Task not found' });
+    res.status(200).json(task);
+  }
+
+  // POST /tasks
+  function createTask(req, res) {
+    const { title, description = '', status = 'todo' } = req.body;
+    const task = { id: uuidv4(), title: title.trim(), description, status, createdAt: new Date().toISOString() };
+    tasks.push(task);
+    res.status(201).json(task);
+  }
+
+  // PATCH /tasks/:id
+  function updateTask(req, res) {
+    const task = tasks.find(t => t.id === req.params.id);
+    if (!task) return res.status(404).json({ message: 'Task not found' });
+
+    const { title, description, status } = req.body;
+    if (title !== undefined) task.title = title.trim();
+    if (description !== undefined) task.description = description;
+    if (status !== undefined) task.status = status;
+
+    res.status(200).json(task);
+  }
+
+  // DELETE /tasks/:id
+  function deleteTask(req, res) {
+    const index = tasks.findIndex(t => t.id === req.params.id);
+    if (index === -1) return res.status(404).json({ message: 'Task not found' });
+    tasks.splice(index, 1);
+    res.status(204).send();
+  }
+
+  module.exports = { getAllTasks, getTaskById, createTask, updateTask, deleteTask };
+
+
+================================================================================
+FOLLOW-UP QUESTIONS TO ASK AFTER THEY FINISH (reveals seniority):
+================================================================================
+
+Round 1 — Code quality:
+  Q: "Why did you use PATCH instead of PUT for updating?"
+  Expect: PATCH = partial update, PUT = full replace of the resource.
+
+  Q: "Why 201 for create and 204 for delete?"
+  Expect: 201 = resource created (return the new resource), 204 = success but no content to return.
+
+  Q: "What happens if someone sends { status: 'random-value' }? How would you handle it?"
+  Expect: Validation middleware or inside the controller, return 400 with a clear message.
+
+Round 2 — Thinking & architecture:
+  Q: "How would you add authentication to this API?"
+  Expect: JWT middleware — verify token on each request, attach user to req.user, scope tasks per user.
+
+  Q: "If this was a real app with MongoDB, what would your schema look like?"
+  Expect: userId reference on each task, indexes on userId + status for query performance.
+
+  Q: "How would you paginate GET /tasks if there are 10,000 tasks?"
+  Expect: Offset-based (?page=1&limit=20) OR cursor-based (?cursor=lastId) — bonus if they mention cursor is better for large data.
+
+Round 3 — Production thinking (for senior bar):
+  Q: "How would you test this API?"
+  Expect: Unit tests on controllers (Jest + mocks), integration tests on routes (supertest).
+
+  Q: "If this API gets 10,000 requests per second, what breaks first?"
+  Expect: In-memory store is wiped on restart and not shared across instances → need Redis or DB. No rate limiting. No clustering.
+
+  Q: "What would you change before deploying this to production?"
+  Expect: Real DB, env variables for config, rate limiting, helmet.js for security headers,
+          structured logging (Winston/Pino), health check endpoint (GET /health), Dockerfile.
+
+================================================================================
+SCORING GUIDE:
+================================================================================
+
+  Minimum pass (3yr level):
+    - Routes and controllers work correctly.
+    - Proper status codes (201, 404, 204).
+    - Basic error handling (task not found).
+
+  Good (4yr level):
+    - Separated into routes / controllers / middleware.
+    - Input validation middleware.
+    - Clean, readable code without redundancy.
+
+  Strong (senior/lead level):
+    - Mentioned or added pagination on GET /tasks.
+    - Added ?status= filter without being asked.
+    - Centralized error handler in app.js.
+    - Talked about DB schema / indexes without prompting.
+    - Discussed testing approach on their own.

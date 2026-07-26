@@ -1,0 +1,43 @@
+What is MongoDB and what are its main features?
+How does MongoDB handle schema design and data modeling?
+What are the key differences between find() and findOne() methods?
+Explain how indexing works in MongoDB and why it is important.
+What is a MongoDB replica set, and why is it used?
+How does sharding work in MongoDB?
+What are MongoDB aggregation pipelines, and how do they work?
+How do you perform data updates in MongoDB?
+What are some common MongoDB operators and their uses?
+How does MongoDB handle transactions?
+What is a MongoDB aggregation framework, and how is it different from a SQL JOIN?
+Explain the role of the ObjectId in MongoDB.
+How do you perform a full-text search in MongoDB?
+What is the purpose of the $geoNear aggregation stage?
+How can you ensure data consistency and prevent data loss in MongoDB?
+
+--- ADVANCED (2026 Full-Stack Interview Level — 4+ yrs) ---
+
+16. What are MongoDB schema design patterns? (Bucket, Computed, Polymorphic, Outlier)
+17. Explain the aggregation pipeline with $lookup and $unwind for joining collections.
+18. How does MongoDB handle multi-document ACID transactions?
+19. What are read/write concerns and how do they affect data consistency?
+20. How do you use Change Streams for real-time data synchronization?
+21. Explain compound indexes and how index direction affects sorting performance.
+22. When to embed vs reference documents? What factors decide the approach?
+23. How would you optimize a slow MongoDB aggregation pipeline?
+24. What are TTL indexes and when would you use them?
+25. Explain the $facet stage in aggregation. When is it useful?
+26. How does Mongoose discriminator work for inheritance patterns?
+27. What are covered queries and why do they matter for performance?
+28. How do you handle schema migration/versioning in MongoDB?
+29. Explain optimistic concurrency control in MongoDB. (version fields)
+30. What is MongoDB Atlas Search and how does it compare to text indexes?
+31. Explain the difference between Mongoose populate() and MongoDB $lookup.
+32. When would you use lean() queries in Mongoose? What's the performance impact?
+33. What are Mongoose pre/post hooks? Give real-world examples. (password hashing, etc.)
+34. Explain the $graphLookup stage for hierarchical/tree data.
+35. How does MongoDB handle connection pooling? How to configure it with Mongoose?
+36. What are partial indexes and sparse indexes? When to use each?
+37. How do you read and interpret explain() output? (IXSCAN vs COLLSCAN)
+38. Design a MongoDB schema for a food delivery app (restaurants, menus, orders, users).
+39. How would you implement full-text search with weighted fields in MongoDB?
+40. Explain the bucket pattern for time-series or IoT data in MongoDB.

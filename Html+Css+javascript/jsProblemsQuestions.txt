@@ -1,0 +1,266 @@
+=====================================================================
+   JAVASCRIPT CODING PROBLEMS — Interview Prep (4+ Yrs Experience)
+              Updated for 2026 Interview Standards
+=====================================================================
+
+ Solutions => jsProblemsAnswers_Part1.js (Q1-30) & jsProblemsAnswers_Part2.js (Q31-60)
+
+
+=====================================================================
+ SECTION 1 : STRING PROBLEMS
+=====================================================================
+
+1. Write a function to check if a given string is a palindrome.
+   - Approach 1: Using a for loop
+   - Approach 2: Using built-in methods (split, reverse, join)
+
+2. Implement a function to reverse a string without using the built-in reverse() method.
+
+3. Convert the first letter of each word in a sentence to uppercase (Title Case).
+   Input:  'krushna chandra mahapatra'
+   Output: 'Krushna Chandra Mahapatra'
+
+4. Given a string, write a function to count the occurrences of each character in the string.
+   - Also find which characters appear more than once.
+
+5. Find the longest substring without repeating characters.
+   Input:  'abcabcbb'
+   Output: 3 (substring: 'abc')
+
+6. Check if two strings are anagrams of each other.
+   Input:  'listen', 'silent'
+   Output: true
+
+7. Write a function to find all permutations of a string.
+   Input:  'abc'
+   Output: ['abc','acb','bac','bca','cab','cba']
+
+8. Implement a function to compress a string using character counts.
+   Input:  'aabcccccaaa'
+   Output: 'a2b1c5a3'
+
+
+=====================================================================
+ SECTION 2 : ARRAY PROBLEMS
+=====================================================================
+
+9. Given an array of numbers, find the largest and smallest numbers.
+   - Approach 1: Using a for loop
+   - Approach 2: Using Math.max / Math.min with spread
+
+10. Write a function to find the largest element in a nested array.
+    Input:  [[8,4,10],[24,2,44],[5,34]]
+    Output: 44
+
+11. Return a new array with only the unique elements (remove duplicates).
+    - Approach 1: Using a for loop + includes()
+    - Approach 2: Using Set
+
+12. Return only the elements that appear exactly once (pure unique — occurrence count = 1).
+    Input:  [1,2,3,2,3,4,4,5,6,6,7]
+    Output: [1,5,7]
+
+13. Sort an array of numbers in ascending & descending order.
+    - Using Array.sort() with comparator
+    - Without using sort (Bubble Sort)
+
+14. Find the second smallest and second largest element in an array.
+
+15. Two Sum — find two numbers in an array that add up to a target. Return their indices.
+    Input:  [2,7,11,15], target = 9
+    Output: [0,1]
+
+16. Find the intersection and union of two arrays.
+    Input:  [1,2,3,4], [3,4,5,6]
+    Output: intersection = [3,4], union = [1,2,3,4,5,6]
+
+17. Flatten a deeply nested array without using Array.flat().
+    Input:  [1,[2,[3,[4]],5]]
+    Output: [1,2,3,4,5]
+
+18. Implement Array.prototype.flat with a configurable depth parameter.
+    Input:  [1,[2,[3,[4]]]], depth=2
+    Output: [1,2,3,[4]]
+
+19. Group an array of objects by a property.
+    Input:  [{name:'A', dept:'IT'}, {name:'B', dept:'HR'}, {name:'C', dept:'IT'}], key='dept'
+    Output: { IT: [{...},{...}], HR: [{...}] }
+
+20. Rotate an array by K positions (left or right).
+    Input:  [1,2,3,4,5], k=2, direction='right'
+    Output: [4,5,1,2,3]
+
+21. Find the maximum sum subarray (Kadane's Algorithm).
+    Input:  [-2,1,-3,4,-1,2,1,-5,4]
+    Output: 6 (subarray: [4,-1,2,1])
+
+22. Chunk an array into groups of a given size.
+    Input:  [1,2,3,4,5], size=2
+    Output: [[1,2],[3,4],[5]]
+
+
+=====================================================================
+ SECTION 3 : NUMBER / MATH PROBLEMS
+=====================================================================
+
+23. Implement a function to find the factorial of a number.
+    - Approach 1: Iterative (for loop)
+    - Approach 2: Recursive
+    - Approach 3: Tail-call optimized recursion
+
+24. Write a function that determines if a number is prime.
+    - Approach 1: Loop up to n
+    - Approach 2: Optimized — loop up to sqrt(n)
+
+25. FizzBuzz — print 1 to n, but:
+    - Multiples of 3 → 'Fizz'
+    - Multiples of 5 → 'Buzz'
+    - Multiples of both → 'FizzBuzz'
+
+26. Check if a number is a power of two.
+    Input:  16 → true, 18 → false
+
+27. Convert Roman numerals to integers and vice versa.
+    Input:  'XIV' → 14, 14 → 'XIV'
+
+28. Generate a Fibonacci sequence up to n terms using a generator function.
+
+29. Print a star (pyramid) pattern of height n.
+    n=3:
+      *
+     ***
+    *****
+
+
+=====================================================================
+ SECTION 4 : OBJECT / DATA STRUCTURE PROBLEMS
+=====================================================================
+
+30. Deep clone an object (handle nested objects, arrays, Date, null).
+
+31. Implement a deep equality check (deepEqual) for two values.
+
+32. Flatten a nested object into dot-notation keys.
+    Input:  { a: { b: { c: 1 } }, d: 2 }
+    Output: { 'a.b.c': 1, 'd': 2 }
+
+33. Parse a URL query string into an object & convert an object back to a query string.
+    Input:  '?name=krush&age=25&role=dev'
+    Output: { name:'krush', age:'25', role:'dev' }
+
+34. Implement an LRU (Least Recently Used) Cache with get() and put() methods.
+
+35. Implement a basic Event Emitter class with on(), off(), emit(), and once().
+
+
+=====================================================================
+ SECTION 5 : FUNCTION / CLOSURE / ASYNC PROBLEMS
+=====================================================================
+
+36. Implement a debounce function.
+    - Should delay execution until after a wait period of inactivity.
+
+37. Implement a throttle function.
+    - Should limit execution to once per specified interval.
+
+38. Implement a memoize function that caches results based on arguments.
+
+39. Implement a curry function.
+    Input:  curry(add)(1)(2)(3) → 6 where add = (a,b,c) => a+b+c
+
+40. Implement a pipe / compose function.
+    pipe(fn1, fn2, fn3)(value) → fn3(fn2(fn1(value)))
+
+41. Implement Promise.all from scratch.
+
+42. Write a function that executes an array of async functions in sequence (not parallel).
+
+43. Implement a retry function with exponential backoff for async operations.
+
+44. Implement Function.prototype.call, apply, and bind from scratch (polyfills).
+
+
+=====================================================================
+ SECTION 6 : POLYFILLS (Very Common in 4+ Yr Interviews)
+=====================================================================
+
+45. Implement Array.prototype.map from scratch.
+
+46. Implement Array.prototype.filter from scratch.
+
+47. Implement Array.prototype.reduce from scratch.
+
+48. Implement Array.prototype.forEach from scratch.
+
+49. Implement Promise.allSettled from scratch.
+
+50. Implement Promise.race from scratch.
+
+
+=====================================================================
+ SECTION 7 : DOM / BROWSER PROBLEMS (Asked Frequently)
+=====================================================================
+
+51. Implement infinite scroll using Intersection Observer API.
+
+52. Implement a basic pub/sub (publish-subscribe) pattern.
+
+53. Explain & demonstrate the difference between var/let in a loop with closures.
+    for (var i = 0; i < 5; i++) → logs 5 for all
+    for (let i = 0; i < 5; i++) → logs 0,1,2,3,4
+
+54. Implement event delegation — attach a single listener to a parent for dynamic children.
+
+55. Build a simple stopwatch (start, stop, reset) using setInterval.
+
+
+=====================================================================
+ SECTION 8 : OUTPUT-BASED / TRICKY QUESTIONS
+=====================================================================
+
+56. What is the output?
+    console.log(typeof null)          → ?
+    console.log(typeof undefined)     → ?
+    console.log(null == undefined)    → ?
+    console.log(null === undefined)   → ?
+
+57. What is the output?
+    console.log(1 + '2' + '2')       → ?
+    console.log(1 + +'2' + '2')      → ?
+    console.log('A' - 'B' + '2')     → ?
+    console.log('A' - 'B' + 2)       → ?
+
+58. What is the output?
+    const a = {};
+    const b = { key: 'b' };
+    const c = { key: 'c' };
+    a[b] = 123;
+    a[c] = 456;
+    console.log(a[b])                 → ?
+
+59. What is the output?
+    var x = 1;
+    function foo() {
+        console.log(x);
+        var x = 2;
+    }
+    foo()                              → ?
+
+60. What is the output?
+    for (var i = 0; i < 3; i++) {
+        setTimeout(() => console.log(i), 1000);
+    }
+    // How to fix it to print 0, 1, 2?
+
+
+=====================================================================
+ TIPS FOR 4+ YRS INTERVIEW
+=====================================================================
+- Always discuss time & space complexity (Big O) for every solution.
+- Mention multiple approaches (brute force → optimized).
+- For array/string problems, ask: "Is the input sorted?" "Can there be negatives?"
+- For async problems, handle errors properly with try/catch.
+- Polyfills are asked in EVERY senior-level JS interview — practice them.
+- Be ready to implement on a whiteboard or live code editor (no IDE help).
+- Know when to use Map vs Object, Set vs Array for performance.
+=====================================================================

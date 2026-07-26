@@ -1,0 +1,1147 @@
+"use strict" /
+/**
+ * JavaScript Data Types Overview
+ * =============================
+ */
+
+// 1. PRIMITIVE DATA TYPES
+// ----------------------
+// Primitive types are immutable and store the actual values
+
+// Number (both integers and floating-point)
+let integer = 42;
+let float = 3.14;
+let negative = -17;
+
+// BigInt (for very large numbers)
+let bigInteger = 9007199254740991n;
+let anotherBigInt = BigInt(9007199254740991);
+
+// String
+let singleQuote = 'Hello';
+let doubleQuote = "World";
+let templateLiteral = `Hello ${singleQuote}`;
+
+// Boolean
+let isTrue = true;
+let isFalse = false;
+
+// Undefined (declared but no value assigned)
+let undefinedVariable;
+
+// Null (intentional absence of value)
+let nullValue = null;
+
+// Symbol (unique identifier)
+const symbol1 = Symbol('description');
+const symbol2 = Symbol('description');
+console.log(symbol1 === symbol2); // false, because each Symbol is unique
+
+
+// 2. NON-PRIMITIVE (REFERENCE) DATA TYPES
+// -------------------------------------
+// Reference types store references to values
+
+// Object
+const person = {
+    name: 'John',
+    age: 30,
+    isEmployed: true,
+    skills: ['JavaScript', 'React']
+};
+
+// Array (special type of object)
+const numbers = [1, 2, 3, 4, 5];
+const mixed = [1, 'two', { three: 3 }, [4, 5]];
+
+// Function (also an object)
+function greet(name) {
+    return `Hello, ${name}!`;
+}
+
+// Date object
+const today = new Date();
+
+/**
+ * Key Differences Between Primitive and Reference Types:
+ * --------------------------------------------------
+ * 1. Primitive types are immutable
+ * 2. Reference types are mutable
+ * 3. Primitives are compared by value
+ * 4. Reference types are compared by reference
+ */
+
+// Example of primitive comparison
+let x = 5;
+let y = 5;
+console.log(x === y); // true
+
+// Example of reference comparison
+let obj1 = { value: 5 };
+let obj2 = { value: 5 };
+console.log(obj1 === obj2); // false
+
+/**
+ * Type Checking
+ * ------------
+ */
+console.log(typeof 42);          // "number"
+console.log(typeof "Hello");     // "string"
+console.log(typeof true);        // "boolean"
+console.log(typeof undefined);   // "undefined"
+console.log(typeof null);        // "object" (this is a known JavaScript quirk)
+console.log(typeof Symbol());    // "symbol"
+console.log(typeof {});          // "object"
+console.log(typeof []);          // "object"
+console.log(typeof function(){}); // "function"
+  // ### **2. Explain Hoisting in JavaScript.###
+  // a1 = 2;
+  // console.log('----a', a1);
+  // var a1;
+  // // a1 = 3
+  // console.log(a1)
+
+  // hoisting();
+  // function hoisting() {
+  //     var a = null;
+  //     console.log('a function',a)
+  // }
+
+  // ### **3. Why do we use the word “debugger” in JavaScript?*###
+  // function hoisting() {
+  //     var a = null;
+  //     console.log('a function--',a)
+  //     if(a ==1){
+  //         console.log('a function',a)
+  //     }
+  // }
+  // hoisting();
+  // To debug a code which are sometime difficult to find using console log
+
+  // ### **4. Difference between “ == “ and “ === “ operators.###
+  //In 2 equals to it checks the value
+  //In 3 equals to it check the value along with the data type as well
+  // console.log('a1== b1',a1 == b1) //corision process takes place means conversion to string happens
+  // console.log('a1== b1',a1 === b1) //no corision process takles place
+
+  // ### **5. Difference between var and let keyword in JavaScript.###
+  //let is added in em6 -2015**
+  // var type variable can be hoisted
+  // wheareas let type variable can't be hoised
+  // a = 1
+  // console.log('a',a);
+  // var a;
+
+  // const b = 5;
+
+  // function hoisting() {
+  //     a = 2;
+  //     console.log('before initilize',a)
+  //     console.log('before initilize',b)
+
+  //     if(true){
+  //         var a;
+  //         a = 3
+  //         console.log('after initilize',a)
+  //     }
+  // }
+
+  // hoisting();
+
+  // 6. Explain Implicit Type Coercion in javascript.###
+  // console.log('===== Type Coercion =====')
+
+  // + operator with strings
+  String + Number = String
+  String + String = String
+
+  // - operator
+  String - String = Number
+  String - Number = Number
+
+  // // string coercion
+  // let a = 1; //Number
+  // let b = 4
+  // a = 'hello' //string type
+  // console.log('a+b',a-b);
+
+  // //boolean coercion
+  // // all the values except - false,0, 0n, -0 ,“”, null, undefinedm NaN
+
+  // //logical corision
+  // let loga = 10
+  // let logb = false
+
+  // loga || logb //true(loga)
+
+  // logb || loga // true (loga)
+
+  // logb && loga // false
+
+  // loga && loga // true
+
+  // //equality corision
+  // let a1 = '1'
+  // let b1 = 1
+
+  // console.log('a1== b1',a1 == b1) //corision process takes place means conversion to string happens
+
+  // console.log('a1== b1',a1 === b1) //no corision process takes place
+
+  // console.log('<<==========>>')
+
+  // 7. Is javascript a statically typed or a dynamically typed language?###
+  //statistic type language
+  // variable have type
+  // checks the variable data type while compile time
+  // unable to change the data type once a value is assgined to variable
+
+  //dynamic type language
+  //variable have no type
+  //checks the variable data type while run time
+  //can change the data type once the variable is after the value is assigned to the variable
+  // ex - let a = 1;
+  // a = 'krushna' //can be converted to string type
+
+  // 8. What is NaN property in JavaScript?###
+  // NaN means not-an-number
+  // it's like a method
+  // isNaN(false) //false = 0 -> that's why it is consider as Number
+  // isNaN(true) //True = 1 -> that's why it is consider as Number
+  // isNaN('abc') //As it is a string -> it won't be consider as a Number
+  // console.log("🚀 ~ isNaN('abc'):", isNaN('abc'))
+  // console.log("🚀 ~ isNaN(true):", isNaN(true))
+  // console.log("🚀 ~ isNaN(false):", isNaN(false))
+
+  // // 9. Explain passed by value and passed by reference.###
+  // // passed by value works on primitive data type
+  // let x = 10; //x allocates a memory to save the value 10
+  // let y = x; //here we are assigning the x value to y but y will create it's own memory
+  // y = 20;
+
+  // //passed by referance works on non-primitive data type
+  // let obj1New = { //memory address #345
+  //     name : 'ramesh',
+  //     class : '10th'
+  // }
+
+  // let obj2New = obj1New; //memory address #345
+
+  // // obj1New.name = 'krushna'
+  // // console.log(obj2New)
+  // obj2New.name = 'suresh'
+  // obj2New.id = 123;
+  // console.log("🚀 ~ obj1New:", obj1New);
+
+  // // 10. What is an Immediately Invoked Function in JavaScript?.###
+  // //IIFE || IIFY
+
+  // hello3();
+
+  // (function hello() {
+  //     console.log('iife called ---->');
+  // })();
+
+  // (function hello22() {
+  //     console.log('iife 2 called ---->');
+  // })();
+
+  // function hello3(){
+  //     console.log('normal function called ---->');
+  // }
+
+  // 11. What do you mean by strict mode in javascript and characteristics of javascript
+  // strict-mode?###
+  // It works if we declare the "use strict" on the top of the js file or else it won't work
+
+  // In strict mode, a function cannot have duplicate parameter names. This will throw a SyntaxError.
+  // In strict mode, if a function is called as a standalone function (not as a method of an object), 'this' will be undefined, rather than defaulting to the global object (like window in browsers).
+
+  // value = 10;
+  // console.log('value ---->',value);
+  // var value;
+
+  // function eval(){
+
+  // }
+
+  // function eval1(){
+  //     console.log('eval', this);
+  // }
+  // eval1();
+
+  // function eval1(){
+  //     console.log('eval', window);
+  // }
+  // eval1();
+
+  // explained on the TOP of the code
+
+  // 12. Explain Higher Order Functions in javascript.###
+  // ex-1
+  //     function higherOrder(fn){
+  //             // console.log("🚀 ~ higherOrder ~ fn:", fn)
+  //           fn();
+  //     }
+
+  //     higherOrder(
+  //         function() {
+  //             console.log('hello higher order')
+  //             return 'nothing'
+  //         }
+  //     )
+  //  // ex -2
+  //     function higherOrder2(){
+  //        return function hell(){
+  //             return 'krushX'
+  //         }
+  //     }
+
+  //     let higherOrder2Value = higherOrder2();
+  //     console.log("🚀 ~ higherOrder2Value:", higherOrder2Value())
+
+  // 13. Explain “this” keyword.###
+  // the this keyword is used to refer to the context in which a function is executed. Its value depends on how the function is called.
+
+  //1.Global Context:
+  // console.log(this)
+
+  //2.local Context:
+  // function thisCheck() {
+  //     console.log(window)
+  // }
+  // thisCheck()
+
+  // 3.Object Context:
+  // const thisObj1 = {
+  //     name : 'krushX',
+  //     getName : function(){
+  //         console.log("🚀 ~ this.name:", this.name)
+  //         // return this.name;
+  //     }
+  // }
+
+  // // var valuethisObj1Name = thisObj1.getName();
+
+  // // console.log("🚀 ~ valuethisObj1Name:", valuethisObj1Name)
+
+  // const thisObj2 = {
+  //     name : 'ramesh',
+  //     valuethisObj1Name : function(){
+  //         // console.log("🚀 ~ this.name:",this.name)
+  //         return this.name;
+  //     },
+  //     valuethisObj1Name1 : thisObj1.getName()
+  // }
+
+  // console.log(thisObj1.getName())
+
+  // console.log(thisObj2.valuethisObj1Name())
+  // console.log(thisObj2.valuethisObj1Name1)
+
+  // 14. What do you mean by Self Invoking Functions?.###
+  // This means the IIFE || IIFY which we have discussed earlier using ()
+
+  // 15. Explain call(), apply() and, bind() methods.###
+  //call -> call is a javascript pre-defined method which is available in function object, which is used to use a object value
+  // by using this context which calling a function
+
+  //Normal function call method
+  // function setName() {
+  //     return this.name
+  // }
+
+  // let person = {
+  //     name : 'rajesh',
+  //     address: 'Jagamara',
+  //     age : 25
+  // }
+
+  // let setNameValue = setName.call(person)
+  // console.log("🚀 ~ setNameValue:-->", setNameValue)
+
+  // // function property in an object
+  // const callObj1 = {
+  //     id: 23,
+  //     setAddress : function () {
+  //         return this.address
+  //     }
+  // }
+
+  // let setAddressValue = callObj1.setAddress.call(person)
+
+  // console.log("🚀 ~ setAddressValue:", setAddressValue)
+
+  // // Parameter in call method
+  // function dobPerson(age) {
+  //     return this.name + ' age is ' + age;
+  // }
+
+  // let setDobValue = dobPerson.call(person, person.age);
+  // console.log("🚀 ~ setDobValue:", setDobValue)
+
+  // //Apply
+  // function jobPostion(job) {
+  //     return this.name + 'is a ' + job;
+  // }
+
+  // let jobPostingValue = jobPostion.apply(person, ['Plumber'])
+  // console.log("🚀 ~ jobPostingValue:", jobPostingValue)
+
+  // //bind
+  // const bindObj = {
+  //     name : 'shankar',
+  //     bindCheck : function (){
+  //         return this.name + ' ' + this.age;
+  //     }
+  // }
+
+  // let bindValue = bindObj.bindCheck.bind(person)
+
+  // console.log("🚀 ~ bindValue:", bindValue())
+
+  // 16. What is the difference between exec () and test () methods in javascript?.###
+  // exec & test these are two methos of regex
+  // exec() is used to search a string & it will return a empty value if it doesn't find
+  // while test() find a string & return it in a boolean format
+
+  // 18. What are some advantages of using External JavaScript?.###
+  // some advantage of using javascript external file are :
+  // it helps to maintain the code seperately
+  // we can use something like defer to load the file later after the html loaded in the web page
+  // very imp thing is code reusabality
+
+  // 19. Explain Scope and Scope Chain in javascript. -30
+  // 1st Global scope
+  // 2 function scope
+
+  // 3 block scope
+  // Any thing declared inside {} is block scope
+
+  // Global scope
+  // let x = 10;
+  // let z = 30;
+  // let age = 24;
+
+  // //scope chaining
+  // function checkScope() {
+  //         let y = 20;
+  //         console.log('y', y);
+  //         console.log('x', x); // it search the x inside the local scope if it doesn't find in the function scope then it will search in the global scope
+
+  //         function person(){
+  //             console.log('age',age) //this is function scope
+  //         }
+
+  //         if(true) {
+  //           let value = 'krushna'
+  //             console.log('check block scope', z) //this is block scope
+  //         }
+
+  //         person();
+  //         // console.log(window)
+  // }
+
+  // checkScope()
+
+  // 20. Explain Closures in JavaScript.
+  // function clouserCheck() {
+  //     let name = 'krushna'
+  //     console.log("🚀 ~ clouserCheck ~ name:", name)
+  //     let name1 = 'krushna1'
+  //     console.log("🚀 ~ clouserCheck ~ name1:", name1)
+
+  //     function insideFUnctionClosure() {
+  //         console.log("🚀 ~ insideFUnctionClosure ~ name:", name)
+  //         console.log("🚀 ~ insideFUnctionClosure ~ name1:", name1)
+  //         // return name;
+  //     }
+  //     // insideFUnctionClosure()
+  //     console.log("🚀 ~ clouserCheck ~ insideFUnctionClosure();:", insideFUnctionClosure())
+  // }
+
+  // clouserCheck();
+  // console.log("🚀 ~ clouserCheck():", clouserCheck())
+
+  //use case
+  // function closureExmp() {
+  //     let person = {
+  //         name :'ramesh',
+  //         address : 'Jagamara'
+  //     }
+
+  //     return function() {
+  //         // console.log(person.name + 'is good');
+  //         return person.name + ' ' + 'is good'
+  //     }
+  // }
+
+  // // console.log("🚀 ~ closureExmp():", closureExmp())
+
+  // let checkRandomFun = closureExmp();
+  // after execution of clouserExmp() it still stores the value inside the clouser so that it can be used in this kind of scenarios
+
+  // console.log("🚀 ~ checkRandomFun:", checkRandomFun())
+
+  //use case ->
+  // 22. What are object prototypes?
+  // console.log(Date())
+  // console.log(Array())
+  //array is a object
+  // Array().push('2')
+  // console.log("🚀 ~ Array().push('2'):", Array().push(2))
+
+  //it's a blue print of the Object prototype
+  // let checkArray = Array();
+
+  // console.log(typeof(checkArray))
+
+  // checkArray.push('krushX')
+
+  // console.log("🚀 ~ checkArray:", checkArray)
+
+  // let arr1 = [];
+  // arr1.push(2)
+
+  // console.log(arr1)
+
+  // 24. What are the types of errors in javascript?
+  // syntax error -> which means a error occoured because of syntax
+  // logical error -> means a error occoured because of some logical mistakes
+  //ex -
+  // let value = '';
+  // value = value + 'a'
+  // console.log("🚀 ~ value:", value)
+  // console.log(Boolean(value))
+
+  // 25. What is memoization?
+  // we use this technique  to cache a computed or fetched value which we stored using an object then later we check the value inside the object, if it is already present then we return that cached value or else we compute than value once again
+
+  // what is recurssion ?
+  // recurssion means we call a function number of times till a condition is matched to compute certain calculation
+
+  // 27. What is the use of a constructor function in javascript?
+  // constructor function is used to create a object
+  // an object is getting created using constructor function also it inherits all the properties of that constructor function
+
+  // function constObjCreate(name,address){
+
+  //     this.name = name;
+  //     this.address = address;
+  // }
+
+  // let person1 =  new constObjCreate('ramesh', 'jagamara')
+  // let person2 = new constObjCreate('Suresh', 'Khandigiri')
+
+  // // console.log("🚀 ~ person2:", person2)
+  // console.log("🚀 ~ person1:", person1)
+
+  // 28. What is DOM?
+  // The Document Object Model (DOM) is a programming interface provided by browsers that allows developers to interact with and manipulate HTML and XML documents. It represents the document as a structured tree of objects, where each node corresponds to a part of the document (such as an element, attribute, or text).
+
+  // Key Concepts of the DOM
+  // Structure:
+
+  // The DOM represents a document as a tree of nodes. The top node is the document object, which represents the entire HTML or XML document. Each element, text, and attribute within the document is a node in this tree.
+
+  // Nodes:
+  // There are several types of nodes in the DOM:
+  // Element Nodes: Represent HTML tags (e.g., <div>, <p>, <a>).
+  // Text Nodes: Contain the text within elements.
+  // Attribute Nodes: Represent attributes of elements (e.g., class, id).
+
+  // Manipulation:
+  // The DOM allows for dynamic changes to the document structure, style, and content. You can add, remove, or modify nodes and attributes using JavaScript.
+
+  // Events:
+  // The DOM also supports event handling, allowing developers to respond to user actions (like clicks, mouse movements, key presses, etc.) by executing JavaScript functions.
+
+  // 29. Which method is used to retrieve a character from a certain index?
+  //chatAr()
+
+  // 30. What do you mean by BOM?
+  // Browser Object Model
+  // setTimeout(() => {
+  //     console.log(window)
+  // }, 1010);
+
+  // 31. What is the distinction between client-side and server-side JavaScript?
+  //client side rendering means we create the API in the back-end & all the html & javascript & designing are done in the frontend part as well also we manipulate the data in the frontend only
+  // server-side javascript is NODE.js
+
+  // 32. What are arrow functions?
+  home /
+  krushna -
+  debian / Pictures / DSA / problem_solving / arrow_vs_normal.png;
+
+// function normalFun() {
+
+// let name = 'harish';
+
+//     let obj1 = {
+//         name : 'ramesh',
+//         address : 'jagamara',
+//         func : function() {
+//         console.log("🚀 ~ normalFun ~ this.name:", this.name)
+//         console.log("🚀 ~ normalFun ~ this.name:", this.address)
+//             return this.name
+//         }
+//     }
+
+//     return obj1.func()
+// }
+
+// let value = normalFun();
+// console.log("🚀 ~ value:", value)
+
+// // console.log("🚀 ~ value:", value.func())
+
+// let variableTypeFun = function(){
+// console.log('workss')
+// }
+
+// //arrow type
+
+// let arrFun  = (() => {
+//     let thisType = this;
+//     // let obj1 = {
+//     //     name : 'ramehs'
+//     // }
+//     // return  thisType
+
+//     return thisType
+// })
+
+// here 'this' is the window Object type means the Global type this
+// console.log("🚀 ~ arrFun():", arrFun())
+
+// no curley braces is required
+
+//clouser another ex
+// function Clouser() {
+//     let name = 'krushna';
+//     return function abc () {
+//         return name
+//         }
+// }
+
+// // console.log("🚀 ~ Clouser():", Clouser()) // returning a function
+
+// let clouser2 = Clouser() // this is already executed
+
+// console.log('clouser2()',clouser2()) // it containing the abc() function
+
+// console.log("🚀 ~ randdomCheck.call(obj11):", randdomCheck.bind(obj11))
+
+// 34. Differences between declaring variables using var, let and const.
+// if(true){
+//     var varName = 'krushna var'
+// }
+
+var varName = "krushna var";
+// var varName = 'krushna var more'
+// varName = 'reassigning var'
+// setTimeout(() => {
+//     console.log("🚀 ~ varName:----->>>", varName)
+// },20);
+
+let letName = "krushna let";
+letName = "reassigne let";
+
+{
+  var varName = "krushna var more";
+  console.log("🚀 ~ name:+++++++++++++++", varName);
+}
+
+function varLetCheck() {
+  const constvariable = "const variable";
+
+  if (true) {
+    // console.log("🚀 ~ name:", window)
+    // console.log("🚀 ~ name:", letName)
+    // let letName = 'krushna let inside function'
+    //   console.log("🚀 ~ name:", varName)
+  }
+  console.log("🚀 ~ constvariable:", constvariable);
+
+  console.log("🚀 ~ name:", letName);
+}
+
+varLetCheck();
+
+console.log("🚀 ~ name:+++++++++++++++", varName);
+
+// 35. What is the rest parameter and spread operator?
+//RestParam operator
+let newArr = [1, 2, 3, 4, 5];
+
+let [one, two, ...restParam] = newArr;
+console.log("🚀 ~ restParam:", restParam);
+
+//spread operator
+let spreadArr = [1, 555, 789, ...newArr];
+console.log("🚀 ~ spreadArr:", spreadArr);
+
+// 43. What is Object & Array Destructuring?
+//object destructuring
+let obj2 = {
+  name: "krushna111",
+  name2: "krushna111",
+};
+
+let { name: Newname, name2: Newname2 } = obj2; //object destructuring
+
+console.log("🚀 ~ Newname:", Newname);
+console.log("🚀 ~ Newname2:", Newname2);
+
+let arrDestructure = [1, 2, 3, 4, 5];
+
+let [one1, two2, three, ...rest] = arrDestructure;
+
+console.log("🚀 ~ rest:", rest);
+console.log("🚀 ~ three:", three);
+console.log("🚀 ~ two2:", two2);
+console.log("🚀 ~ one1:", one1);
+
+// Explained in Notehbook
+// 36. In JavaScript, how many different methods can you make an object?.###
+// new Object()
+// Object literal
+// constructor function
+
+// 45. What is a Temporal Dead Zone?.###
+// console.log('10--',x) Output: "Error" ->  //it checks the X is declared in the
+// Temeral Dead zone
+// let x = 10;
+
+// 48. what is a Class in Javascript?.###
+
+// 37. What is the use of promises in javascript?
+// it is used to perform asynchronous operations in JS
+
+// let promiseFun = function(a,b) {
+//     return new Promise((resolve,reject) => {
+//         let sum = a+b
+//         if(sum == 5){
+//             reject("sum is greater than b")
+//         }
+//         resolve(sum);
+
+//     })
+// }
+
+// promiseFun(2,5)
+// .then((result) => console.log('~🚀 ~ result of sum using Promise',result))
+// .catch((error) => console.log(error));
+
+// console.log("🚀 ~ promiseValue ~ promiseValue:", promiseValue)
+
+// 48. Difference between Async/Await and Generators usage to achieve the same
+// functionality.
+// let krushna = async (a,b) => {
+//     let sum = a+b
+//     return sum
+// }
+
+// let krushna2 = async() =>{
+
+//     let resultKrushna = await krushna(2,3)
+//     console.log("🚀 ~ Adding result Async:", resultKrushna)
+
+// }
+// krushna2()
+
+// CallBack hell
+// Readability: Deeply nested callbacks make the code hard to read and understand.
+// Maintainability: Adding new features or fixing bugs becomes challenging due to the complexity of the nested structure.
+// Error Handling: Error handling becomes complicated as each level of the callback chain needs its own error handling logic.
+// Debugging: Tracing the flow of execution and debugging issues is difficult due to the nested nature of callbacks.
+
+// 50. What is the role of deferred scripts in JavaScript?
+// Role of Deferred Scripts
+// Improves Page Load Performance:
+
+// Deferred scripts do not block the rendering of the page. This allows the browser to continue parsing and rendering the HTML content while the scripts are being downloaded in the background.
+// Ensures Script Execution Order:
+// Scripts with the defer attribute are guaranteed to be executed in the order they appear in the HTML document. This is useful when you have multiple scripts that need to be executed in a specific sequence.
+// Reduces Render Blocking:
+// By deferring the execution of scripts until after the HTML document has been fully parsed, you minimize the impact of scripts on the initial page load and render time.
+
+// 53. diff between loosey couple & tightly coupled
+// it defines how component are dependant with each other ->
+// loosely couple -> it is not that dependant over another component or module
+// tightly coupled means -> it is highly dependant over another component that's why we called it as tightly couple
+
+// whay is syncronous & asyncronous in JS
+// synchronous -> all the code are executed one after another but on
+// asnyncronous -> the code is allowed to be executed while the other task is getting being completed in the background
+//it is called as non-blocking
+// some example of async operation are - setTimeout, setInterval, promise, callback, async await
+//Example of Async Operation using setTimeout
+
+// console.log('Start');
+
+// setTimeout(() => {
+//   console.log('Timeout 1');
+// }, 1000);
+
+// setTimeout(() => {
+//   console.log('Timeout 2');
+// }, 0);
+
+// console.log('End');
+
+// const objLength = {
+//     name:'sadasdasd'
+// }
+
+// console.log(objLength)
+
+// example of callback Methods & Async Operations ->
+// function callBackcheck(callBackFun){
+//     // console.log("🚀 ~ callBackcheck ~ callBack:", callBackFun)
+//     // console.log(window);
+//     console.log('asdasdsa:',window.name)
+
+//     setTimeout(() => {
+//         callBackFun()
+//         console.log('async task')
+//     window.name = 'krushnaAlexNewww';
+//     console.log("🚀 ~ callBackcheck ~ window:", window)
+//     },5100);
+
+//      setInterval(() => {
+//         console.log('setInterval')
+//      },5100);
+
+// }
+//     console.log("🚀 ~ callBackcheck ~ window:", window)
+
+//  callBackcheck(function callBackFun (){
+//     console.trace('callBack method called')
+// })
+
+// diff between for in & for of
+// Iteration Type: for...in iterates over keys (or indices), while for...of iterates over values.
+// Use with Objects: Use for...in for objects and for...of for arrays and other iterable structures.
+
+// What is the difference between null and undefined?.###
+// Key Differences
+// Initialization:
+// undefined: Automatically assigned when a variable is declared but not initialized.
+// null: Explicitly assigned by the programmer to indicate the absence of a value.
+// Type:
+// undefined: Has its own type, undefined.
+// null: Is an object type (historically, this is due to a bug in JavaScript's implementation).
+// Usage:
+// undefined: Generally used by JavaScript to indicate the absence of a value or to represent uninitialized variables.
+// null: Used by developers to explicitly indicate that a variable should not hold a value or to reset a variable.
+
+// nullish coalescing operator in JS ->
+// ?? the syntax is used to check the value is undefined or null type or any false type
+// it is a better than || using OR condition
+// ternary operator is different as we will checking some condition but here we will check only null undefine & any false type value
+
+// Array VS Sets .###
+// what is difference between Set & WeakSet .###
+// Object VS Maps .###
+// console.log(new Map([
+//     ['a' , 'a'],
+//     ['obj1',{'b': 'b'}]
+// ]))
+
+// what is Optional Chaining (?.) in JS?.###
+// Optional Chaining (?.): A JavaScript feature that allows safe access to properties and methods on an object that might be null or undefined.
+// Syntax: value?.name accesses the name property only if value is not null or undefined.
+// const person = { name: 'Alice' };
+// console.log(person?.name); // Output: Alice
+// console.log(person?.age); // undefine
+
+// Clousers Explanation
+// let personDetails =function  (){
+//     let obj1 = {
+//         name: 'krushX',
+//         address: 'Jagamara'
+//     }
+//     console.log("🚀 ~ checkClouser ~ obj1:", obj1)
+//         // checkClouser(obj1)
+//      return function checkClouser() {
+//         // obj1
+//         console.log("🚀 ~ checkClouser ~ obj1:", )
+//         return obj1;
+//         // return obj1.name +' lives in ';
+//     }
+// }
+// personDetails()
+
+// // console.log("🚀 ~ personDetails():", personDetails())
+
+// let useOfClouser = personDetails(); //already executed
+// console.log("🚀 ~ useOfClouser:", useOfClouser())
+// console.log("🚀 ~ useOfClouser:", useOfClouser())
+
+// 23. What are callbacks?.###
+// A function that send as a argument to another function that argument type function is know as call back function
+
+// let sum = function (a,b){
+//     return a+b;
+//   }
+
+//   let operation = function(a,b,callbackfun){
+//       let totalsum = callbackfun(a,b);
+//       console.log('totalsum :',totalsum);
+//   }
+
+//   operation(2,3,sum)
+
+// map filter & Reduce
+// deepClone vs shallowClone
+let numbers = [1, 2, 3, 4];
+let squaredNumbersmap = numbers.map((num) => num * 2);
+console.log("🚀 ~ squaredNumbersmap", squaredNumbersmap);
+
+let squaredNumbersfilter = numbers.filter((num) => num > 2);
+console.log("🚀 ~ squaredNumbersfilter:", squaredNumbersfilter);
+
+let squaredNumbersReduce = numbers.reduce((a, b) => {
+  // console.log("🚀 ~ squaredNumbersReduce ~ a:", a)
+  return a * b;
+  // console.log("🚀 ~ squaredNumbersReduce ~ b:", b)
+}, 1);
+
+console.log("🚀 ~ squaredNumbersReduce:", squaredNumbersReduce);
+
+console.log("🚀 ~ numbers:", numbers);
+
+//shallow Clone
+// const original = {
+//     name: 'Alice',
+//     age: 30,
+//     address: {
+//         city: 'Wonderland',
+//         zip: '12345'
+//     }
+// };
+
+// const deepClone = Object.assign({}, original);
+
+// // Modifying the nested object in the deep clone
+// deepClone.address.city = 'New City';
+
+// console.log(original.address.city);
+
+// //deep clone
+// const original = {
+//     name: 'Alice',
+//     age: 30,
+//     address: {
+//         city: 'Wonderland',
+//         zip: '12345'
+//     }
+// };
+
+// const deepClone = JSON.parse(JSON.stringify(original));
+
+// // Modifying the nested object in the deep clone
+// deepClone.address.city = 'New City';
+
+// console.log(original.address.city);
+
+console.log("Script start");
+
+setTimeout(() => {
+  console.log("setTimeout callback");
+}, 1000);
+
+Promise.resolve().then(() => {
+  console.log("Promise callback");
+
+  // Declare a setTimeout inside the promise
+  setTimeout(() => {
+    console.log("Nested setTimeout callback");
+  }, 0);
+});
+
+console.log("Script end");
+
+let promiseCheck = (a) => {
+  try {
+    return new Promise((resolve, reject) => {
+      resolve("hello new promise" + " " + a);
+      // reject('nothing');
+    });
+  } catch (error) {}
+};
+
+promiseCheck(12).then((result) => {
+  console.log(result);
+});
+
+let array1 = [1, 2, 0, 3, -4, 5];
+let result = array1.filter((value) => value >= 1);
+
+console.log(result);
+
+let myObject = {
+  name: "krushna",
+  clas: "12",
+};
+
+// how to find length of the object
+const length = Object.keys(myObject).length;
+console.log("🚀 ~ length:", length);
+
+function check() {
+  for (let i = 1; i <= 10; i++) {
+    console.log("🚀 ~ check ~ i:", i);
+
+    setTimeout(() => {
+      console.log(i);
+    }, i * 1000);
+
+    // console.log('learn')
+  }
+}
+
+check();
+
+// =====>>> String Manipulation: <<<=======
+// 1️⃣9️⃣ split(separator)
+// ⇒ Splits a string into an array of substrings based on a specified separator.
+
+// 2️⃣0️⃣ join(separator)
+// ⇒ Joins all elements of an array into a string, separated by the specified separator.
+
+// 2️⃣1️⃣ toLowerCase(), toUpperCase()
+// ⇒ Converts a string to lowercase or uppercase.
+
+// 2️⃣2️⃣ trim()
+// ⇒ Removes whitespace from both ends of a string.
+
+// =====>>> Array Operations: <<<=======
+// 1️⃣2️⃣ slice(start, end)
+// ⇒ Returns a shallow copy of a portion of an array between specified start and end indices.
+
+// 1️⃣3️⃣ splice(start, deleteCount, ...items)
+// ⇒ Changes the array content by removing/replacing elements and/or adding new elements.
+
+// 1️⃣4️⃣ indexOf(element)
+// ⇒ Returns the first index at which a given element can be found in the array, or -1 if not present.
+
+// 1️⃣5️⃣ includes(element)
+// ⇒ Determines whether an array includes a certain element, returning true or false.
+
+// 1️⃣6️⃣ sort(compareFunction)
+// ⇒ Sorts the elements of an array based on the provided function or default sorting order.
+
+// 1️⃣7️⃣ reverse()
+// ⇒ Reverses the order of the elements in an array.
+
+// 1️⃣8️⃣ isArray(value)
+// ⇒ Checks if a given value is an array, returning true or false.
+
+// MAP, REDUCE, FILTER, forEach, Sort
+// const people = [
+//     { name: 'Charlie', age: 25 },
+//     { name: 'Bob', age: 31 },
+//     { name: 'dyln', age: 32 },
+//     { name: 'Alice', age: 35 },
+//   ];
+
+//   console.log(people)
+
+//   let age = 0;
+
+//   let totalage = people.reduce((ele1, ele2) => {
+//     // ele.age
+//     // console.log(ele1 + ele2.age);
+//     // console.log(age)
+//     return ele1 + ele2.age
+//     // return age
+//   },0)
+//   // console.log(totalage)
+
+//   let sortname = people.sort((a,b) => {
+
+//     // if(a.name > b.name){
+//     //   return - 1
+//     // }
+//     // if(a.name < b.name){
+//     //   return - 1
+//     // }
+//     // return 0;
+//     return a.name.localeCompare(b.name)
+
+//   })
+//   // console.log(sortname)
+
+//   let multiply5 = people.map((ele) => ele.age * 5);
+
+//   console.log(multiply5);
+
+//   let foreach = people.forEach((ele) => {
+//     console.log(ele.age)
+//     ele.age * 3
+//   })
+
+//   console.log(foreach); //undefined because it won't return any array
+
+//   let filter = people.filter((ele) => {
+//     if(ele.age > 30){
+//       console.log(ele.name)
+//       return ele.name;
+//   }
+//   })
+//   .map((ele) => ele.age)
+//   .reduce((ele1,ele2) => ele1 + ele2)
+
+//   console.log('greater than 30 age sum ',filter)
+
+//Unique unmber
+// let arr = [1,2,3,3,4,5,5,7]
+// let obj1 = {}
+
+//   for(let i = 0; i<arr.length; i++){
+//       // if(obj1)
+//       obj1[arr[i]] ?  obj1[arr[i]] += 1 : obj1[arr[i]] = 1;
+//       // if(obj1[arr[i]]){
+//       //   // console.log(arr[i])
+//       // }
+//       // if(!obj1[arr[i]]){
+//       //   // console.log(arr[i])
+//       // }
+//   }
+
+//   console.log(obj1)
+
+//   for(let key in obj1){
+//     if(obj1[key] === 1){
+//       // console.log(key)
+//     }
+//   }
+
+// let unique = new Set(arr)
+
+// console.log(new Set(arr))
+
+//selection sort by age
+//   const people = [
+//     { name: 'Charlie', age: 25 },
+//     { name: 'Bob', age: 31 },
+//     { name: 'dyln', age: 32 },
+//     { name: 'Alice', age: 35 },
+//   ];
+
+//   for(let i = 0; i<people.length; i++){
+//       let temp = people[i];
+//       for(let j = i+1; j < people.length; j++){
+//           // console.log(people[i].name, people[j].name)
+//           if(people[i].age > people[j].age){
+//               temp = people[i];
+//               people[i] = people[j];
+//               people[j] = temp;
+//           }
+//       }
+//   }
+
+// console.log(people);

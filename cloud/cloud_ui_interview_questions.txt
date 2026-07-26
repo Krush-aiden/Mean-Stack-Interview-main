@@ -1,0 +1,60 @@
+================================================================================
+  CLOUD, CDN & EDGE ARCHITECTURE FOR FRONTEND/UI ENGINEERS — INTERVIEW QUESTIONS
+================================================================================
+
+SECTION 1: CLOUD FUNDAMENTALS & HOSTING (Q1–10)
+--------------------------------------------------------------------------------
+1. IaaS vs. PaaS vs. SaaS vs. Serverless — How do they apply to hosting modern web applications (e.g., S3 + CloudFront vs. Vercel vs. EC2)?
+2. Static Site Hosting vs. SSR Hosting — How does cloud infrastructure differ for a React SPA (S3/GCS) vs. Next.js/Remix SSR (Lambda/ECS)?
+3. Object Storage Basics — How do AWS S3 bucket policies, CORS configuration, and access controls work for frontend assets?
+4. Environment Variables & Secret Management — How do you securely handle public variables (NEXT_PUBLIC_) vs. private cloud secrets (AWS Secrets Manager, Vercel Env Vars)?
+5. Multi-Region Deployment & High Availability — How do you deploy frontend applications across multiple geographic regions to reduce downtime?
+6. Blue-Green & Canary Deployments — How do cloud routers/CDNs shift traffic gradually during frontend releases?
+7. Infrastructure as Code (IaC) Basics — What should a frontend developer know about Terraform, AWS CDK, or CloudFormation for provisioning frontend stacks?
+8. Cloud IAM & Frontend Security — How do AWS IAM roles, service accounts, and presigned URLs work when uploading user media directly from the browser?
+9. Reverse Proxies & API Gateways — How do NGINX, AWS API Gateway, or Cloudflare Workers act as a single entry point for API and static UI traffic?
+10. Containerization for UI (Docker) — How do you create an optimized multi-stage Docker build for a frontend application (Node.js build phase -> NGINX serving phase)?
+
+SECTION 2: CDN, EDGE & PERFORMANCE (Q11–20)
+--------------------------------------------------------------------------------
+11. Content Delivery Networks (CDNs) — How do CDNs like CloudFront, Cloudflare, and Fastly accelerate asset delivery?
+12. Cache Headers & Invalidation — What is the difference between Cache-Control: max-age, s-maxage, stale-while-revalidate, immutable, and manual CDN cache purges?
+13. Edge Functions & Edge SSR — What is the difference between running code at origin (Node server) vs. edge runtime (Cloudflare Workers, Vercel Edge, AWS Lambda@Edge)?
+14. Asset Versioning & Cache Busting — How do content hashing (main.a8f9d.js) and immutable cloud caching prevent serving stale UI code?
+15. Origin Shielding & CDN Caching Layers — What happens when thousands of users simultaneously request an uncached asset from a CDN (Thundering Herd Problem)?
+16. Dynamic Routing at the Edge — How do you implement A/B testing, feature flagging, or geo-based redirects at the edge without hitting the origin server?
+17. Global Image & Asset Optimization — How do cloud services (AWS CloudFront Functions, Cloudflare Images) perform dynamic image resizing and WebP/AVIF conversion on the fly?
+18. DDoS Protection & Rate Limiting — How do cloud Web Application Firewalls (AWS WAF, Cloudflare) protect frontend login pages and API routes?
+19. Domain Name System (DNS) & SSL/TLS — How do Route53 / DNS records (A, CNAME, ALIAS) and automated TLS certificate renewal (ACM, Let's Encrypt) work for custom UI domains?
+20. Server-Sent Events (SSE) & WebSockets on the Cloud — How do cloud load balancers handle long-lived HTTP connections, sticky sessions, and WebSocket upgrades?
+
+SECTION 3: CI/CD & FRONTEND DEPLOYMENT (Q21–28)
+--------------------------------------------------------------------------------
+21. CI/CD Pipelines for Frontend — Walk through a modern GitHub Actions or GitLab CI pipeline for building, testing, linting, and deploying a UI app.
+22. Atomic Deployments — How do cloud platforms ensure zero-downtime deployments when swapping frontend static builds?
+23. Preview Deployments & Branch Environments — How do PR preview links (Vercel, AWS Amplify, Netlify) work under the hood?
+24. Cache Management in CI Build Step — How do you speed up CI pipelines by caching node_modules, build outputs (Next.js .next/cache), and package locks?
+25. Automated End-to-End Testing in CI — How do you run Playwright/Cypress tests against temporary cloud environments before merging?
+26. Feature Flags & Trunk-Based Development — How do you decouple cloud deployments from feature releases using services like LaunchDarkly or Flagsmith?
+27. Monorepo Build Tools & Remote Caching — How do tools like Turborepo / Nx cache build artifacts in the cloud to avoid re-building unchanged UI packages?
+28. Rollbacks & Instant Restores — How do you handle instant rollbacks in static site hosts vs. containerized UI builds?
+
+SECTION 4: SECURITY & CLOUD AUTHENTICATION (Q29–35)
+--------------------------------------------------------------------------------
+29. CORS (Cross-Origin Resource Sharing) — How do you configure cloud API endpoints and S3 buckets to securely handle CORS requests from the UI?
+30. Cloud Identity Providers (IdP) — How do services like Auth0, AWS Cognito, and Firebase Auth handle OAuth2 / OIDC authentication flows in Single Page Applications?
+31. JWT Storage & Security in Cloud Apps — Where should authentication tokens be stored (In-Memory, HttpOnly Cookies, Web Storage) to prevent XSS and CSRF?
+32. Presigned URLs & Direct S3 Uploads — How do you allow a user to upload a large file directly from the browser to AWS S3 without passing it through your backend API?
+33. Content Security Policy (CSP) — How do you configure cloud headers or edge workers to enforce strict CSP rules against XSS attacks?
+34. Web Application Firewall (WAF) — How do WAF rules block malicious bots, SQL injection, and credential stuffing before they reach your web app?
+35. Cross-Site Request Forgery (CSRF) & SameSite — How do cloud API gateways and CDNs work with SameSite cookies to protect application endpoints?
+
+SECTION 5: OBSERVABILITY, MONITORING & REAL-TIME (Q36–42)
+--------------------------------------------------------------------------------
+36. Real User Monitoring (RUM) vs. Synthetic Monitoring — How do services like Datadog, CloudWatch, and Sentry collect Core Web Vitals from actual browsers?
+37. Frontend Error Tracking in the Cloud — How do source maps get securely uploaded to cloud platforms (e.g., Sentry) without exposing raw code to the public browser?
+38. Core Web Vitals & Cloud Impact — How do TTFB (Time to First Byte), FCP, and LCP directly depend on cloud architecture, CDN hit ratios, and serverless cold starts?
+39. Serverless Cold Starts — What causes cold starts in Lambda / Edge functions, and how do they impact SSR rendering time?
+40. Log Aggregation & Distributed Tracing — How do cloud correlation IDs pass from browser requests through CDN headers to backend microservices?
+41. Health Checks & Uptime Monitoring — How do cloud load balancers use synthetic ping routes (/healthz) to drain traffic from broken instances?
+42. Cost Optimization for Frontend Assets — How do you reduce egress costs, CDN bandwidth fees, and unnecessary serverless invocations for high-traffic frontends?

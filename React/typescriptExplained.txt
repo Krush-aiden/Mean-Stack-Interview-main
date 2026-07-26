@@ -1,0 +1,711 @@
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+TypeScript Interview — Explained Answers
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+
+𝗕𝗮𝘀𝗶𝗰 𝗟𝗲𝘃𝗲𝗹:
+=========
+
+1. What is TypeScript, and why use it over JavaScript?
+TypeScript is a statically-typed superset of JavaScript that compiles to plain JS.
+Benefits: catch bugs at compile time, better IDE support (autocomplete, refactoring),
+self-documenting code, safer refactoring in large codebases.
+
+---
+
+2. Difference between interface and type?
+
+interface User {              // Object shapes, extendable, mergeable
+  name: string;
+  age: number;
+}
+
+type User = {                 // Same for objects, BUT also supports:
+  name: string;               //   - unions:  type ID = string | number
+  age: number;                //   - tuples:  type Pair = [string, number]
+};                             //   - mapped types, conditional types
+
+interface Animal { legs: number; }
+interface Dog extends Animal { breed: string; }   // extends works
+
+type Animal = { legs: number };
+type Dog = Animal & { breed: string };            // intersection (&) works
+
+// Declaration merging (only interface):
+interface Window { myProp: string; }  // merges with existing Window
+
+Rule of thumb: Use interface for public contracts/objects, type for everything else.
+
+---
+
+3. Basic types in TypeScript:
+
+let name: string = "hello";
+let age: number = 25;
+let active: boolean = true;
+let anything: any = "skip type checking";    // avoid in production
+let safe: unknown = getData();               // must narrow before use
+function log(): void { console.log("hi"); }  // no return value
+function fail(): never { throw new Error(); }// never returns
+let n: null = null;
+let u: undefined = undefined;
+
+---
+
+4. Difference between any and unknown?
+
+any: disables ALL type checking — anything goes. Avoid.
+unknown: type-safe version of any — you MUST narrow before using it.
+
+let a: any = 5;
+a.toUpperCase();          // no error (but crashes at runtime if not string)
+
+let b: unknown = 5;
+b.toUpperCase();          // ERROR: Object is of type 'unknown'
+if (typeof b === 'string') {
+  b.toUpperCase();        // OK after narrowing
+}
+
+---
+
+5. Type inference:
+TypeScript automatically infers types when you assign a value.
+
+let name = "Krushn";      // inferred as string
+let count = 10;            // inferred as number
+const items = [1, 2, 3];  // inferred as number[]
+
+You don't always need explicit annotations — TS does the work.
+
+---
+
+6. Enums:
+
+enum Direction { Up, Down, Left, Right }    // numeric enum (0, 1, 2, 3)
+enum Status { Active = "ACTIVE", Inactive = "INACTIVE" }  // string enum
+
+const dir = Direction.Up;  // 0
+
+When to use: fixed set of named constants (roles, status, directions).
+Caveat: enums generate extra JS code. Prefer union types for simple cases:
+  type Status = "active" | "inactive";   // zero runtime cost
+
+---
+
+7. == vs === in TypeScript?
+Same as JavaScript. === checks value AND type (strict). == coerces types.
+TypeScript compiler often catches mismatched comparisons, but always use ===.
+
+---
+
+8. Tuple:
+A fixed-length array where each position has a specific type.
+
+let pair: [string, number] = ["age", 25];
+let rgb: [number, number, number] = [255, 0, 128];
+
+// Destructuring:
+const [label, value] = pair;   // label: string, value: number
+
+---
+
+9. Optional and readonly properties:
+
+interface User {
+  name: string;
+  email?: string;             // optional — may be undefined
+  readonly id: number;        // cannot be reassigned after creation
+}
+
+const u: User = { name: "A", id: 1 };
+u.id = 2;  // ERROR: Cannot assign to 'id' because it is read-only
+
+---
+
+10. Type assertion (as):
+Tells the compiler "trust me, I know the type."
+
+const input = document.getElementById("name") as HTMLInputElement;
+input.value = "hello";
+
+// Alternative syntax (not in .tsx files):
+const input = <HTMLInputElement>document.getElementById("name");
+
+When appropriate: DOM elements, API responses where you're certain of shape.
+When NOT: to silence errors you don't understand — fix the type instead.
+
+
+𝗠𝗼𝗱𝗲𝗿𝗮𝘁𝗲 𝗟𝗲𝘃𝗲𝗹:
+============
+
+11. Generics:
+Let you write reusable code that works with any type while keeping type safety.
+
+function identity<T>(value: T): T {
+  return value;
+}
+identity<string>("hello");   // returns string
+identity<number>(42);        // returns number
+identity(true);              // inferred as boolean
+
+// Practical: generic API fetcher
+async function fetchData<T>(url: string): Promise<T> {
+  const res = await fetch(url);
+  return res.json() as Promise<T>;
+}
+
+interface User { name: string; }
+const user = await fetchData<User>("/api/user/1");
+
+---
+
+12. Utility types:
+
+interface User {
+  name: string;
+  email: string;
+  age: number;
+  role: string;
+}
+
+Partial<User>      // all properties optional   { name?: string; email?: ... }
+Required<User>     // all properties required
+Pick<User, 'name' | 'email'>     // only name & email
+Omit<User, 'role'>               // everything except role
+Record<string, number>           // { [key: string]: number }
+Readonly<User>                   // all properties readonly
+
+// Practical use:
+function updateUser(id: number, updates: Partial<User>) { ... }
+// Can pass { name: "new" } without supplying all fields
+
+---
+
+13. interface extends vs type intersection (&):
+
+// interface extends — creates child interface:
+interface Animal { name: string; }
+interface Dog extends Animal { breed: string; }
+
+// type intersection — merges types:
+type Animal = { name: string };
+type Dog = Animal & { breed: string };
+
+Key difference: with interface, if there's a property conflict, TS shows a clear error.
+With &, conflicting properties silently become never — harder to debug.
+
+---
+
+14. Union types and intersection types:
+
+// Union (OR) — value can be one of several types:
+type ID = string | number;
+function printId(id: ID) { console.log(id); }
+
+// Intersection (AND) — value must satisfy all types:
+type Named = { name: string };
+type Aged = { age: number };
+type Person = Named & Aged;   // must have both name AND age
+
+---
+
+15. Discriminated unions:
+A pattern where each type in a union has a common literal property (tag/kind)
+that TypeScript uses to narrow the type.
+
+type Shape =
+  | { kind: "circle"; radius: number }
+  | { kind: "square"; side: number }
+  | { kind: "rectangle"; width: number; height: number };
+
+function area(s: Shape): number {
+  switch (s.kind) {
+    case "circle":    return Math.PI * s.radius ** 2;
+    case "square":    return s.side ** 2;
+    case "rectangle": return s.width * s.height;
+  }
+}
+
+Key point: TS auto-narrows inside each case — no type assertion needed.
+
+---
+
+16. Type guards:
+
+// typeof guard:
+function process(val: string | number) {
+  if (typeof val === "string") val.toUpperCase();  // narrowed to string
+}
+
+// instanceof guard:
+if (error instanceof TypeError) { ... }
+
+// in guard:
+if ("email" in user) { ... }  // user has email property
+
+// Custom type guard (type predicate):
+function isString(val: unknown): val is string {
+  return typeof val === "string";
+}
+
+---
+
+17. never type:
+Represents values that NEVER occur.
+
+// Function that never returns (throws or infinite loop):
+function throwError(msg: string): never {
+  throw new Error(msg);
+}
+
+// Exhaustive check in switch:
+function handleShape(s: Shape): number {
+  switch (s.kind) {
+    case "circle": return ...;
+    case "square": return ...;
+    default:
+      const _exhaustive: never = s;  // ERROR if a case is missing
+      return _exhaustive;
+  }
+}
+
+---
+
+18. Type narrowing vs type assertion:
+
+// Narrowing: TS compiler proves the type — SAFE
+if (typeof val === "string") { val.toUpperCase(); }
+
+// Assertion: YOU tell the compiler — TRUST-BASED (can be wrong)
+const val = someValue as string;
+val.toUpperCase();   // crashes if someValue is actually a number
+
+Prefer narrowing. Use assertion only when you truly know more than TS.
+
+---
+
+19. Function overloads:
+
+function greet(name: string): string;
+function greet(name: string, age: number): string;
+function greet(name: string, age?: number): string {
+  if (age !== undefined) return `${name}, age ${age}`;
+  return `Hello ${name}`;
+}
+
+greet("A");       // OK
+greet("A", 25);   // OK
+greet("A", "B");  // ERROR — no matching overload
+
+---
+
+20. Mapped types:
+Create new types by transforming each property of an existing type.
+
+type Readonly<T> = { readonly [K in keyof T]: T[K] };
+type Optional<T> = { [K in keyof T]?: T[K] };
+
+// Make all properties nullable:
+type Nullable<T> = { [K in keyof T]: T[K] | null };
+
+type User = { name: string; age: number };
+type NullableUser = Nullable<User>;
+// { name: string | null; age: number | null }
+
+
+𝗔𝗱𝘃𝗮𝗻𝗰𝗲𝗱 𝗟𝗲𝘃𝗲𝗹:
+=============
+
+21. Conditional types:
+
+type IsString<T> = T extends string ? "yes" : "no";
+
+type A = IsString<string>;   // "yes"
+type B = IsString<number>;   // "no"
+
+// Practical: extract return type
+type ReturnOf<T> = T extends (...args: any[]) => infer R ? R : never;
+type R = ReturnOf<() => number>;  // number
+
+---
+
+22. infer keyword:
+Used inside conditional types to capture/extract a type.
+
+type Unpack<T> = T extends Array<infer U> ? U : T;
+
+type A = Unpack<string[]>;    // string
+type B = Unpack<number>;      // number (not an array, returns T)
+
+// Extract promise result:
+type Awaited<T> = T extends Promise<infer R> ? R : T;
+type C = Awaited<Promise<string>>;  // string
+
+---
+
+23. Declaration merging:
+Only works with interface — if you declare the same interface name twice,
+TS merges them into one.
+
+interface Window {
+  myCustomProp: string;
+}
+// Now window.myCustomProp is valid — merged with built-in Window
+
+This does NOT work with type aliases.
+
+---
+
+24. namespace vs module:
+- module: ES modules (import/export) — preferred, standard.
+- namespace: older TS pattern for grouping code. Rarely used now.
+
+// Module (preferred):
+export function greet() { ... }
+import { greet } from './utils';
+
+// Namespace (legacy):
+namespace Utils {
+  export function greet() { ... }
+}
+Utils.greet();
+
+---
+
+25. Template literal types:
+
+type Color = "red" | "green" | "blue";
+type Size = "sm" | "md" | "lg";
+type ClassName = `${Size}-${Color}`;
+// "sm-red" | "sm-green" | "sm-blue" | "md-red" | ... (9 combinations)
+
+type EventName = `on${Capitalize<"click" | "focus">}`;
+// "onClick" | "onFocus"
+
+---
+
+26. as const:
+Makes the value deeply readonly and narrows to literal types.
+
+const config = { theme: "dark", version: 2 };
+// type: { theme: string; version: number }
+
+const config = { theme: "dark", version: 2 } as const;
+// type: { readonly theme: "dark"; readonly version: 2 }
+
+// Useful for:
+const ROLES = ["admin", "user", "guest"] as const;
+type Role = typeof ROLES[number];   // "admin" | "user" | "guest"
+
+---
+
+27. satisfies operator (TS 4.9+):
+Validates that a value matches a type WITHOUT widening the inferred type.
+
+type Colors = Record<string, [number, number, number] | string>;
+
+const palette = {
+  red: [255, 0, 0],
+  green: "#00ff00",
+} satisfies Colors;
+
+palette.red;     // type is [number, number, number] — NOT string | [...]
+palette.green;   // type is string
+
+// Without satisfies, using `const palette: Colors` would widen red to string | number[]
+
+---
+
+28. Index signatures and index access types:
+
+// Index signature — dynamic keys:
+interface StringMap {
+  [key: string]: number;
+}
+const scores: StringMap = { math: 90, eng: 85 };
+
+// Index access type — extract property type:
+interface User { name: string; age: number; }
+type NameType = User["name"];        // string
+type Values = User[keyof User];      // string | number
+
+---
+
+29. DeepReadonly:
+
+type DeepReadonly<T> = {
+  readonly [K in keyof T]: T[K] extends object ? DeepReadonly<T[K]> : T[K];
+};
+
+interface Config {
+  db: { host: string; port: number };
+  debug: boolean;
+}
+
+type ReadonlyConfig = DeepReadonly<Config>;
+// db.host, db.port are all readonly — nested!
+
+---
+
+30. Variance:
+- Covariance: A subtype can be used where a parent type is expected (arrays, return types).
+- Contravariance: A parent type can be used where a subtype is expected (function parameters).
+
+// TS is structurally typed, so variance is usually implicit.
+// In strict mode, function parameters are checked contravariantly:
+type Handler = (e: MouseEvent) => void;
+const fn: Handler = (e: Event) => {};  // ERROR in strict mode
+
+
+𝗧𝘆𝗽𝗲𝗦𝗰𝗿𝗶𝗽𝘁 + 𝗥𝗲𝗮𝗰𝘁:
+==================
+
+31. Typing React component props:
+
+// Inline:
+function Greeting({ name, age }: { name: string; age: number }) {
+  return <h1>{name}, {age}</h1>;
+}
+
+// With interface (preferred for larger props):
+interface GreetingProps {
+  name: string;
+  age: number;
+  onClose?: () => void;
+}
+function Greeting({ name, age, onClose }: GreetingProps) { ... }
+
+---
+
+32. Typing useState, useRef, useReducer:
+
+// useState:
+const [count, setCount] = useState<number>(0);
+const [user, setUser] = useState<User | null>(null);
+
+// useRef:
+const inputRef = useRef<HTMLInputElement>(null);
+const timerRef = useRef<number | undefined>(undefined);
+
+// useReducer:
+type Action = { type: "increment" } | { type: "set"; value: number };
+type State = { count: number };
+
+function reducer(state: State, action: Action): State {
+  switch (action.type) {
+    case "increment": return { count: state.count + 1 };
+    case "set": return { count: action.value };
+  }
+}
+
+const [state, dispatch] = useReducer(reducer, { count: 0 });
+
+---
+
+33. Typing event handlers:
+
+function handleClick(e: React.MouseEvent<HTMLButtonElement>) { ... }
+function handleChange(e: React.ChangeEvent<HTMLInputElement>) { ... }
+function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+  e.preventDefault();
+}
+
+// Inline — TS infers automatically:
+<button onClick={(e) => { /* e is MouseEvent */ }}>Click</button>
+
+---
+
+34. React.FC — should you use it?
+
+const Greeting: React.FC<Props> = ({ name }) => <h1>{name}</h1>;
+
+Problems with React.FC:
+- Used to implicitly include children (fixed in React 18 types).
+- Doesn't support generics easily.
+- Adds no real value — just verbose.
+
+Recommended: just type the props directly (see Q31). Skip React.FC.
+
+---
+
+35. Typing children:
+
+interface LayoutProps {
+  children: React.ReactNode;   // most flexible — accepts anything renderable
+}
+
+// For stricter typing:
+interface CardProps {
+  children: React.ReactElement;     // only JSX elements
+  // or
+  children: string;                 // only string
+}
+
+---
+
+36. Typing custom hooks that return tuples:
+
+function useToggle(initial: boolean): [boolean, () => void] {
+  const [on, setOn] = useState(initial);
+  const toggle = useCallback(() => setOn(v => !v), []);
+  return [on, toggle];    // TS infers [boolean, () => void] correctly
+}
+
+// If TS widens to (boolean | () => void)[], add `as const`:
+return [on, toggle] as const;
+
+---
+
+37. Typing Context API:
+
+interface AuthContextType {
+  user: User | null;
+  login: (email: string, password: string) => Promise<void>;
+  logout: () => void;
+}
+
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
+
+function useAuth() {
+  const ctx = useContext(AuthContext);
+  if (!ctx) throw new Error("useAuth must be used within AuthProvider");
+  return ctx;   // now guaranteed to be AuthContextType
+}
+
+---
+
+38. Generic API response typing:
+
+interface ApiResponse<T> {
+  data: T;
+  status: number;
+  message: string;
+}
+
+async function fetchApi<T>(url: string): Promise<ApiResponse<T>> {
+  const res = await fetch(url);
+  return res.json();
+}
+
+interface Product { id: number; name: string; price: number; }
+const result = await fetchApi<Product[]>("/api/products");
+// result.data is Product[]
+
+---
+
+39. ReactNode vs ReactElement vs JSX.Element:
+
+React.ReactNode:     string | number | boolean | null | undefined | ReactElement | ReactFragment
+                     → broadest — use for children
+
+React.ReactElement:  an object with type, props, key — a single JSX element
+                     → narrower — excludes strings, numbers, null
+
+JSX.Element:         React.ReactElement<any, any> — same thing, just the JSX namespace alias
+                     → typically returned from components
+
+Rule: Use ReactNode for children, ReactElement for strict JSX-only.
+
+---
+
+40. Typing refs in React 19 (no forwardRef):
+
+// React 19 — ref is a regular prop:
+interface InputProps {
+  ref?: React.Ref<HTMLInputElement>;
+  placeholder?: string;
+}
+
+function Input({ ref, placeholder }: InputProps) {
+  return <input ref={ref} placeholder={placeholder} />;
+}
+
+// Old way (pre-19) — forwardRef:
+const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => (
+  <input ref={ref} {...props} />
+));
+
+
+𝗣𝗿𝗮𝗰𝘁𝗶𝗰𝗮𝗹 / 𝗖𝗼𝗱𝗶𝗻𝗴:
+===================
+
+41. Convert JS to TypeScript (example):
+
+// JS:
+function getUser(id) {
+  return fetch(`/api/users/${id}`).then(res => res.json());
+}
+
+// TypeScript:
+interface User { id: number; name: string; email: string; }
+
+async function getUser(id: number): Promise<User> {
+  const res = await fetch(`/api/users/${id}`);
+  if (!res.ok) throw new Error(`Failed: ${res.status}`);
+  return res.json() as Promise<User>;
+}
+
+---
+
+42. Generic function for arrays and single values:
+
+function toArray<T>(input: T | T[]): T[] {
+  return Array.isArray(input) ? input : [input];
+}
+
+toArray("hello");       // ["hello"]  — string[]
+toArray([1, 2, 3]);     // [1, 2, 3]  — number[]
+
+---
+
+43. Type-safe event emitter:
+
+type EventMap = {
+  login: { userId: string };
+  logout: undefined;
+  error: { message: string; code: number };
+};
+
+class Emitter<T extends Record<string, any>> {
+  private listeners = new Map<keyof T, Set<Function>>();
+
+  on<K extends keyof T>(event: K, fn: (payload: T[K]) => void) {
+    if (!this.listeners.has(event)) this.listeners.set(event, new Set());
+    this.listeners.get(event)!.add(fn);
+  }
+
+  emit<K extends keyof T>(event: K, payload: T[K]) {
+    this.listeners.get(event)?.forEach(fn => fn(payload));
+  }
+}
+
+const bus = new Emitter<EventMap>();
+bus.on("login", (p) => console.log(p.userId));  // typed!
+bus.emit("login", { userId: "abc" });            // typed!
+
+---
+
+44. DeepPartial utility type:
+
+type DeepPartial<T> = {
+  [K in keyof T]?: T[K] extends object ? DeepPartial<T[K]> : T[K];
+};
+
+interface Config {
+  server: { host: string; port: number };
+  debug: boolean;
+}
+
+const partial: DeepPartial<Config> = {
+  server: { port: 3000 }   // host is optional, debug is optional
+};
+
+---
+
+45. Extract and Exclude:
+
+type Mixed = string | number | boolean | null;
+
+type OnlyStrings = Extract<Mixed, string>;     // string
+type NoStrings = Exclude<Mixed, string>;        // number | boolean | null
+type NonNull = NonNullable<Mixed>;              // string | number | boolean
