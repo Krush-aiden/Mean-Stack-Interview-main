@@ -3,7 +3,7 @@
               Updated for 2026 Interview Standards
 =====================================================================
 
- Solutions => jsProblemsAnswers_Part1.js (Q1-30) & jsProblemsAnswers_Part2.js (Q31-60)
+Solutions => jsProblemsAnswers_Part1.js (Q1-30) & jsProblemsAnswers_Part2.js (Q31-60)
 
 
 =====================================================================

@@ -1,0 +1,384 @@
+================================================================================
+        PYTHON BACKEND DEVELOPER - INTERVIEW QUESTIONS (IN-DEPTH)
+================================================================================
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SECTION 1: PYTHON FUNDAMENTALS & CORE CONCEPTS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Q1.  Explain Python's GIL (Global Interpreter Lock). What are its implications
+     for multi-threaded backend applications?
+
+Q2.  What is the difference between deep copy and shallow copy in Python?
+     When would you use each in a backend context?
+
+Q3.  How does Python manage memory? Explain reference counting and the garbage
+     collector. What is a reference cycle and how does Python handle it?
+
+Q4.  What are Python decorators? Write a decorator that logs function execution
+     time and another that retries a function on failure.
+
+Q5.  Explain the difference between *args and **kwargs. How are they used
+     in function definitions and calls?
+
+Q6.  What are Python generators and iterators? How do they differ from regular
+     functions and lists? Provide a use case in a backend pipeline.
+
+Q7.  Explain Python's data model. What are dunder (magic) methods and how do
+     they enable operator overloading and custom class behaviors?
+
+Q8.  What is the difference between @staticmethod, @classmethod, and instance
+     methods? When would you use each?
+
+Q9.  Explain metaclasses in Python. When would a backend developer need to
+     use them?
+
+Q10. What is the difference between mutable and immutable types in Python?
+     How does mutability affect dictionary keys and set elements?
+
+Q11. Explain Python's LEGB rule for variable scope (Local, Enclosing,
+     Global, Built-in).
+
+Q12. What are context managers? How do you create a custom context manager
+     using both a class and the contextlib module?
+
+Q13. What is the difference between is and == in Python?
+
+Q14. Explain list comprehensions, dict comprehensions, and generator
+     expressions. When should you prefer one over another?
+
+Q15. What are Python's built-in data structures (list, tuple, set, dict)?
+     What are their time complexities for common operations?
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SECTION 2: OBJECT-ORIENTED PROGRAMMING (OOP)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Q16. Explain the four pillars of OOP: Encapsulation, Inheritance,
+     Polymorphism, and Abstraction. Give Python examples for each.
+
+Q17. What is Method Resolution Order (MRO) in Python? How does Python handle
+     multiple inheritance? What is the C3 linearization algorithm?
+
+Q18. What are abstract base classes (ABCs)? How do you define and use them
+     with the `abc` module?
+
+Q19. Explain the difference between composition and inheritance. When is
+     composition preferred?
+
+Q20. What are Python dataclasses? How do they compare to regular classes,
+     namedtuples, and Pydantic models?
+
+Q21. What is the __slots__ mechanism and when should you use it?
+
+Q22. How do you implement the Singleton design pattern in Python? What are the
+     thread-safety concerns?
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SECTION 3: CONCURRENCY & ASYNCHRONOUS PROGRAMMING
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Q23. Explain the difference between threading, multiprocessing, and asyncio
+     in Python. When would you use each?
+
+Q24. What is an event loop in asyncio? How does it work under the hood?
+
+Q25. What is the difference between async def, await, and coroutines?
+     How do you run multiple coroutines concurrently using asyncio.gather()
+     and asyncio.create_task()?
+
+Q26. What are race conditions and deadlocks? How do you prevent them in
+     Python threaded applications using locks, semaphores, and events?
+
+Q27. Explain the Producer-Consumer pattern. Implement it using Python's
+     queue.Queue in a multi-threaded context.
+
+Q28. What is concurrent.futures? How do ThreadPoolExecutor and
+     ProcessPoolExecutor differ, and when would you choose each?
+
+Q29. How does asyncio handle I/O-bound vs CPU-bound tasks differently?
+     What is run_in_executor used for?
+
+Q30. Explain backpressure in async systems. How do you handle it in Python?
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SECTION 4: WEB FRAMEWORKS (DJANGO, FASTAPI, FLASK)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Q31. Compare Django, Flask, and FastAPI. What are the trade-offs, and when
+     would you choose each for a production backend?
+
+Q32. Explain Django's request-response cycle from the moment an HTTP request
+     hits the server to the response being sent back.
+
+Q33. What is Django ORM? How does it differ from raw SQL? What are its
+     performance pitfalls (N+1 queries, etc.)?
+
+Q34. What are Django middleware? How do you write custom middleware?
+     Give a practical example (e.g., request logging or rate limiting).
+
+Q35. Explain Django signals. When should you use them and when should you
+     avoid them?
+
+Q36. What are FastAPI's dependency injection capabilities? How do you use
+     Depends() for authentication, DB sessions, and shared resources?
+
+Q37. How does FastAPI handle request validation and serialization using
+     Pydantic? How does it auto-generate OpenAPI documentation?
+
+Q38. Explain how you would implement JWT authentication in FastAPI or Flask.
+
+Q39. What are Django's class-based views (CBVs) vs function-based views (FBVs)?
+     What are the pros and cons of each?
+
+Q40. How do you handle file uploads and streaming responses in FastAPI or Django?
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SECTION 5: REST APIs & API DESIGN
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Q41. What are the principles of RESTful API design? Explain idempotency,
+     statelessness, and resource-based URLs.
+
+Q42. What is the difference between HTTP methods GET, POST, PUT, PATCH,
+     and DELETE? When is PATCH preferred over PUT?
+
+Q43. How do you design API versioning? What are the common strategies
+     (URL versioning, header versioning, query param versioning)?
+
+Q44. Explain rate limiting and throttling in APIs. How would you implement
+     them in a Python backend?
+
+Q45. What are the best practices for API error handling and returning
+     meaningful error responses?
+
+Q46. How do you secure REST APIs? Explain OAuth 2.0, API keys, and
+     JWT-based authentication.
+
+Q47. What is pagination in APIs? Explain cursor-based, offset-based,
+     and keyset pagination. Which is best for large datasets?
+
+Q48. How would you design an API for handling long-running background tasks
+     (e.g., report generation)?
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SECTION 6: DATABASES & ORM
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Q49. Explain the N+1 query problem. How do you detect and fix it in
+     Django ORM (select_related, prefetch_related)?
+
+Q50. What are database indexes? When should you add them and when can
+     they hurt performance?
+
+Q51. Explain database transactions, ACID properties, and isolation levels.
+     How does Django handle transactions?
+
+Q52. What is connection pooling? How is it managed in SQLAlchemy or Django?
+
+Q53. How do you handle database migrations safely in production?
+
+Q54. What is the difference between SQL (relational) and NoSQL databases?
+     When would you choose PostgreSQL over MongoDB?
+
+Q55. Explain database sharding and replication. How do they improve
+     scalability and availability?
+
+Q56. What are stored procedures and triggers? When should a backend developer
+     use them vs application-level logic?
+
+Q57. How do you use SQLAlchemy in a Python application? Explain sessions,
+     transactions, and lazy vs eager loading.
+
+Q58. What are database deadlocks? How do you detect and prevent them
+     in a Python backend?
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SECTION 7: CACHING
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Q59. What are the different caching strategies (Cache-Aside, Write-Through,
+     Write-Behind, Read-Through)? When would you use each?
+
+Q60. How do you integrate Redis as a cache in a Django or FastAPI application?
+
+Q61. What is cache invalidation? Why is it considered hard? What strategies
+     exist (TTL, event-driven, cache tags)?
+
+Q62. How do you implement distributed caching in a multi-instance backend
+     deployment?
+
+Q63. What is a cache stampede (thundering herd problem)? How do you
+     prevent it?
+
+Q64. When would you use in-memory caching (e.g., functools.lru_cache)
+     vs an external cache like Redis?
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SECTION 8: MESSAGE QUEUES & TASK QUEUES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Q65. What is Celery and how does it work? Explain workers, brokers,
+     and result backends.
+
+Q66. What is the difference between a task queue (Celery) and a message
+     broker (RabbitMQ/Kafka)? When would you use each?
+
+Q67. How do you handle task retries, exponential backoff, and dead-letter
+     queues in Celery?
+
+Q68. What are Celery chains, groups, and chords? How do you orchestrate
+     complex task workflows?
+
+Q69. Explain the at-least-once, at-most-once, and exactly-once delivery
+     semantics in message queues.
+
+Q70. How would you design an event-driven architecture using Kafka in Python?
+     What is a consumer group?
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SECTION 9: TESTING
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Q71. What is the difference between unit tests, integration tests, and
+     end-to-end tests? How do you balance these in a Python backend?
+
+Q72. What is pytest? How do fixtures, parametrize, and conftest.py work?
+
+Q73. How do you mock external services and dependencies in tests using
+     unittest.mock and pytest-mock?
+
+Q74. Explain Test-Driven Development (TDD). What are its benefits and
+     challenges in backend development?
+
+Q75. How do you write tests for async Python code using pytest-asyncio?
+
+Q76. What is code coverage? What are its limitations as a quality metric?
+
+Q77. How do you test database interactions without hitting a real database?
+     What is a database fixture?
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SECTION 10: SECURITY
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Q78. What are the OWASP Top 10 vulnerabilities? Which ones are most
+     relevant to Python backend developers?
+
+Q79. How do you prevent SQL injection in Python? What is the role of
+     parameterized queries and ORMs?
+
+Q80. What is Cross-Site Request Forgery (CSRF)? How does Django protect
+     against it?
+
+Q81. How do you securely store passwords in Python? What is bcrypt and
+     why is MD5 or SHA1 insufficient?
+
+Q82. Explain how HTTPS/TLS works. What is certificate pinning?
+
+Q83. What are environment variables and secrets management best practices
+     in a Python backend?
+
+Q84. What is input validation and output sanitization? How do you prevent
+     XSS in APIs that return HTML?
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SECTION 11: PERFORMANCE & OPTIMIZATION
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Q85. How do you profile a Python application to find performance bottlenecks?
+     What tools do you use (cProfile, py-spy, memory_profiler)?
+
+Q86. What is Big-O notation? What are the time complexities of common
+     operations on Python's built-in data structures?
+
+Q87. How would you optimize a slow Django queryset? Walk through the
+     process step by step.
+
+Q88. What is lazy evaluation in Python and how can it improve performance?
+
+Q89. When and how would you use NumPy or Cython to speed up
+     compute-heavy Python code?
+
+Q90. How do you reduce the memory footprint of a Python application
+     processing large datasets?
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SECTION 12: SYSTEM DESIGN & ARCHITECTURE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Q91. How would you design a URL shortening service (like bit.ly) in Python?
+     Discuss the database schema, API design, and scalability.
+
+Q92. What is a microservices architecture? What are the challenges of
+     migrating a Django monolith to microservices?
+
+Q93. How do you implement health checks and readiness/liveness probes
+     in a Python backend?
+
+Q94. Explain the Circuit Breaker pattern. How would you implement it
+     in Python for inter-service communication?
+
+Q95. How do you handle distributed tracing and logging across microservices
+     in Python (OpenTelemetry, structured logging)?
+
+Q96. What is the 12-Factor App methodology? How does it apply to
+     Python backend development?
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SECTION 13: DEVOPS, DEPLOYMENT & CONTAINERIZATION
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Q97.  How do you containerize a Python application with Docker? What are
+      best practices for writing a production-grade Dockerfile?
+
+Q98.  What is the difference between WSGI and ASGI? Which Python servers
+      support each (Gunicorn, Uvicorn, Hypercorn)?
+
+Q99.  How do you manage Python dependencies and virtual environments for
+      reproducible builds (pip, pipenv, poetry)?
+
+Q100. Explain blue-green deployments and canary releases. How do they
+      minimize downtime during Python app deployments?
+
+Q101. How do you configure logging in a Python backend for production?
+      What is structured logging and why is it important?
+
+Q102. What is Kubernetes? How would you deploy a Django or FastAPI app
+      on a Kubernetes cluster?
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SECTION 14: DATA HANDLING, SERIALIZATION & VALIDATION
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Q103. What is Pydantic and how does it differ from Python's built-in
+      dataclasses for data validation?
+
+Q104. How do you handle JSON serialization of complex Python objects
+      (datetime, UUID, Decimal)? What are the common pitfalls?
+
+Q105. What is the difference between serialization and deserialization?
+      How do Django REST Framework serializers work?
+
+Q106. How would you design a system to process and validate large CSV
+      uploads in a Python backend without loading everything into memory?
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SECTION 15: DESIGN PATTERNS & BEST PRACTICES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Q107. Explain the Repository Pattern. How does it help separate business
+      logic from data access in Python?
+
+Q108. What is Dependency Injection? How do FastAPI's Depends() and Python
+      frameworks implement it?
+
+Q109. What are SOLID principles? Give a concrete Python example for each.
+
+Q110. What is the difference between synchronous and event-driven architecture?
+      When would you choose each for a backend system?
+
+================================================================================
+                              END OF QUESTIONS FILE
+              Total Questions: 110 | Sections: 15 | Level: In-Depth
+================================================================================

@@ -160,6 +160,42 @@ Type coercion is the automatic or implicit conversion of values from one type to
 
 ---
 
+---
+
+### Why does `[] + {}` evaluate to `"[object Object]"` while `{} + []` evaluates to `0` in a statement context?
+
+**Explanation:**
+This behavior involves two core JavaScript mechanisms: **Type Coercion (`ToPrimitive`)** and **Grammar/Parsing Context**.
+
+1. **How `[]` and `{}` convert to strings:**
+   - Both `[]` and `{}` are objects, but they use different `.toString()` implementations via the prototype chain.
+   - `Array.prototype.toString()` overrides the default method and joins elements with commas. An empty array `[].toString()` converts to `""`.
+   - `{}` inherits from `Object.prototype.toString()`, which returns a type identification tag `"[object Object]"`.
+
+2. **Parsing Rules (Expression vs. Statement Context):**
+   - **`[] + {}` (Expression Context):**
+     Starts with `[]`, so the engine parses the whole line as an expression. Both operands are converted to primitive strings and concatenated:
+     `"" + "[object Object]"` → `"[object Object]"`
+
+   - **`{} + []` as a standalone statement (Statement Context):**
+     When `{}` appears at the very beginning of a line without surrounding parentheses or assignment, the parser interprets `{}` as an **empty code block** (and ignores it). What remains is `+[]`, where `+` acts as a unary plus operator converting `[]` to a number:
+     `+[]` → `+""` → `Number("")` → `0`
+
+   - **`({} + [])` or `console.log({} + [])` (Expression Context):**
+     Parentheses or function arguments force `{}` to be evaluated as an Object Literal instead of a code block, performing string concatenation:
+     `"[object Object]" + ""` → `"[object Object]"`
+
+```javascript
+// Examples:
+console.log([] + {});   // "[object Object]"
+console.log({} + []);   // "[object Object]" (inside console.log, {} is an expression)
+
+// Standalone execution in DevTools Console / REPL:
+{} + []                 // 0 ({} is treated as an empty block, evaluates +[])
+(({} + []))             // "[object Object]" (parentheses force expression context)
+
+---
+
 ### 7. What is Static Typing vs Dynamic Typing?
 
 **Static Typing (e.g., TypeScript, Java):**
@@ -197,6 +233,44 @@ NaN stands for "Not a Number." It indicates a value that is not a valid number, 
     undefined + 1      // NaN
 
 Best Practice: Use `Number.isNaN()` instead of the global `isNaN()` for accurate checks.
+
+---
+
+### 77. What is `NaN` in JavaScript, and why do operations like `0 / 0`, `parseInt("abc")`, and `Math.sqrt(-1)` return `NaN`?
+
+**Explanation:**
+`NaN` stands for **"Not a Number"** (even though its data type is `'number'`). It represents an unrepresentable or mathematically invalid numeric result. Instead of throwing a fatal runtime error and crashing the program, JavaScript returns `NaN`.
+
+**Step-by-Step Breakdown:**
+
+1. **`0 / 0` → `NaN` (Indeterminate Arithmetic):**
+   - Dividing a non-zero number by zero yields `Infinity` (e.g., `5 / 0` → `Infinity`).
+   - Dividing `0` by `0` is mathematically indeterminate (undefined). Because there is no finite or infinite numeric boundary, JS evaluates it as `NaN`.
+
+2. **`parseInt("abc")` → `NaN` (Failed String Parsing):**
+   - `parseInt()` parses strings left-to-right to extract leading valid digits.
+   - It fails at the very first character `'a'` (not a valid base-10 digit), so it gives up and returns `NaN`.
+   - *Contrast:* `parseInt("123abc")` parses the leading valid digits and returns `123`.
+
+3. **`Math.sqrt(-1)` → `NaN` (Outside Real Number Domain):**
+   - The square root of a negative number requires complex/imaginary numbers ($i$).
+   - The JS `Math` object only operates on standard **Real Numbers**, so taking the square root of a negative number returns `NaN`.
+
+```javascript
+// Examples:
+typeof NaN;             // "number"
+
+// 1. Indeterminate math
+5 / 0;                  // Infinity
+0 / 0;                  // NaN
+
+// 2. Failed parsing
+parseInt("123abc");     // 123
+parseInt("abc");        // NaN
+
+// 3. Imaginary number
+Math.sqrt(16);          // 4
+Math.sqrt(-1);          // NaN
 
 ---
 

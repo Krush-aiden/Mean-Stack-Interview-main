@@ -17,11 +17,13 @@
 // 1. What are the different data types in JavaScript?
 // 2. What is Hoisting in JavaScript?
 // 3. What is the difference between == and ===?
+// Why does `[] + {}` evaluate to `"[object Object]"` while `{} + []` evaluates to `0` in a statement context?
 // 4. What is the difference between var, let, and const?
 // 5. What is the Temporal Dead Zone (TDZ)?
 // 6. What is Type Coercion in JavaScript?
 // 7. What is Static Typing vs Dynamic Typing?
 // 8. What is NaN in JavaScript?
+// What is `NaN` in JavaScript, and why do operations like `0 / 0`, `parseInt("abc")`, and `Math.sqrt(-1)` return `NaN`?
 // 9. What is the difference between null and undefined?
 // 10. What is Strict Mode in JavaScript?
 // 11. Explain Scope and Scope Chain in JavaScript
