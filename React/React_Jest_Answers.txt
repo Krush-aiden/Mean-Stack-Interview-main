@@ -1,0 +1,538 @@
+# 🧪 Jest & React Testing Library (RTL) Master Answer Bank
+
+---
+
+## 🟢 Part 1: Basic Jest Questions
+
+### 1. What is Jest, and how does it differ from React Testing Library (RTL)?
+
+* **Jest:** The **test runner, assertion library (`expect`), and mocking framework**. It executes tests in a Node.js process using `jsdom` to simulate a browser DOM environment.
+* **React Testing Library (RTL):** A **DOM testing utility** designed to render React components and query the DOM tree from a user's perspective (focusing on accessible roles, labels, and visible text rather than internal component implementation details).
+
+---
+
+### 2. What is the role of `describe`, `test`, and `it` blocks in Jest?
+
+* **`describe`:** Groups related test cases into a cohesive suite or block (e.g., `describe('<LoginForm/>', () => { ... })`).
+* **`test` / `it`:** Defines an individual, runnable unit test. `it` is a readable alias for `test` designed for BDD-style sentence construction (e.g., `it('should display validation error on submit', () => { ... })`).
+
+---
+
+### 3. What are Matchers in Jest? Give examples of `toBe()`, `toEqual()`, and `toBeTruthy()`.
+
+Matchers are assertion methods used to validate test conditions:
+
+```javascript
+test('demonstrating common matchers', () => {
+  // toBe: Primitive value equality (uses Object.is)
+  expect(5 + 5).toBe(10);
+
+  // toEqual: Deep structural equality for objects/arrays
+  expect({ user: 'Krushna' }).toEqual({ user: 'Krushna' });
+
+  // toBeTruthy: Asserts value evaluates to true in a boolean context
+  expect('non-empty string').toBeTruthy();
+});
+
+```
+
+---
+
+### 4. What is the difference between `toBe()` and `toEqual()` in Jest?
+
+* **`toBe()`:** Checks strict referential/primitive equality using `Object.is`. Comparing two separate objects with identical keys using `toBe()` will **fail** because their memory references differ.
+* **`toEqual()`:** Recursively compares every key-value pair or element inside objects and arrays, checking for **deep structural equality**.
+
+---
+
+### 5. What are `beforeEach`, `afterEach`, `beforeAll`, and `afterAll` lifecycle hooks?
+
+* **`beforeAll`:** Runs once **before any** test in the file/suite begins (e.g., establishing a test database connection).
+* **`afterAll`:** Runs once **after all** tests complete (e.g., closing server connections).
+* **`beforeEach`:** Runs **before every single test** (e.g., resetting mock function histories or initializing state).
+* **`afterEach`:** Runs **after every single test** (e.g., clearing timers or restoring spies).
+
+---
+
+### 6. How do you run tests in watch mode in Jest?
+
+Run the watch flag via CLI:
+
+```bash
+npx jest --watch
+
+```
+
+Jest will monitor source files via Git and automatically re-run only the tests related to changed files.
+
+---
+
+### 7. What is test coverage, and how do you generate a coverage report in Jest?
+
+Test coverage calculates the percentage of your code executed during test runs across **Statements, Branches, Functions, and Lines**.
+
+To generate a report:
+
+```bash
+npx jest --coverage
+
+```
+
+This prints a terminal summary table and generates an interactive HTML report inside the `/coverage` directory.
+
+---
+
+### 8. What is the purpose of `screen` in React Testing Library?
+
+`screen` represents `document.body`. It provides pre-bound query utilities so you don't have to destructure return values from `render()`, preventing out-of-date container references across async updates.
+
+---
+
+### 9. What are queries in RTL, and what is the difference between `getBy`, `queryBy`, and `findBy`?
+
+* **`getBy...`:** Synchronous. Returns the matching element. Throws an immediate error if 0 or >1 elements match.
+* **`queryBy...`:** Synchronous. Returns the element or **`null`** if 0 elements match. Used to assert that an element is **not present** in the DOM.
+* **`findBy...`:** Asynchronous. Returns a **Promise** that resolves when the element appears within a default 1000ms timeout. Used for elements loaded via async API calls or state updates.
+
+---
+
+### 10. How do you simulate user interactions like clicking a button or typing in RTL?
+
+Use `@testing-library/user-event` instead of `fireEvent`:
+
+```javascript
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import LoginForm from './LoginForm';
+
+test('simulates realistic typing and clicking', async () => {
+  const user = userEvent.setup();
+  render(<LoginForm />);
+
+  const input = screen.getByRole('textbox', { name: /email/i });
+  const button = screen.getByRole('button', { name: /submit/i });
+
+  await user.type(input, 'alex@example.com');
+  await user.click(button);
+});
+
+```
+
+---
+
+## 🟡 Part 2: Moderate Jest Questions
+
+### 11. What is mocking in Jest? What is the difference between `jest.fn()`, `jest.spyOn()`, and `jest.mock()`?
+
+* **`jest.fn()`:** Creates a standalone dummy mock function to track calls, arguments, and return values.
+* **`jest.spyOn()`:** Wraps an existing method on an object/module, tracking calls while keeping the original implementation available to restore.
+* **`jest.mock()`:** Replaces an entire external NPM package or local module file with mock implementations.
+
+---
+
+### 12. How do you test asynchronous code (Promises, `async/await`) in Jest?
+
+Use `async/await` directly in the test callback or use the `.resolves` / `.rejects` matchers:
+
+```javascript
+test('fetches user data asynchronously', async () => {
+  const data = await fetchUserData(1);
+  expect(data.name).toBe('Krushna');
+
+  // Alternative matcher style:
+  await expect(fetchUserData(1)).resolves.toEqual({ id: 1, name: 'Krushna' });
+});
+
+```
+
+---
+
+### 13. How do you mock an API call (e.g., `fetch` or `axios`) inside a React component?
+
+```javascript
+import { render, screen } from '@testing-library/react';
+import UserProfile from './UserProfile';
+
+test('fetches and displays user profile', async () => {
+  // Mock global fetch
+  jest.spyOn(global, 'fetch').mockResolvedValueOnce({
+    json: async () => ({ name: 'Krushna' }),
+  });
+
+  render(<UserProfile userId="123" />);
+
+  const nameText = await screen.findByText('Krushna');
+  expect(nameText).toBeInTheDocument();
+
+  global.fetch.mockRestore(); // Cleanup
+});
+
+```
+
+---
+
+### 14. What is Snapshot Testing in Jest? When should you use it, and what are its drawbacks?
+
+* **What it is:** Serializes a component's rendered tree into a `.snap` file and compares future test outputs against it.
+* **When to use:** Ideal for rigid, static components (e.g., custom SVG icons, design system tokens).
+* **Drawbacks:** Engineers often press `-u` to update failed snapshots without inspecting UI changes, masking actual bugs and creating fragile tests.
+
+---
+
+### 15. How do you update a failed Jest snapshot when UI intentionally changes?
+
+Run the update flag in your terminal:
+
+```bash
+npx jest -u
+# or
+npx jest --updateSnapshot
+
+```
+
+---
+
+### 16. What is `fireEvent` vs `@testing-library/user-event`, and why is `user-event` preferred?
+
+* **`fireEvent`:** Dispatches raw, synthetic DOM events directly (`fireEvent.click(button)`).
+* **`user-event`:** Simulates realistic browser interaction chains (e.g., clicking triggers `hover`, `pointerDown`, `focus`, `mouseDown`, `mouseUp`, and `click` in order).
+
+---
+
+### 17. How do you test custom React hooks using `@testing-library/react` (`renderHook` and `act`)?
+
+```javascript
+import { renderHook, act } from '@testing-library/react';
+import { useCounter } from './useCounter';
+
+test('should increment counter value', () => {
+  const { result } = renderHook(() => useCounter());
+
+  act(() => {
+    result.current.increment();
+  });
+
+  expect(result.current.count).toBe(1);
+});
+
+```
+
+---
+
+### 18. What is `act()` in React testing, and why do you get the warning *"An update to Component inside a test was not wrapped in act(...)"*?
+
+* **What `act()` is:** A helper that guarantees all state updates, effects, and DOM re-renders complete before test assertions execute.
+* **Why the warning happens:** An asynchronous state update or resolved Promise fired *after* your test completed its assertion cycle, mutating state outside RTL's tracking scope.
+
+---
+
+### 19. How do you test components wrapped with Context Providers (e.g., Theme, Auth, Redux)?
+
+Pass a custom `wrapper` option to `render()` or build a reusable custom render utility:
+
+```javascript
+import { render } from '@testing-library/react';
+import { ThemeProvider } from './ThemeContext';
+
+const customRender = (ui, options) =>
+  render(ui, { wrapper: ThemeProvider, ...options });
+
+test('renders themed button correctly', () => {
+  customRender(<ThemedButton />);
+  // Assertions...
+});
+
+```
+
+---
+
+### 20. How do you mock local storage or session storage in Jest?
+
+```javascript
+beforeEach(() => {
+  let store = {};
+  Object.defineProperty(window, 'localStorage', {
+    value: {
+      getItem: (key) => store[key] || null,
+      setItem: (key, val) => { store[key] = val.toString(); },
+      removeItem: (key) => { delete store[key]; },
+      clear: () => { store = {}; },
+    },
+    writable: true,
+  });
+});
+
+```
+
+---
+
+## 🔴 Part 3: Advanced Jest Questions
+
+### 21. What is MSW (Mock Service Worker), and why is it preferred over mocking `fetch`/`axios` directly with `jest.mock()`?
+
+* **MSW:** Intercepts outgoing HTTP requests at the network layer using Service Workers (in browser) or `node-request-interceptor` (in Jest).
+* **Why preferred:** Leaves production component code and API client libraries untouched. Tests remain completely decoupled from implementation details.
+
+---
+
+### 22. How do you test React Router components and protected routes?
+
+Wrap the component in `<MemoryRouter>` and define the initial entry path:
+
+```javascript
+import { render, screen } from '@testing-library/react';
+import { MemoryRouter, Routes, Route } from 'react-router-dom';
+import ProtectedDashboard from './ProtectedDashboard';
+
+test('redirects unauthenticated users to login', () => {
+  render(
+    <MemoryRouter initialEntries={['/dashboard']}>
+      <Routes>
+        <Route path="/dashboard" element={<ProtectedDashboard isAuthenticated={false} />} />
+        <Route path="/login" element={<div>Login Page</div>} />
+      </Routes>
+    </MemoryRouter>
+  );
+
+  expect(screen.getByText('Login Page')).toBeInTheDocument();
+});
+
+```
+
+---
+
+### 23. How do you mock time-based functions (`setTimeout`, `setInterval`) using Jest Fake Timers (`jest.useFakeTimers()`)?
+
+```javascript
+import { act } from '@testing-library/react';
+
+test('executes callback after 3 seconds', () => {
+  jest.useFakeTimers();
+  const callback = jest.fn();
+
+  setTimeout(callback, 3000);
+
+  act(() => {
+    jest.advanceTimersByTime(3000);
+  });
+
+  expect(callback).toHaveBeenCalledTimes(1);
+  jest.useRealTimers(); // Cleanup
+});
+
+```
+
+---
+
+### 24. How do you handle and test Error Boundaries in React using RTL?
+
+Spy on `console.error` to suppress expected crash logs, throw an error inside a child component, and assert that the fallback UI renders:
+
+```javascript
+import { render, screen } from '@testing-library/react';
+import ErrorBoundary from './ErrorBoundary';
+
+test('displays fallback UI on error', () => {
+  jest.spyOn(console, 'error').mockImplementation(() => {});
+
+  const ProblemChild = () => { throw new Error('Crash!'); };
+
+  render(
+    <ErrorBoundary fallback={<div>Something went wrong</div>}>
+      <ProblemChild />
+    </ErrorBoundary>
+  );
+
+  expect(screen.getByText('Something went wrong')).toBeInTheDocument();
+  console.error.mockRestore();
+});
+
+```
+
+---
+
+### 25. How do you mock third-party NPM modules or CSS/Image imports in Jest (`moduleNameMapper`)?
+
+Configure `moduleNameMapper` inside `jest.config.js`:
+
+```javascript
+module.exports = {
+  testEnvironment: 'jsdom',
+  moduleNameMapper: {
+    '\\.(css|less|scss)$': 'identity-obj-proxy', // Mocks CSS Modules
+    '\\.(jpg|jpeg|png|svg)$': '<rootDir>/__mocks__/fileMock.js', // Mocks static assets
+  },
+};
+
+```
+
+---
+
+### 26. What is the difference between unit testing, integration testing, and end-to-end (E2E) testing in a React app?
+
+| Test Type | Scope | Tools Used | Speed |
+| --- | --- | --- | --- |
+| **Unit** | Individual pure functions, isolated custom hooks, or utility helpers. | Jest | ⚡ Fast |
+| **Integration** | Multiple components interacting together with mocked network layers. | Jest + RTL + MSW | 🚀 Medium |
+| **E2E** | Full user workflows running in a real browser against actual databases. | Playwright, Cypress | 🐢 Slow |
+
+---
+
+### 27. How do you test debounced or throttled input handlers in React using Jest?
+
+Enable fake timers, simulate user typing, advance timers past the debounce delay, and assert that the search handler was called:
+
+```javascript
+test('triggers debounced search handler after 500ms', async () => {
+  jest.useFakeTimers();
+  const handleSearch = jest.fn();
+  const user = userEvent.setup({ advanceTimers: jest.advanceTimersByTime });
+
+  render(<SearchInput onSearch={handleSearch} />);
+  await user.type(screen.getByRole('textbox'), 'React');
+
+  expect(handleSearch).not.toHaveBeenCalled(); // Debounce active
+
+  act(() => {
+    jest.advanceTimersByTime(500);
+  });
+
+  expect(handleSearch).toHaveBeenCalledWith('React');
+  jest.useRealTimers();
+});
+
+```
+
+---
+
+### 28. How do you configure setup files (`setupTests.js`) and Jest config (`jest.config.js`) for a React project?
+
+* **`jest.config.js`:** Specifies environment settings, coverage paths, and module mappers.
+* **`setupTests.js`:** Runs before each test file to import global matchers like `@testing-library/jest-dom`.
+
+```javascript
+// jest.config.js
+module.exports = {
+  testEnvironment: 'jsdom',
+  setupFilesAfterEnv: ['<rootDir>/src/setupTests.js'],
+};
+
+// setupTests.js
+import '@testing-library/jest-dom';
+
+```
+
+---
+
+### 29. How do you test portals or modals rendered outside the main DOM tree?
+
+Because RTL renders components inside `document.body` by default, portals appended to `document.body` or `#modal-root` can be queried directly using `screen`:
+
+```javascript
+test('opens and closes modal portal', async () => {
+  const user = userEvent.setup();
+  render(<ModalWrapper />);
+
+  await user.click(screen.getByRole('button', { name: /open modal/i }));
+
+  // Query modal dialog rendered outside the standard tree
+  const modalHeader = screen.getByRole('heading', { name: /modal title/i });
+  expect(modalHeader).toBeInTheDocument();
+});
+
+```
+
+---
+
+## ⚡ Part 4: Jest Real-World Scenarios
+
+### 1. How do you structure test files in an enterprise React codebase?
+
+Colocate test files directly alongside source components inside the same folder rather than using a distant `__tests__` folder.
+
+```text
+src/
+└── components/
+    └── Button/
+        ├── Button.tsx
+        ├── Button.module.css
+        └── Button.test.tsx
+
+```
+
+---
+
+### 2. How do you avoid writing brittle tests that break during minor refactoring?
+
+1. **Query by Accessibility Roles:** Use `getByRole('button', { name: /submit/i })` or `getByLabelText()` instead of querying by class names (`.btn-primary`) or HTML tags (`div > button`).
+2. **Avoid Testing Internal Implementation State:** Assert on what the user sees on screen rather than inspecting component `state` variables or internal prop values.
+
+---
+
+### 3. How do you speed up a slow Jest test suite in a large CI/CD pipeline?
+
+* Set `--maxWorkers=50%` on CI builds to parallelize test execution efficiently.
+* Disable coverage generation during pull request validation runs (`--coverage=false`).
+* Replace heavy module mocks with Mock Service Worker (MSW).
+* Use Jest sharding flags (`--shard=1/4`) across multi-node CI jobs.
+
+---
+
+### 4. How do you test complex forms with validation (e.g., React Hook Form + Zod)?
+
+```javascript
+test('displays Zod validation errors on invalid submit', async () => {
+  const user = userEvent.setup();
+  render(<RegistrationForm />);
+
+  await user.click(screen.getByRole('button', { name: /submit/i }));
+
+  // Assert validation error messages appear
+  expect(await screen.findByText(/email is required/i)).toBeInTheDocument();
+  expect(await screen.findByText(/password must be at least 8 characters/i)).toBeInTheDocument();
+});
+
+```
+
+---
+
+### 5. How do you test components that depend on WebSocket or real-time data?
+
+Use a WebSocket mock library (like `mock-socket`) to simulate server events and assert UI updates:
+
+```javascript
+import { Server } from 'mock-socket';
+
+test('displays live stock prices via WebSocket', async () => {
+  const mockServer = new Server('ws://localhost:8080');
+  render(<LiveStockTicker />);
+
+  mockServer.on('connection', (socket) => {
+    socket.send(JSON.stringify({ symbol: 'AAPL', price: 180 }));
+  });
+
+  expect(await screen.findByText('AAPL: $180')).toBeInTheDocument();
+  mockServer.stop();
+});
+
+```
+
+---
+
+### 6. How do you write tests for accessible components (a11y) using `jest-axe`?
+
+```javascript
+import { render } from '@testing-library/react';
+import { axe, toHaveNoViolations } from 'jest-axe';
+import AccessibleForm from './AccessibleForm';
+
+expect.extend(toHaveNoViolations);
+
+test('component has no accessibility violations', async () => {
+  const { container } = render(<AccessibleForm />);
+  const results = await axe(container);
+
+  expect(results).toHaveNoViolations();
+});
+
+```

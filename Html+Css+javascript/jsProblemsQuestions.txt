@@ -1,218 +1,271 @@
 =====================================================================
-   JAVASCRIPT CODING PROBLEMS — Interview Prep (4+ Yrs Experience)
-              Updated for 2026 Interview Standards
+   JAVASCRIPT CODING PROBLEMS — 4+ YRS EXPERIENCE MASTER PLAN (2026)
 =====================================================================
 
-Solutions => jsProblemsAnswers_Part1.js (Q1-30) & jsProblemsAnswers_Part2.js (Q31-60)
+
+SECTION 1: STRING & ALGORITHMIC PROBLEMS
+---------------------------------------------------------------------
+1. Check if a string is a palindrome.
+   - Prep Tier: High-Level Awareness Only
+   - Focus: Handling non-alphanumeric chars & casing via Two-Pointer approach.
+
+2. Reverse a string without built-in reverse().
+   - Prep Tier: High-Level Awareness Only
+   - Focus: In-place array swapping logic.
+
+3. Title Case a sentence.
+   - Prep Tier: High-Level Awareness Only
+   - Focus: Edge cases with multiple whitespace characters.
+
+4. Character occurrence count / Frequency map.
+   - Prep Tier: High-Level Awareness Only
+   - Focus: Using Map or Object for frequency hashing.
+
+5. Longest substring without repeating characters.
+   - Prep Tier: Know Code + Implementation
+   - Focus: Sliding Window pattern with Map/Set in O(n) time.
+
+6. Valid Anagram check.
+   - Prep Tier: High-Level Awareness Only
+   - Focus: O(n) Hash Map approach vs O(n log n) sorting.
+
+7. String Permutations / Backtracking.
+   - Prep Tier: Theory + Conceptual
+   - Focus: Call stack recursion & space complexity O(n!).
+
+8. String Compression (e.g., 'aabcccccaaa' -> 'a2b1c5a3').
+   - Prep Tier: High-Level Awareness Only
+   - Focus: Single-pass pointer comparison.
 
 
+SECTION 2: ADVANCED ARRAY & DATA MANIPULATION
+---------------------------------------------------------------------
+9. Min and Max element in array.
+   - Prep Tier: High-Level Awareness Only
+   - Focus: Call stack limit risks with Math.max(...largeArray).
+
+10. Max element in nested array.
+    - Prep Tier: High-Level Awareness Only
+    - Focus: Recursive reduction vs iterative stack.
+
+11. Deduplicate array items.
+    - Prep Tier: High-Level Awareness Only
+    - Focus: Primitive Set deduplication vs Object reference uniqueness.
+
+12. Elements that appear exactly once (Frequency = 1).
+    - Prep Tier: High-Level Awareness Only
+    - Focus: Single-pass Map count.
+
+13. Custom Array Sorting.
+    - Prep Tier: Theory + Conceptual
+    - Focus: TimSort behavior, Array.prototype.sort mutability, and comparator math.
+
+14. Second smallest & second largest element in single pass.
+    - Prep Tier: High-Level Awareness Only
+    - Focus: O(n) single traversal without full array sort.
+
+15. Two Sum Problem.
+    - Prep Tier: Know Code + Implementation
+    - Focus: O(n) Hash Map lookup vs O(n^2) nested loops.
+
+16. Array Intersection and Union.
+    - Prep Tier: High-Level Awareness Only
+    - Focus: Set performance optimizations.
+
+17. Flatten a deeply nested array without Array.prototype.flat().
+    - Prep Tier: Know Code + Implementation
+    - Focus: Recursive reduction & stack-based iterative flattening.
+
+18. Polyfill for Array.prototype.flat(depth).
+    - Prep Tier: Know Code + Implementation
+    - Focus: Respecting depth limit & handling sparse array holes.
+
+19. Group array of objects by property (groupBy).
+    - Prep Tier: Know Code + Implementation
+    - Focus: Writing custom groupBy or using Object.groupBy (ES2024).
+
+20. Rotate array by K positions.
+    - Prep Tier: Theory + Conceptual
+    - Focus: In-place reversal algorithm O(n) time / O(1) space.
+
+21. Maximum sum subarray (Kadane's Algorithm).
+    - Prep Tier: Know Code + Implementation
+    - Focus: Dynamic programming / O(n) linear scan.
+
+22. Chunk array into groups of size N.
+    - Prep Tier: High-Level Awareness Only
+    - Focus: Slice-based iterations.
+
+
+SECTION 3: NUMBER & MATH LOGIC
+---------------------------------------------------------------------
+23. Factorial (Iterative, Recursive, Tail-Call).
+    - Prep Tier: Theory + Conceptual
+    - Focus: Stack overflow limits & tail-call optimization mechanics.
+
+24. Prime Number Check.
+    - Prep Tier: High-Level Awareness Only
+    - Focus: O(sqrt(n)) primality test bound.
+
+25. FizzBuzz.
+    - Prep Tier: High-Level Awareness Only
+    - Focus: Clean code & modulo condition ordering.
+
+26. Power of Two Check.
+    - Prep Tier: High-Level Awareness Only
+    - Focus: Bitwise AND operation (n & (n - 1)) === 0.
+
+27. Roman Numerals to Integer & Vice Versa.
+    - Prep Tier: High-Level Awareness Only
+    - Focus: Greedy subtraction / Hash mapping.
+
+28. Fibonacci with Generator Function.
+    - Prep Tier: High-Level Awareness Only
+    - Focus: ES6 function* and yield execution flow.
+
+29. Pyramid Star Patterns.
+    - Prep Tier: High-Level Awareness Only
+    - Focus: Basic loop practice (rarely asked in 4+ yr rounds).
+
+
+SECTION 4: OBJECTS & ADVANCED DATA STRUCTURES
+---------------------------------------------------------------------
+30. Custom Deep Clone (handling nested objects, arrays, Date, Map, Set).
+    - Prep Tier: Know Code + Implementation
+    - Focus: Handling Circular References using WeakMap & structuredClone comparison.
+
+31. Deep Equality Check (deepEqual).
+    - Prep Tier: Know Code + Implementation
+    - Focus: Recursive type checking, key length matching, prototype differences.
+
+32. Flatten nested object to dot-notation keys.
+    - Prep Tier: Know Code + Implementation
+    - Focus: Recursive key concatenation & unflattening inverse.
+
+33. URL Query String Parser & Serializer.
+    - Prep Tier: Know Code + Implementation
+    - Focus: Handling decoded URIs, arrays in query params, and URLSearchParams API.
+
+34. LRU (Least Recently Used) Cache Implementation.
+    - Prep Tier: Know Code + Implementation
+    - Focus: O(1) get/put using Map key insertion order or Doubly Linked List + Map.
+
+35. Event Emitter Class (on, off, emit, once).
+    - Prep Tier: Know Code + Implementation
+    - Focus: Subscription management, unbinding callbacks, handling `once` wrappers.
+
+
+SECTION 5: FUNCTIONS, CLOSURES & ASYNC UTILITIES
+---------------------------------------------------------------------
+36. Debounce function with immediate/leading option.
+    - Prep Tier: Know Code + Implementation
+    - Focus: Timer cancellation, `this` binding preservation, and return values.
+
+37. Throttle function with leading/trailing options.
+    - Prep Tier: Know Code + Implementation
+    - Focus: Timestamp comparison vs timer management.
+
+38. Generic Memoize Function.
+    - Prep Tier: Know Code + Implementation
+    - Focus: Custom key resolver, arguments serialization, Map storage.
+
+39. Currying Utility (curry).
+    - Prep Tier: Know Code + Implementation
+    - Focus: Functionarity (fn.length) evaluation & recursive argument accumulation.
+
+40. Function Composition (pipe and compose).
+    - Prep Tier: Know Code + Implementation
+    - Focus: Array.prototype.reduceRight (compose) vs reduce (pipe).
+
+41. Promise.all Polyfill from scratch.
+    - Prep Tier: Know Code + Implementation
+    - Focus: Array indexing preservation, synchronous fulfillment counting, fast rejection.
+
+42. Sequential Async Execution (async Waterfall).
+    - Prep Tier: Know Code + Implementation
+    - Focus: Resolving array of async functions in sequence using reduce or async/await loop.
+
+43. Retry Async Operation with Exponential Backoff.
+    - Prep Tier: Know Code + Implementation
+    - Focus: Delay scaling, jitter, max retry attempts rejection.
+
+44. Polyfills for Function.prototype.call, apply, and bind.
+    - Prep Tier: Know Code + Implementation
+    - Focus: Symbol property assignment for explicit `this` context binding.
+
+
+SECTION 6: BUILT-IN METHOD POLYFILLS
+---------------------------------------------------------------------
+45. Array.prototype.map Polyfill.
+    - Prep Tier: Know Code + Implementation
+    - Focus: Handling sparse arrays, array bounds, and `thisArg`.
+
+46. Array.prototype.filter Polyfill.
+    - Prep Tier: Know Code + Implementation
+    - Focus: Preserving sparse gaps and context binding.
+
+47. Array.prototype.reduce Polyfill.
+    - Prep Tier: Know Code + Implementation
+    - Focus: Optional initialValue handling and empty array edge errors.
+
+48. Array.prototype.forEach Polyfill.
+    - Prep Tier: Know Code + Implementation
+    - Focus: Basic callback execution without returning values.
+
+49. Promise.allSettled Polyfill.
+    - Prep Tier: Know Code + Implementation
+    - Focus: Normalizing fulfillment `{ status: 'fulfilled', value }` and rejection outcomes.
+
+50. Promise.race Polyfill.
+    - Prep Tier: Know Code + Implementation
+    - Focus: Resolving/rejecting with the first settled promise value.
+
+
+SECTION 7: DOM, BROWSER & ARCHITECTURE PROBLEMS
+---------------------------------------------------------------------
+51. Infinite Scroll with Intersection Observer.
+    - Prep Tier: Know Code + Implementation
+    - Focus: Disconnecting observers, sentinel DOM elements, loading states.
+
+52. Publish-Subscribe (Pub/Sub) System.
+    - Prep Tier: Know Code + Implementation
+    - Focus: Decoupled topic channels vs Event Emitter object targets.
+
+53. Closure Loop Traps (var vs let with setTimeout).
+    - Prep Tier: Know Code + Implementation
+    - Focus: Lexical scope creation, block scope, IIFE bindings.
+
+54. Event Delegation Pattern.
+    - Prep Tier: Know Code + Implementation
+    - Focus: Element matching (`event.target.closest`), event bubbling performance.
+
+55. Stopwatch / Timer Application.
+    - Prep Tier: Know Code + Implementation
+    - Focus: Drift handling using `performance.now()` instead of raw `setInterval`.
+
+
+SECTION 8: OUTPUT-TRACING & TRICKY ENGINE MECHANICS
+---------------------------------------------------------------------
+56. Typeof & Null/Undefined comparisons.
+    - Prep Tier: Know Code + Implementation (Output-Tracing)
+    - Focus: JS spec history (`typeof null === 'object'`), loose coercion rules.
+
+57. String & Number Coercion (+ / - operators).
+    - Prep Tier: Know Code + Implementation (Output-Tracing)
+    - Focus: Implicit coercion rules, unary plus conversion (`+'2'`).
+
+58. Object key coercion (`a[b] = 123`).
+    - Prep Tier: Know Code + Implementation (Output-Tracing)
+    - Focus: Default `.toString()` converting objects to `"[object Object]"`.
+
+59. Hoisting & Temporal Dead Zone (TDZ).
+    - Prep Tier: Know Code + Implementation (Output-Tracing)
+    - Focus: Function scope vs block scope hoisting rules.
+
+60. Event Loop Output Tracing (Promises vs setTimeout).
+    - Prep Tier: Know Code + Implementation (Output-Tracing)
+    - Focus: Call Stack, Microtask Queue (Promises), Macrotask Queue (Timers).
 =====================================================================
- SECTION 1 : STRING PROBLEMS
-=====================================================================
-
-1. Write a function to check if a given string is a palindrome.
-   - Approach 1: Using a for loop
-   - Approach 2: Using built-in methods (split, reverse, join)
-
-2. Implement a function to reverse a string without using the built-in reverse() method.
-
-3. Convert the first letter of each word in a sentence to uppercase (Title Case).
-   Input:  'krushna chandra mahapatra'
-   Output: 'Krushna Chandra Mahapatra'
-
-4. Given a string, write a function to count the occurrences of each character in the string.
-   - Also find which characters appear more than once.
-
-5. Find the longest substring without repeating characters.
-   Input:  'abcabcbb'
-   Output: 3 (substring: 'abc')
-
-6. Check if two strings are anagrams of each other.
-   Input:  'listen', 'silent'
-   Output: true
-
-7. Write a function to find all permutations of a string.
-   Input:  'abc'
-   Output: ['abc','acb','bac','bca','cab','cba']
-
-8. Implement a function to compress a string using character counts.
-   Input:  'aabcccccaaa'
-   Output: 'a2b1c5a3'
-
-
-=====================================================================
- SECTION 2 : ARRAY PROBLEMS
-=====================================================================
-
-9. Given an array of numbers, find the largest and smallest numbers.
-   - Approach 1: Using a for loop
-   - Approach 2: Using Math.max / Math.min with spread
-
-10. Write a function to find the largest element in a nested array.
-    Input:  [[8,4,10],[24,2,44],[5,34]]
-    Output: 44
-
-11. Return a new array with only the unique elements (remove duplicates).
-    - Approach 1: Using a for loop + includes()
-    - Approach 2: Using Set
-
-12. Return only the elements that appear exactly once (pure unique — occurrence count = 1).
-    Input:  [1,2,3,2,3,4,4,5,6,6,7]
-    Output: [1,5,7]
-
-13. Sort an array of numbers in ascending & descending order.
-    - Using Array.sort() with comparator
-    - Without using sort (Bubble Sort)
-
-14. Find the second smallest and second largest element in an array.
-
-15. Two Sum — find two numbers in an array that add up to a target. Return their indices.
-    Input:  [2,7,11,15], target = 9
-    Output: [0,1]
-
-16. Find the intersection and union of two arrays.
-    Input:  [1,2,3,4], [3,4,5,6]
-    Output: intersection = [3,4], union = [1,2,3,4,5,6]
-
-17. Flatten a deeply nested array without using Array.flat().
-    Input:  [1,[2,[3,[4]],5]]
-    Output: [1,2,3,4,5]
-
-18. Implement Array.prototype.flat with a configurable depth parameter.
-    Input:  [1,[2,[3,[4]]]], depth=2
-    Output: [1,2,3,[4]]
-
-19. Group an array of objects by a property.
-    Input:  [{name:'A', dept:'IT'}, {name:'B', dept:'HR'}, {name:'C', dept:'IT'}], key='dept'
-    Output: { IT: [{...},{...}], HR: [{...}] }
-
-20. Rotate an array by K positions (left or right).
-    Input:  [1,2,3,4,5], k=2, direction='right'
-    Output: [4,5,1,2,3]
-
-21. Find the maximum sum subarray (Kadane's Algorithm).
-    Input:  [-2,1,-3,4,-1,2,1,-5,4]
-    Output: 6 (subarray: [4,-1,2,1])
-
-22. Chunk an array into groups of a given size.
-    Input:  [1,2,3,4,5], size=2
-    Output: [[1,2],[3,4],[5]]
-
-
-=====================================================================
- SECTION 3 : NUMBER / MATH PROBLEMS
-=====================================================================
-
-23. Implement a function to find the factorial of a number.
-    - Approach 1: Iterative (for loop)
-    - Approach 2: Recursive
-    - Approach 3: Tail-call optimized recursion
-
-24. Write a function that determines if a number is prime.
-    - Approach 1: Loop up to n
-    - Approach 2: Optimized — loop up to sqrt(n)
-
-25. FizzBuzz — print 1 to n, but:
-    - Multiples of 3 → 'Fizz'
-    - Multiples of 5 → 'Buzz'
-    - Multiples of both → 'FizzBuzz'
-
-26. Check if a number is a power of two.
-    Input:  16 → true, 18 → false
-
-27. Convert Roman numerals to integers and vice versa.
-    Input:  'XIV' → 14, 14 → 'XIV'
-
-28. Generate a Fibonacci sequence up to n terms using a generator function.
-
-29. Print a star (pyramid) pattern of height n.
-    n=3:
-      *
-     ***
-    *****
-
-
-=====================================================================
- SECTION 4 : OBJECT / DATA STRUCTURE PROBLEMS
-=====================================================================
-
-30. Deep clone an object (handle nested objects, arrays, Date, null).
-
-31. Implement a deep equality check (deepEqual) for two values.
-
-32. Flatten a nested object into dot-notation keys.
-    Input:  { a: { b: { c: 1 } }, d: 2 }
-    Output: { 'a.b.c': 1, 'd': 2 }
-
-33. Parse a URL query string into an object & convert an object back to a query string.
-    Input:  '?name=krush&age=25&role=dev'
-    Output: { name:'krush', age:'25', role:'dev' }
-
-34. Implement an LRU (Least Recently Used) Cache with get() and put() methods.
-
-35. Implement a basic Event Emitter class with on(), off(), emit(), and once().
-
-
-=====================================================================
- SECTION 5 : FUNCTION / CLOSURE / ASYNC PROBLEMS
-=====================================================================
-
-36. Implement a debounce function.
-    - Should delay execution until after a wait period of inactivity.
-
-37. Implement a throttle function.
-    - Should limit execution to once per specified interval.
-
-38. Implement a memoize function that caches results based on arguments.
-
-39. Implement a curry function.
-    Input:  curry(add)(1)(2)(3) → 6 where add = (a,b,c) => a+b+c
-
-40. Implement a pipe / compose function.
-    pipe(fn1, fn2, fn3)(value) → fn3(fn2(fn1(value)))
-
-41. Implement Promise.all from scratch.
-
-42. Write a function that executes an array of async functions in sequence (not parallel).
-
-43. Implement a retry function with exponential backoff for async operations.
-
-44. Implement Function.prototype.call, apply, and bind from scratch (polyfills).
-
-
-=====================================================================
- SECTION 6 : POLYFILLS (Very Common in 4+ Yr Interviews)
-=====================================================================
-
-45. Implement Array.prototype.map from scratch.
-
-46. Implement Array.prototype.filter from scratch.
-
-47. Implement Array.prototype.reduce from scratch.
-
-48. Implement Array.prototype.forEach from scratch.
-
-49. Implement Promise.allSettled from scratch.
-
-50. Implement Promise.race from scratch.
-
-
-=====================================================================
- SECTION 7 : DOM / BROWSER PROBLEMS (Asked Frequently)
-=====================================================================
-
-51. Implement infinite scroll using Intersection Observer API.
-
-52. Implement a basic pub/sub (publish-subscribe) pattern.
-
-53. Explain & demonstrate the difference between var/let in a loop with closures.
-    for (var i = 0; i < 5; i++) → logs 5 for all
-    for (let i = 0; i < 5; i++) → logs 0,1,2,3,4
-
-54. Implement event delegation — attach a single listener to a parent for dynamic children.
-
-55. Build a simple stopwatch (start, stop, reset) using setInterval.
-
 
 =====================================================================
  SECTION 8 : OUTPUT-BASED / TRICKY QUESTIONS
@@ -252,15 +305,3 @@ Solutions => jsProblemsAnswers_Part1.js (Q1-30) & jsProblemsAnswers_Part2.js (Q3
     }
     // How to fix it to print 0, 1, 2?
 
-
-=====================================================================
- TIPS FOR 4+ YRS INTERVIEW
-=====================================================================
-- Always discuss time & space complexity (Big O) for every solution.
-- Mention multiple approaches (brute force → optimized).
-- For array/string problems, ask: "Is the input sorted?" "Can there be negatives?"
-- For async problems, handle errors properly with try/catch.
-- Polyfills are asked in EVERY senior-level JS interview — practice them.
-- Be ready to implement on a whiteboard or live code editor (no IDE help).
-- Know when to use Map vs Object, Set vs Array for performance.
-=====================================================================

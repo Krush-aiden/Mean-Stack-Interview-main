@@ -76,16 +76,63 @@ Hoisting is JavaScript's default behavior of moving declarations to the top of t
 **== (Loose Equality):** Compares values after type coercion.
 **=== (Strict Equality):** Compares both value AND type without coercion.
 
-    5 == "5"        // true  (string "5" coerced to number 5)
-    5 === "5"       // false (different types)
-    null == undefined   // true
-    null === undefined  // false
-    0 == false      // true
-    0 === false     // false
-    NaN == NaN      // false (NaN is never equal to anything)
-    NaN === NaN     // false
+    JavaScript == and ===: Tricky Examples
 
-Best Practice: Always use === to avoid unexpected type coercion bugs.
+1. 5 == "5"
+   Result: true
+   Why: == converts the string "5" to the number 5 before comparing.
+
+2. 5 === "5"
+   Result: false
+   Why: === requires both the value and type to match. One is a number; the other is a string.
+
+3. false == 0
+   Result: true
+   Why: With ==, false is converted to 0.
+
+4. "" == 0
+   Result: true
+   Why: With ==, the empty string is converted to the number 0.
+
+5. null == undefined
+   Result: true
+   Why: This is a special rule for ==. null and undefined compare equal to each other without being converted.
+
+6. null === undefined
+   Result: false
+   Why: They are different values and have different types.
+
+7. null == 0
+   Result: false
+   Why: null only loosely equals undefined (and itself); it does not loosely equal 0.
+
+8. [] == 0
+   Result: true
+   Why: The empty array converts to an empty string, and the empty string converts to 0.
+
+9. [] == ""
+   Result: true
+   Why: When compared with a primitive using ==, the empty array converts to an empty string.
+
+10. [] == ![]
+    Result: true
+    Why: Arrays are truthy, so ![] is false. The empty array converts to an empty string; then "" == false compares as 0 == 0.
+
+11. NaN == NaN
+    Result: false
+    Why: NaN is not equal to any value, including itself. Use Number.isNaN(value) to check for NaN.
+
+12. [] === []
+    Result: false
+    Why: Each [] creates a new array object. The two arrays are different objects.
+
+13. const a = [];
+    a === a
+    Result: true
+    Why: Both sides refer to the same array object.
+
+Rule of thumb:
+Use === by default. It avoids most surprising type conversions. Use == only when you specifically want its conversion rules.
 
 ---
 
@@ -286,7 +333,8 @@ Math.sqrt(-1);          // NaN
     let a;
     console.log(a);         // undefined
     console.log(typeof a);  // "undefined"
-
+    
+    
     let b = null;
     console.log(b);         // null
     console.log(typeof b);  // "object"
@@ -311,6 +359,15 @@ Enable with: `"use strict";` at the top of a file or function.
     delete Object.prototype; // ❌ TypeError
     function f(a, a) {}  // ❌ SyntaxError (duplicate params)
     var obj = { a: 1, a: 2 }; // ❌ SyntaxError in strict mode
+
+    "use strict";
+
+    let x = 10;
+    function myFunc() {}
+
+    // ❌ SyntaxError: Delete of an unqualified identifier in strict mode
+    delete x;        
+    delete myFunc;
 
 Key Restrictions:
 - Cannot use undeclared variables.
@@ -355,6 +412,31 @@ When a variable is referenced, JS looks for it in the current scope first. If no
 
 ---
 
+---
+What is the difference between Global Scope and Module Scope in JavaScript? How does a top-level var declaration behave in each?
+<!-- 1. Classic Script (Global Scope) -->
+- Shared globally across all script tags
+- Automatic (leaks to global memory)
+
+<script>
+  var x = 10;
+  console.log(window.x); // 👉 10 (Attached to global window object!)
+  console.log(x);        // 👉 10
+</script>
+
+
+<!-- 2. ES Module (Module Scope) -->
+- Strictly isolated to the individual file
+- Explicit (must use export and import)
+
+<script type="module">
+  var y = 20;
+  console.log(window.y); // 👉 undefined (NOT attached to window!)
+  console.log(y);        // 👉 20 (Scoped strictly inside this module file)
+</script>
+
+---
+
 ### 12. What is Pass by Value vs Pass by Reference?
 
 **Pass by Value (Primitives):**
@@ -366,19 +448,42 @@ A copy of the value is passed. Changes to the copy don't affect the original.
     console.log(a); // 10 (unchanged)
 
 **Pass by Reference (Objects/Arrays):**
+
 A reference (memory address) is passed. Changes through the reference affect the original.
+---
+#### 1. Mutating (Modifying the contents inside the same address)
 
-    let obj1 = { name: "Krushna" };
-    let obj2 = obj1;  // obj2 points to SAME object
-    obj2.name = "Alex";
-    console.log(obj1.name); // "Alex" (changed!)
+Whether it's an Object or an Array, modifying the interior affects **all** variables pointing to it:
+```javascript
+// --- MUTATING AN OBJECT ---
+let obj1 = { name: "Krushna" };
+let obj2 = obj1;
+obj2.name = "Alex";           // Modifies property inside address 0x123
+console.log(obj1.name);       // "Alex" (Both changed!)
 
-    // But reassigning doesn't affect the original
-    let arr1 = [1, 2, 3];
-    let arr2 = arr1;
-    arr2 = [4, 5, 6];     // arr2 now points to a NEW array
-    console.log(arr1);     // [1, 2, 3] (unchanged)
+// --- MUTATING AN ARRAY ---
+let arr1 = [1, 2, 3];
+let arr2 = arr1;
+arr2.push(99);                // Modifies contents inside address 0x456
+console.log(arr1);            // [1, 2, 3, 99] (Both changed!)
+```
+#### 2. Reassigning (Pointing the variable to a brand-new address)
 
+Whether it's an Object or an Array, assigning a brand-new value using `=` breaks the link and affects **only** that single variable:
+
+```javascript
+// --- REASSIGNING AN ARRAY ---
+let arr1 = [1, 2, 3];
+let arr2 = arr1;
+arr2 = [4, 5, 6];             // Reassigns arr2 to a NEW address 0x789
+console.log(arr1);            // [1, 2, 3] (Original unchanged!)
+
+// --- REASSIGNING AN OBJECT ---
+let obj1 = { name: "Krushna" };
+let obj2 = obj1;
+obj2 = { name: "Alex" };      // Reassigns obj2 to a NEW address 0x999
+console.log(obj1.name);       // "Krushna" (Original unchanged!)
+```
 ---
 
 ### 13. What is the Debugger statement?
@@ -410,28 +515,69 @@ Arrow functions (=>) provide a concise syntax and have key differences from regu
 | Can be constructor    | Yes                     | No                      |
 | Hoisting              | Yes (declaration)       | No (expression only)    |
 
-    // Regular function — `this` refers to the calling object
-    const obj = {
+    --- `this` binding ---
+        const obj = {
         name: "Krushna",
-        greet: function() {
-            console.log(this.name);  // "Krushna"
-        }
+
+    // Regular Function: 'this' depends on caller (obj)
+    regularFunc: function() {
+        console.log("Regular:", this.name);
+    },
+
+    // Arrow Function: 'this' inherits from outer scope (window/global)
+        arrowFunc: () => {
+        console.log("Arrow:", this.name);
+    }
     };
 
-    // Arrow function — `this` inherits from parent scope
-    const obj2 = {
-        name: "Krushna",
-        greet: () => {
-            console.log(this.name);  // undefined (this = window/global)
-        }
+    obj.regularFunc(); // 👉 Regular: Krushna ('this' is obj)
+    obj.arrowFunc();   // 👉 Arrow: undefined   ('this' inherited from outer scope)
+
+        --- arguments` object ---
+        // Regular Function
+    function showArgs() {
+    console.log(arguments[0], arguments[1]); // 👉 10, 20
+    }
+    showArgs(10, 20);
+
+    // Arrow Function
+    const showArgsArrow = () => {
+    // console.log(arguments); // ❌ Uncaught ReferenceError: arguments is not defined
     };
 
-    // Arrow function concise syntax
-    const add = (a, b) => a + b;          // implicit return
-    const square = x => x * x;            // single param — no parens needed
-    const getObj = () => ({ key: "val" }); // return object — wrap in ()
+    // Modern solution for Arrow Functions: Use Rest Parameters (...args)
+    const showArgsModern = (...args) => {
+    console.log(args[0], args[1]); // 👉 10, 20
+    };
+    showArgsModern(10, 20);
 
----
+        --- Constructor ---
+        // Regular Function as Constructor
+    function Person(name) {
+    this.name = name;
+    }
+    const p1 = new Person("Alex"); // 👉 Person { name: 'Alex' }
+
+    // Arrow Function
+    const User = (name) => {
+    this.name = name;
+    };
+    // const u1 = new User("Alex"); // ❌ Uncaught TypeError: User is not a constructor
+
+    --- Hosting Behavior ---
+    // Regular Function Declaration: Works fine due to full hoisting
+    greet(); // 👉 "Hello!"
+    function greet() {
+    console.log("Hello!");
+    }
+
+    // Arrow Function Expression: Fails due to TDZ
+    // sayHi(); // ❌ Uncaught ReferenceError: Cannot access 'sayHi' before initialization
+    const sayHi = () => {
+    console.log("Hi!");
+    };
+
+    ------
 
 ### 15. What is an IIFE (Immediately Invoked Function Expression)?
 
@@ -468,14 +614,24 @@ A higher-order function is a function that either:
 2. Returns a function as its result.
 
     // Takes a function as argument
-    function operate(a, b, callback) {
-        return callback(a, b);
+    function add(x, y) {
+        return x + y;
     }
-    const result = operate(5, 3, (x, y) => x + y);  // 8
+
+    // 2. Define the operator function that receives a callback
+    function operate(a, b, callback) {
+        // 'callback' is literally the 'add' function we pass in!
+        return callback(a, b); 
+    }
+
+    // 3. Pass 'add' (WITHOUT parentheses ()) as the 3rd argument
+    const result = operate(5, 4, add);
+
+    console.log(result); // 👉 Output: 9
 
     // Returns a function
     function multiplier(factor) {
-        return function(num) {
+        return function gstcalc(num) {
             return num * factor;
         };
     }
@@ -494,21 +650,84 @@ Built-in Higher-Order Functions:
 A callback is a function passed as an argument to another function, which is then invoked inside the outer function.
 
     // Synchronous callback
-    function greet(name, callback) {
-        console.log("Hello, " + name);
-        callback();
+
+    function sum(a, b) {
+        console.log("2. Inside sum function: Calculating " + a + " + " + b); // 📍 Inside sum!
+        return a + b;
     }
-    greet("Krushna", function() {
-        console.log("Callback executed!");
-    });
+
+    // 2. Define processUser
+    function processUser(name, operation) {
+        console.log("1. Inside processUser: Starting process for " + name); // 📍 Inside processUser
+
+        // 👈 JS pauses processUser here and jumps into sum(5, 4)!
+        const result = operation(5, 4); 
+
+        // 👈 JS returns back to processUser with result = 9
+        console.log("3. Inside processUser: The sum result is " + result);   // 📍 Inside processUser
+    }
+
+    // 3. Execute
+    processUser("Krushna", sum);
 
     // Asynchronous callback
-    setTimeout(function() {
-        console.log("Runs after 1 second");
-    }, 1000);
 
-    // Array methods use callbacks
-    [1, 2, 3].map(num => num * 2);  // [2, 4, 6]
+    function displayWeatherReport(city, temperature) {
+        console.log("3. Callback Executed! " + city + " temperature is " + temperature + "°C.");
+    }
+
+    // 2. Higher-Order Async Function (Simulates fetching data from a server)
+    function getWeather(city, callback) {
+        console.log("1. Requesting weather data for " + city + " from server...");
+
+        // Simulate 2-second network delay
+        setTimeout(function() {
+            // Data arrives from server 2 seconds later!
+            const temp = 28; 
+
+            console.log("2. Server response received!");
+
+            // Trigger the callback function, passing the fetched temperature
+            callback(city, temp);
+        }, 2000);
+
+        console.log("1b. Waiting for server response... (UI stays responsive!)");
+    }
+
+// 3. Execution (Pass 'displayWeatherReport' as the callback)
+getWeather("Bhubaneswar", displayWeatherReport);
+
+---
+
+---
+
+### How do you return data from an asynchronous operation like setTimeout in JavaScript?
+function sum(a, b) {
+    return a + b;
+}
+
+function processuser(name, a, b) {
+    console.log("name:", name);
+    
+    // Return a Promise that resolves when setTimeout finishes
+    return new Promise((resolve) => {
+        setTimeout(() => {
+            const result = sum(a, b);
+            resolve(result); // 💡 Send the data out via resolve()
+        }, 2000);
+    });
+}
+
+// Usage with async/await:
+async function run() {
+    // 💡 Pause execution until the 2-second timeout finishes!
+    const result = await processuser("krushna", 5, 4); 
+    
+    console.log("Data extracted via await:", result); // 👉 9
+}
+
+run();
+
 
 ---
 
@@ -516,118 +735,433 @@ A callback is a function passed as an argument to another function, which is the
 
 Callback Hell is when multiple nested callbacks create deeply indented, hard-to-read code (also called "Pyramid of Doom").
 
-    // Callback Hell ❌
-    getData(function(a) {
-        getMoreData(a, function(b) {
-            getEvenMoreData(b, function(c) {
-                getFinalData(c, function(d) {
-                    console.log(d);
-                });
+    // ❌ CALLBACK HELL (Deeply nested, hard to read, nightmare error handling)
+    function getUser(callback) {
+        setTimeout(() => {
+            console.log("1. User found!");
+            callback(null, { id: 101, name: "Krushna" }); // null means 'no error'
+        }, 1000);
+    }
+
+    function getOrders(userId, callback) {
+        setTimeout(() => {
+            console.log("2. Orders found for User ID: " + userId);
+            callback(null, ["Laptop", "Mouse"]);
+        }, 1000);
+    }
+
+    function calculateTotal(ordersArray, callback) {
+        setTimeout(() => {
+            console.log("3. Calculated total for " + ordersArray.length + " items.");
+            callback(null, "$1500");
+        }, 1000);
+    }
+
+
+    // --- 2. THE CALLBACK HELL (The Execution) ---
+
+    console.log("Starting process...");
+
+    getUser(function(err, user) {
+        if (err) return console.log(err);
+
+        // Now we have the user, let's get their orders
+        getOrders(user.id, function(err, orders) {
+            if (err) return console.log(err);
+
+            // Now we have the orders, let's calculate the total
+            calculateTotal(orders, function(err, totalAmount) {
+                if (err) return console.log(err);
+
+                // Finally, we have everything!
+                console.log(`\n🎉 SUCCESS: ${user.name} bought items worth ${totalAmount}`);
             });
         });
     });
 
-**Solutions:**
-1. **Promises** — chain .then() instead of nesting.
-2. **Async/Await** — write async code that looks synchronous.
-3. **Named functions** — extract each callback into a named function.
-4. **Modularization** — break code into smaller modules.
+    // ✅ MODERN SOLUTION (Clean, flat, single try/catch block)
+    // --- 1. Promise-based Async Functions ---
+    function getUser() {
+        return new Promise((resolve) => {
+            setTimeout(() => {
+                console.log("1. User found!");
+                resolve({ id: 101, name: "Krushna" }); // Send data out via resolve
+            }, 1000);
+        });
+    }
+
+    function getOrders(userId) {
+        return new Promise((resolve) => {
+            setTimeout(() => {
+                console.log("2. Orders found for User ID: " + userId);
+                resolve(["Laptop", "Mouse"]);
+            }, 1000);
+        });
+    }
+
+    function calculateTotal(ordersArray) {
+        return new Promise((resolve) => {
+            setTimeout(() => {
+                console.log("3. Calculated total for " + ordersArray.length + " items.");
+                resolve("$1500");
+            }, 1000);
+        });
+    }
+
+    async function processOrder() {
+        console.log("Starting process...");
+
+        try {
+            const user = await getUser();
+            const orders = await getOrders(user.id);
+            const totalAmount = await calculateTotal(orders);
+
+            console.log(`\n🎉 SUCCESS: ${user.name} bought items worth ${totalAmount}`);
+        } catch (err) {
+            console.error("An error occurred:", err);
+        }
+    }
+
+    processOrder();
+
+    // Call it cleanly:
+    completeCheckout("user_101");
+
+    // --- 2. PROMISE CHAINING SOLUTION ---
+    console.log("Starting process...");
+
+    let userData; // Variable to keep track of user info across .then() blocks
+
+    getUser()
+        .then((user) => {
+            userData = user;
+            return getOrders(user.id); // Return next Promise
+        })
+        .then((orders) => {
+            return calculateTotal(orders); // Return next Promise
+        })
+        .then((totalAmount) => {
+            console.log(`\n🎉 SUCCESS: ${userData.name} bought items worth ${totalAmount}`);
+        })
+        .catch((err) => {
+            console.error("An error occurred:", err);
+        });
+
+    **Solutions:**
+    1. **Promises** — chain .then() instead of nesting.
+    2. **Async/Await** — write async code that looks synchronous.
+    3. **Named functions** — extract each callback into a named function.
+    4. **Modularization** — break code into smaller modules.
+
+================================================================================
+19. WHAT ARE CLOSURES IN JAVASCRIPT?
+Category: Know Code + Implementation (Output-Tracing & Stale Closures)
+================================================================================
+
+--------------------------------------------------------------------------------
+1. CORE DEFINITION (30-SECOND VERBAL PITCH)
+--------------------------------------------------------------------------------
+"A closure is the combination of a function bundled together with references 
+to its surrounding lexical environment. In simple terms, an inner function 
+always retains access to the variables of its outer function, even after the 
+outer function has finished executing and returned."
+
+
+--------------------------------------------------------------------------------
+2. REAL-WORLD PRODUCTION EXAMPLE: PRIVATE STATE CACHE MANAGER
+--------------------------------------------------------------------------------
+// Production Example: Private Cache Manager
+
+function createApiCache() {
+    // Private state inside closure — impossible to mutate from outside
+    const cache = new Map(); 
+
+    return {
+        async get(key, fetcherFn) {
+
+        // 🔍 CLOSURE LOOKUP:
+        // When get() runs, JS looks inside its internal [[Scopes]] backpack.
+        // It finds 'cache' in the closed-over scope of createApiCache!
+
+        if (cache.has(key)) {
+            return cache.get(key);
+        }
+        
+        const data = await fetcherFn();
+        cache.set(key, data); // 👈 Directly mutates the closed-over Map
+        return data;
+        }
+        
+        clear() {
+            cache.clear();
+        }
+    };
+}
+
+// Usage:
+const userCache = createApiCache();
+// userCache.get("user_101", () => fetch('/api/user/101'));
+// console.log(userCache.cache); // ❌ undefined (Truly private state)
+
+STEP 1: Run 'const userCache = createApiCache();'
+  ├── createApiCache() runs
+  ├── 'cache' Map is created
+  ├── createApiCache creates the { get, clear } object
+  ├── JavaScript attaches the [[Scopes]] backpack to get() and clear()
+  │     └── [[Scopes]] -> { cache: Map }
+  └── createApiCache() FINISHES & DIES 🪦
+
+STEP 2: Later in your code... 'userCache.get("user_101", ...)'
+  ├── get() function is called
+  ├── JS checks local scope of get() -> No 'cache' here!
+  ├── JS opens get()'s [[Scopes]] backpack (The Closure!)
+  ├── Finds 'cache' stored safely inside the closure memory!
+  └── Returns or updates the cached data successfully 🎉
+
+--------------------------------------------------------------------------------
+3. OUTPUT-TRACING TRAP: LOOP & SETTIMEOUT
+--------------------------------------------------------------------------------
+// ❌ Buggy Version (using 'var'):
+for (var i = 1; i <= 3; i++) {
+    setTimeout(() => {
+        console.log(i); // Prints: 4, 4, 4
+    }, i * 1000);
+}
+// Explanation: 'var' is function-scoped. By the time callbacks run 1 sec later,
+// the single 'i' variable in the outer scope has already evaluated to 4.
+
+// ✅ Fix Method 1: Block Scope with 'let' (Creates a new scope per loop iteration)
+for (let i = 1; i <= 3; i++) {
+    setTimeout(() => console.log(i), i * 1000); // Prints: 1, 2, 3
+}
+
+// ✅ Fix Method 2: IIFE Closure (Binds current 'i' into a parameter)
+for (var i = 1; i <= 3; i++) {
+    (function(currentI) {
+        setTimeout(() => console.log(currentI), currentI * 1000); // Prints: 1, 2, 3
+    })(i);
+}
+
+
+--------------------------------------------------------------------------------
+4. SENIOR LEVEL SPECIAL: STALE CLOSURES IN REACT
+--------------------------------------------------------------------------------
+// The Bug (useEffect capturing initial state):
+function Counter() {
+    const [count, setCount] = useState(0);
+    const [testing, setTesting] = useState(0);
+
+    useEffect(() => {
+        const timer = setInterval(() => {
+            // ❌ BUG: 'count' is captured in the initial render closure (0).
+            // On every tick, it executes 0 + 1 = 1. The counter stays stuck at 1 forever!
+            setCount(count + 1);
+            setCount(testing + 1);
+        }, 1000);
+
+        return () => clearInterval(timer);
+    }, []); // Empty dependency array locks 'count' at initial value (0)
+
+    return <h1>{count}</h1>;
+}
+
+// The Solutions:
+
+// ✅ Solution 1: Functional State Updater (Passes fresh state directly from React)
+setCount(prevCount => prevCount + 1);
+
+// ✅ Solution 2: Mutable Reference with useRef (Bypasses closure capture entirely)
+const countRef = useRef(count);
+countRef.current = count; // Always holds the latest state value
+
+useEffect(() => {
+    const timer = setInterval(() => {
+        console.log("Latest count via ref:", countRef.current);
+    }, 1000);
+
+    return () => clearInterval(timer);
+}, []);
+
+=====================================================================
+GLOBAL MEMORY (Window / Global Scope)
+  ├── Counter function definition
+  └── React library internals
+=====================================================================
+       │
+       ▼ (when React calls Counter())
+=====================================================================
+RENDER 1 FUNCTION SCOPE (Local Component Memory)
+  ├── const count = 0
+  ├── const testing = 0
+  ├── setCount = fn
+  └── useEffect = fn
+=====================================================================
+       │
+       ▼ (created inside useEffect)
+=====================================================================
+TIMER ARROW FUNCTION: () => setCount(testing + 1)
+  └── [[Scopes]] Backpack points directly to ---> RENDER 1 FUNCTION SCOPE
+=====================================================================
 
 ---
 
-### 19. What are Closures in JavaScript?
+================================================================================
+20. WHAT IS MEMOIZATION?
+Category: Know Code + Implementation (Custom Polyfill & React Performance)
+================================================================================
 
-A closure is a function that retains access to variables from its outer (enclosing) scope even after the outer function has returned.
+--------------------------------------------------------------------------------
+1. CORE DEFINITION (30-SECOND VERBAL PITCH)
+--------------------------------------------------------------------------------
+"Memoization is a specific optimization technique that speeds up programs by 
+caching the results of expensive function calls and returning the cached result 
+when the exact same inputs/arguments occur again."
 
-    function outer() {
-        let count = 0;  // enclosed variable
-        return function inner() {
-            count++;
-            return count;
-        };
-    }
 
-    const counter = outer();  // outer() has returned
-    console.log(counter());   // 1 (still has access to count)
-    console.log(counter());   // 2
-    console.log(counter());   // 3
+--------------------------------------------------------------------------------
+2. REAL-WORLD PRODUCTION EXAMPLE: GENERIC MEMOIZE UTILITY (POLYFILL)
+--------------------------------------------------------------------------------
+// Production-grade Memoize Wrapper using Map and Custom Resolver
+function memoize(fn, resolver) {
+    const cache = new Map();
 
-**How it works:** When `outer()` executes, it creates a scope with `count`. The returned `inner` function forms a closure — it "closes over" the `count` variable. Even though `outer()` has finished, `count` persists in memory because `inner` still references it.
+    return function(...args) {
+        // Allow custom cache key generation (defaults to JSON stringification)
+        const key = resolver ? resolver(...args) : JSON.stringify(args);
 
-**Common Use Cases:**
-1. Data privacy / encapsulation
-2. Function factories
-3. Memoization
-4. Event handlers and callbacks
-5. Module pattern
+        if (cache.has(key)) {
+            console.log(`[Cache Hit] returning cached result for key: "${key}"`);
+            return cache.get(key);
+        }
 
-    // Data privacy
-    function createWallet(initialBalance) {
-        let balance = initialBalance;
-        return {
-            deposit(amount) { balance += amount; },
-            withdraw(amount) { balance -= amount; },
-            getBalance() { return balance; }
-        };
-    }
+        console.log(`[Cache Miss] calculating fresh result for key: "${key}"`);
+        const result = fn.apply(this, args);
+        cache.set(key, result);
+        return result;
+    };
+}
 
-    const wallet = createWallet(100);
-    wallet.deposit(50);
-    console.log(wallet.getBalance());  // 150
-    // console.log(balance);  // ❌ Not accessible directly
+--------------------------------------------------------------------------------
+3. SIMPLE ARITHMETIC EXAMPLES (MULTIPLICATION & FACTORIAL)
+--------------------------------------------------------------------------------
+const expensiveCalculation = (n) => {
+    let sum = 0;
+    for (let i = 0; i < n; i++) sum += i;
+    return sum;
+};
+
+const memoizedCalc = memoize(expensiveCalculation);
+memoizedCalc(100000000); // [Cache Miss] calculating fresh result...
+memoizedCalc(100000000); // [Cache Hit] returning cached result...
+
+// Example 2: Recursive Multiplication / Factorial
+const memoizedFactorial = memoize(function(n) {
+    if (n <= 1) return 1;
+    return n * memoizedFactorial(n - 1);
+});
+
+console.log(memoizedFactorial(5));  // Calculates: 5 * 4 * 3 * 2 * 1 = 120
+console.log(memoizedFactorial(5));  // Returns 120 instantly from cache!
+
+
+--------------------------------------------------------------------------------
+4. SENIOR LEVEL SPECIAL: MEMOIZATION IN REACT (useMemo vs React.memo)
+--------------------------------------------------------------------------------
+// 1. React.memo (Higher Order Component):
+// Prevents child re-render if props have not changed (Shallow Comparison).
+const ChildComponent = React.memo(function Child({ user }) {
+    console.log("Child rendered");
+    return <div>{user.name}</div>;
+});
+
+// 2. useMemo (Hook):
+// Caches the RESULT of an expensive computation between renders.
+function Dashboard({ items, filterQuery }) {
+    // ❌ Bad: Filtering on every single render (even on unrelated state changes)
+    // const filteredItems = items.filter(item => item.name.includes(filterQuery));
+
+    // ✅ Good: Only re-calculates when 'items' or 'filterQuery' actually change
+    const filteredItems = useMemo(() => {
+        return items.filter(item => item.name.includes(filterQuery));
+    }, [items, filterQuery]);
+
+    return <List data={filteredItems} />;
+}
 
 ---
 
-### 20. What is Memoization?
+================================================================================
+21. WHAT IS RECURSION ?
+Category: Know Code + Implementation (Tree Traversal & Stack Overflow)
+================================================================================
 
-Memoization is an optimization technique where the results of expensive function calls are cached, so subsequent calls with the same arguments return the cached result instead of recomputing.
+--------------------------------------------------------------------------------
+1. CORE DEFINITION (30-SECOND VERBAL PITCH)
+--------------------------------------------------------------------------------
+"Recursion is a programming technique where a function calls itself to solve a 
+smaller instance of the same problem, until it reaches a defined base case that 
+stops the execution and unwinds the call stack."
 
-    function memoize(fn) {
-        const cache = {};
-        return function(...args) {
-            const key = JSON.stringify(args);
-            if (cache[key] !== undefined) {
-                console.log("From cache");
-                return cache[key];
-            }
-            console.log("Computing");
-            const result = fn(...args);
-            cache[key] = result;
-            return result;
-        };
-    }
 
-    const expensiveAdd = memoize((a, b) => a + b);
-    expensiveAdd(2, 3);  // "Computing" → 5
-    expensiveAdd(2, 3);  // "From cache" → 5
-    expensiveAdd(4, 5);  // "Computing" → 9
+--------------------------------------------------------------------------------
+2. SIMPLE ARITHMETIC EXAMPLE: FACTORIAL
+--------------------------------------------------------------------------------
+function factorial(n) {
+    // 1. Base Case: Stops infinite recursion
+    if (n <= 1) return 1; 
 
-Use Cases: Fibonacci, API response caching, complex calculations, React.memo / useMemo.
+    // 2. Recursive Step: Function calls itself with smaller input
+    return n * factorial(n - 1); 
+}
 
----
+console.log(factorial(5)); // 120 (5 * 4 * 3 * 2 * 1)
 
-### 21. What is Recursion?
 
-Recursion is when a function calls itself repeatedly until a base condition is met.
 
-    // Factorial
-    function factorial(n) {
-        if (n <= 1) return 1;       // base case
-        return n * factorial(n - 1); // recursive case
-    }
-    console.log(factorial(5));  // 120 (5 * 4 * 3 * 2 * 1)
+--------------------------------------------------------------------------------
+3. REAL-WORLD FRONTEND EXAMPLE: RECURSIVE DOM / TREE TRAVERSAL
+--------------------------------------------------------------------------------
+The Real-World Example: Finding a File in Folders
+Imagine you have a main folder on your computer named Documents. Inside it, you have subfolders, and inside those, more subfolders.
 
-    // Fibonacci
-    function fibonacci(n) {
-        if (n <= 1) return n;
-        return fibonacci(n - 1) + fibonacci(n - 2);
-    }
+You are looking for a file named invoice.pdf.
 
-Key Points:
-- Always have a **base case** to stop recursion (otherwise → stack overflow).
-- Each recursive call adds a frame to the **call stack**.
-- Can be optimized with **memoization** or **tail call optimization**.
+Here is how you naturally search for it:
 
+Check the Main Folder: You open Documents. Is invoice.pdf sitting right there?
+
+If yes: Great! You found it, so you stop looking.
+
+Open the First Subfolder: If it wasn't in Documents, you open the first subfolder, say 2024 Receipts.
+
+Go Deeper: Is invoice.pdf inside 2024 Receipts? No, but there's a folder inside it called Taxes. You open Taxes.
+
+Hit a Dead End: Taxes is completely empty (no files, no subfolders). You close it and go back up one level.
+
+Move to the Next Subfolder: You go back to 2024 Receipts, open the next folder called Business Expenses, open it up, and there it is: invoice.pdf!
+
+Stop & Return: You grab the file and stop searching any other folders.
+
+
+--------------------------------------------------------------------------------
+4. INTERVIEW TRAP: MAXIMUM CALL STACK SIZE EXCEEDED (STACK OVERFLOW)
+--------------------------------------------------------------------------------
+// ❌ Bug 1: Missing Base Case -> Infinite Loop -> RangeError
+
+function infinite() {
+    return infinite(); // ❌ Keeps calling itself endlessly!
+}
+
+infinite();
+
+// ❌ Bug 2: Base Case Never Reached (Logic Error)
+function countdown(n) {
+    if (n === 0) return "Done"; // Stop sign is at 0
+    
+    return countdown(n + 1);    // ❌ WRONG: n + 1 makes the number BIGGER (5, 6, 7...), so it never reaches 0!
+}
+
+countdown(5);
 ---
 
 ### 22. What is a Constructor Function?
@@ -658,7 +1192,7 @@ What `new` does:
 
 ### 23. What is Currying in JavaScript?
 
-Currying transforms a function with multiple arguments into a sequence of functions, each taking a single argument.
+Currying is a functional programming technique that transforms a function with multiple arguments into a sequence of nesting functions, each taking a single argument: f(a, b, c) → f(a)(b)(c).
 
     // Normal function
     function add(a, b, c) {
@@ -666,7 +1200,7 @@ Currying transforms a function with multiple arguments into a sequence of functi
     }
     add(1, 2, 3);  // 6
 
-    // Curried version
+    // Curried version (Regular Functions)
     function curriedAdd(a) {
         return function(b) {
             return function(c) {
@@ -679,81 +1213,146 @@ Currying transforms a function with multiple arguments into a sequence of functi
     // Arrow function version
     const curriedAdd2 = a => b => c => a + b + c;
 
-    // Partial application
-    const add5 = curriedAdd(5);
-    const add5and3 = add5(3);
-    console.log(add5and3(2));  // 10
 
-Use Cases: Creating reusable function factories, partial application, functional programming patterns.
+**Real-World Use Cases:**
+1. Function Factories (e.g., const logError = log("ERROR"))
+2. Reusable Event Handlers / Middleware (e.g., const handleInput = field => event => ...)
+3. Modularity in Functional Programming pipelines
 
+
+**Currying vs. Partial Application:**
+- Currying always converts a function into single-argument functions: f(a)(b)(c)
+- Partial application fixes some arguments now and accepts the remaining arguments later: f(a)(b, c) or f(a, b)(c)
+
+
+**Output-Tracing / Coding Interview Variations:**
+
+Variation 1: Infinite Currying — add(1)(2)(3)...()
+    function add(a) {
+        return function(b) {
+            if (b !== undefined) {
+                return add(a + b);  // Recursive step
+            }
+            return a;  // Terminating condition when called with no args ()
+        };
+    }
+
+    add(1)(2)(3)();      // 6
+    add(5)(10)(15)(2)(); // 32
 ---
 
 ### 24. What is Function Composition?
 
 Function composition is the process of combining two or more functions to produce a new function. The output of one function becomes the input of the next.
 
-    const double = x => x * 2;
-    const increment = x => x + 1;
-    const square = x => x * x;
+    function double(x) {
+    return x * 2;
+    }
 
-    // Manual composition
+    function increment(x) {
+    return x + 1;
+    }
+
+    function square(x) {
+    return x * x;
+    }
+
+    // Manual composition :
     const result = square(increment(double(3)));  // square(increment(6)) → square(7) → 49
 
-    // Compose utility (right to left)
-    const compose = (...fns) => x => fns.reduceRight((acc, fn) => fn(acc), x);
-    const transform = compose(square, increment, double);
-    console.log(transform(3));  // 49
+    // Compose utility (right to left) :
+    function compose(...fns) {
+    return function(initialValue) {
+        // reduceRight iterates through the array from last to first
+        return fns.reduceRight(function(accumulator, currentFunction) {
+        return currentFunction(accumulator);
+        }, initialValue);
+    };
+    }
 
-    // Pipe utility (left to right — more readable)
-    const pipe = (...fns) => x => fns.reduce((acc, fn) => fn(acc), x);
+    const transform = compose(square, increment, double);
+    transform(3); // 49
+
+    // Pipe utility (left to right — more readable) :
+    function pipe(...fns) {
+    return function(initialValue) {
+        // reduce iterates through the array from first to last
+        return fns.reduce(function(accumulator, currentFunction) {
+        return currentFunction(accumulator);
+        }, initialValue);
+    };
+    }
+
     const transform2 = pipe(double, increment, square);
-    console.log(transform2(3));  // 49
+    transform2(3); // 49
 
 
 ================================================================================
   SECTION 3: `this` KEYWORD, call, apply, bind
 ================================================================================
 
-### 25. Explain the `this` keyword in JavaScript.
+    25. Explain the this keyword in JavaScript.
+    this refers to the object that is currently executing the function. Its value depends on HOW the function is called, not where it is defined.
 
-`this` refers to the object that is currently executing the function. Its value depends on HOW the function is called, not where it is defined.
+    Rules (in order of precedence):
 
-**Rules (in order of precedence):**
+    new binding — this = newly created object
 
-1. **new binding** — `this` = newly created object
-
-    function Person(name) { this.name = name; }
+    function Person(name) { 
+        this.name = name; 
+    }
     const p = new Person("Krushna");  // this → new object
 
-2. **Explicit binding** (call/apply/bind) — `this` = specified object
-
-    function greet() { console.log(this.name); }
-    greet.call({ name: "Krushna" });  // this → { name: "Krushna" }
-
-3. **Implicit binding** — `this` = the object calling the method
-
-    const obj = { name: "Krushna", greet() { console.log(this.name); } };
-    obj.greet();  // this → obj
-
-4. **Default binding** — `this` = window (non-strict) or undefined (strict)
-
-    function greet() { console.log(this); }
-    greet();  // window (non-strict) / undefined (strict)
-
-5. **Arrow functions** — `this` = inherited from enclosing lexical scope
-
-    const obj = {
-        name: "Krushna",
-        greet: () => console.log(this.name)  // this → enclosing scope (window)
+    // `this` in normal function
+    const obj = { 
+        name: "Krushna", 
+        greet() { 
+            console.log(this.name); 
+        } 
     };
 
+    obj.greet();  // this → obj
+
+    Arrow functions — this = inherited from enclosing lexical scope
+
+    const obj = {
+    name: "Krushna",
+    greet: () => console.log(this.name)  // this → enclosing scope (window) => undefined
+    };
+
+
+    // Note: Object literal {} does NOT create a block scope!
+
+    ==== Output-Tracing Interview Traps: ===
+
+    Trap 1: Method Loss (Losing this)
+    const user = { name: "Krushna", getName() { console.log(this.name); } };
+    const fname = user.getName;
+    fname();  // undefined (called standalone -> Default binding)
+    // Fix: const fname = user.getName.bind(user);
+
+    Trap 2: Callbacks & setTimeout
+    const user = {
+    name: "Krushna",
+    logName() {
+    setTimeout(function() {
+    console.log(this.name);  // undefined (runs standalone in Event Loop)
+    }, 100);
+    }
+    };
+    // Fix: Use arrow function inside setTimeout -> () => console.log(this.name)
+
+    Trap 3: Chaining .bind()
+    function greet() { console.log(this.name); }
+    const user1 = { name: "Krushna" };
+    const user2 = { name: "Rahul" };
 ---
 
 ### 26. What is call(), apply(), and bind()?
 
 These methods explicitly set the value of `this` when calling a function.
 
-**call()** — Invokes function immediately, passes arguments individually.
+    **call()** — call() is a built-in Function.prototype method that immediately invokes a function, explicitly passing a specified object to be used as this inside the function, passes arguments individually
 
     function greet(greeting, punctuation) {
         console.log(`${greeting}, ${this.name}${punctuation}`);
@@ -761,24 +1360,41 @@ These methods explicitly set the value of `this` when calling a function.
     const user = { name: "Krushna" };
     greet.call(user, "Hello", "!");  // "Hello, Krushna!"
 
-**apply()** — Same as call(), but passes arguments as an array.
+    **apply()** — same as call(), but passes arguments as an array.
 
     greet.apply(user, ["Hi", "."]);  // "Hi, Krushna."
 
-**bind()** — Returns a NEW function with `this` permanently bound. Does NOT invoke immediately.
+    // Classic Use Case: Unpacking arrays for built-in functions
+    const nums = [10, 5, 20];
+    Math.max.apply(null, nums);  // 20
+
+    **bind()** — it returns a brand new function with its `this` keyword permanently locked to the provided object. Does NOT invoke immediately.
 
     const boundGreet = greet.bind(user, "Hey");
     boundGreet("!!");  // "Hey, Krushna!!"
+
+    // 2nd example :
+    function showName() {
+        console.log(this.name);
+    }
+
+    const user1 = { name: "Krushna" };
+    const user2 = { name: "Rahul" };
+
+    const bound1 = showName.bind(user1);
+    const bound2 = bound1.bind(user2); // Re-binding bound1 to user2
+
+    bound2(); // What gets logged?
 
     // Useful for event handlers
     const button = { label: "Submit" };
     const handleClick = function() { console.log(this.label); };
     document.addEventListener("click", handleClick.bind(button));
 
-Key Difference Summary:
-- call  → invoke now, args separately
-- apply → invoke now, args as array
-- bind  → don't invoke, return new function
+    Key Difference Summary:
+    - call  → invoke now, args separately
+    - apply → invoke now, args as array
+    - bind  → don't invoke, return new function
 
 
 ================================================================================

@@ -1,0 +1,51 @@
+================================================================================
+REACT & JEST MASTER INTERVIEW QUESTION BANK (2026 EDITION)
+================================================================================
+
+This version keeps only the Jest and React Testing Library questions, since the general React topics are already covered in the main React question bank.
+
+--------------------------------------------------------------------------------
+PART 5: JEST & REACT TESTING LIBRARY (RTL)
+--------------------------------------------------------------------------------
+BASIC JEST QUESTIONS:
+1. What is Jest, and how does it differ from React Testing Library (RTL)?
+2. What is the role of describe, test, and it blocks in Jest?
+3. What are Matchers in Jest? Give examples of toBe(), toEqual(), and toBeTruthy().
+4. What is the difference between toBe() and toEqual() in Jest?
+5. What are beforeEach, afterEach, beforeAll, and afterAll lifecycle hooks?
+6. How do you run tests in watch mode in Jest?
+7. What is test coverage, and how do you generate a coverage report in Jest?
+8. What is the purpose of screen in React Testing Library?
+9. What are queries in RTL, and what is the difference between getBy, queryBy, and findBy?
+10. How do you simulate user interactions like clicking a button or typing in RTL?
+
+MODERATE JEST QUESTIONS:
+11. What is mocking in Jest? What is the difference between jest.fn(), jest.spyOn(), and jest.mock()?
+12. How do you test asynchronous code (Promises, async/await) in Jest?
+13. How do you mock an API call (e.g., fetch or axios) inside a React component?
+14. What is Snapshot Testing in Jest? When should you use it, and what are its drawbacks?
+15. How do you update a failed Jest snapshot when UI intentionally changes?
+16. What is fireEvent vs @testing-library/user-event, and why is user-event preferred?
+17. How do you test custom React hooks using @testing-library/react (renderHook and act)?
+18. What is act() in React testing, and why do you get the warning "An update to Component inside a test was not wrapped in act(...)"?
+19. How do you test components wrapped with Context Providers (e.g., Theme, Auth, Redux)?
+20. How do you mock local storage or session storage in Jest?
+
+ADVANCED JEST QUESTIONS:
+21. What is MSW (Mock Service Worker), and why is it preferred over mocking fetch/axios directly with jest.mock()?
+22. How do you test React Router components and protected routes?
+23. How do you mock time-based functions (setTimeout, setInterval) using Jest Fake Timers (jest.useFakeTimers())?
+24. How do you handle and test Error Boundaries in React using RTL?
+25. How do you mock third-party NPM modules or CSS/Image imports in Jest (moduleNameMapper)?
+26. What is the difference between unit testing, integration testing, and end-to-end (E2E) testing in a React app?
+27. How do you test debounced or throttled input handlers in React using Jest?
+28. How do you configure setup files (setupTests.js) and Jest config (jest.config.js) for a React project?
+29. How do you test portals or modals rendered outside the main DOM tree?
+
+JEST REAL-WORLD SCENARIOS:
+1. How do you structure test files in an enterprise React codebase?
+2. How do you avoid writing brittle tests that break during minor refactoring?
+3. How do you speed up a slow Jest test suite in a large CI/CD pipeline?
+4. How do you test complex forms with validation (e.g., React Hook Form + Zod)?
+5. How do you test components that depend on WebSocket or real-time data?
+6. How do you write tests for accessible components (a11y) using jest-axe?
