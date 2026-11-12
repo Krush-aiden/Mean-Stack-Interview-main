@@ -277,7 +277,7 @@ NaN stands for "Not a Number." It indicates a value that is not a valid number, 
     0 / 0              // NaN
     parseInt("abc")    // NaN
     Math.sqrt(-1)      // NaN
-    undefined + 1      // NaN
+    undefined + 1      // NaN`
 
 Best Practice: Use `Number.isNaN()` instead of the global `isNaN()` for accurate checks.
 
@@ -366,7 +366,7 @@ Enable with: `"use strict";` at the top of a file or function.
     function myFunc() {}
 
     // ❌ SyntaxError: Delete of an unqualified identifier in strict mode
-    delete x;        
+    delete x;
     delete myFunc;
 
 Key Restrictions:
